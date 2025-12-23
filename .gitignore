@@ -102,3 +102,7 @@ out/
 
 # User preferences
 .vscode/settings.json
+
+# Drizzle files
+drizzle
+*.db
