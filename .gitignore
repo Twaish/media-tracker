@@ -89,8 +89,9 @@ typings/
 .vite/
 dist/
 
-# Electron-Forge
+# Artifacts
 out/
+release/
 /test-results/
 /playwright-report/
 /blob-report/
