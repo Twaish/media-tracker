@@ -1,4 +1,5 @@
 import { exposeGenresContext } from './genres/genres-context'
+import { exposeMediaContext } from './media/media-context'
 import { exposeNotesContext } from './notes/notes-context'
 import { exposeThemeContext } from './theme/theme-context'
 import { exposeWindowContext } from './window/window-context'
@@ -8,4 +9,5 @@ export default function exposeContexts() {
   exposeThemeContext()
   exposeNotesContext()
   exposeGenresContext()
+  exposeMediaContext()
 }

@@ -1,0 +1,11 @@
+import { MEDIA_ADD, MEDIA_GET } from './media-channels'
+import { MediaCreateInput, MediaPaginationOptions } from './media-types'
+
+export function exposeMediaContext() {
+  const { contextBridge, ipcRenderer } = window.require('electron')
+  contextBridge.exposeInMainWorld('media', {
+    get: (options: MediaPaginationOptions) =>
+      ipcRenderer.invoke(MEDIA_GET, options),
+    add: (media: MediaCreateInput) => ipcRenderer.invoke(MEDIA_ADD, media),
+  })
+}
