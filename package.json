@@ -19,7 +19,9 @@
     "test:watch": "vitest watch",
     "test:unit": "vitest",
     "test:e2e": "playwright test",
-    "test:all": "vitest run && playwright test"
+    "test:all": "vitest run && playwright test",
+    "db:push": "npx drizzle-kit push",
+    "db:generate": "npx drizzle-kit generate"
   },
   "build": {
     "appId": "electron.shadcn.template",
