@@ -22,6 +22,7 @@ export const mediaTable = sqliteTable('media', {
   title: text().notNull(),
   currentEpisode: int().notNull().default(0),
   maxEpisodes: int(),
+  thumbnail: text(),
 
   mediaType: text()
     .$type<'anime' | 'manga' | 'manhwa' | 'manhua'>()
