@@ -1,5 +1,5 @@
-import { ElectronWindow } from '@/main/core/ElectronWindow'
-import StorageService from '@/main/core/StorageService'
+import { ElectronWindow } from '@/core/ElectronWindow'
+import StorageService from '@/core/StorageService'
 import { LibSQLDatabase } from 'drizzle-orm/libsql'
 import { BrowserWindow } from 'electron'
 
