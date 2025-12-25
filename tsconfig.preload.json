@@ -6,5 +6,8 @@
       "@/*": ["./electron/preload/*"]
     }
   },
-  "include": ["./electron/preload/**/*"]
+  "include": [
+    "./electron/preload/**/*",
+    "./electron/main/helpers/ipc/context-exposer.ts"
+  ]
 }
