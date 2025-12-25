@@ -1,0 +1,11 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./out/main",
+    "paths": {
+      "@/*": ["./electron/main/*"]
+    }
+  },
+  "include": ["./electron/main/**/*"],
+  "exclude": ["./electron/main/tests/**/*"]
+}

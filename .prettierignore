@@ -2,4 +2,7 @@
 /dist
 /coverage
 /.vite
+/node_modules
+/release
+/out
 README.md

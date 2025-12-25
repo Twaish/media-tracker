@@ -2,7 +2,7 @@
   "compilerOptions": {
     "jsx": "react",
     "target": "ESNext",
-    "module": "CommonJS",
+    "module": "nodenext",
     "lib": ["dom", "ESNext"],
     "experimentalDecorators": true,
     "composite": true,
@@ -11,15 +11,17 @@
     "allowJs": false,
     "esModuleInterop": true,
     "noImplicitAny": true,
-    "sourceMap": true,
     "strict": true,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    },
+
     "outDir": "dist",
-    "moduleResolution": "node",
+    "moduleResolution": "nodenext",
     "resolveJsonModule": true
   },
-  "include": ["src/**/*", "./package.json", "./forge.config.ts"]
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.main.json" },
+    { "path": "./tsconfig.preload.json" },
+    { "path": "./tsconfig.renderer.json" }
+  ],
+  "exclude": ["node_modules", "dist", "out"]
 }
