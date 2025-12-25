@@ -15,20 +15,24 @@ type StoredImageResult = {
   hash: string
   filename: string
   fullPath: string
+  relativePath: string
   width: number
   height: number
   size: number
 }
 
 export default class StorageService {
+  dataPath: string
+  fullPath: string
   basePath: string
   constructor(basePath: string) {
-    const userDataPath = app.getPath('userData')
-    this.basePath = path.join(userDataPath, basePath)
-    fs.mkdirSync(this.basePath, { recursive: true })
+    this.dataPath = app.getPath('userData')
+    this.fullPath = path.join(this.dataPath, basePath)
+    this.basePath = basePath
+    fs.mkdirSync(this.fullPath, { recursive: true })
   }
   resolve(relativePath: string) {
-    return path.join(this.basePath, relativePath)
+    return path.join(this.fullPath, relativePath)
   }
 
   async storeImage(
@@ -72,6 +76,7 @@ export default class StorageService {
       hash,
       filename,
       fullPath,
+      relativePath: path.join(this.basePath, filename),
       width: metadata.width!,
       height: metadata.height!,
       size: resizedBuffer.length,
