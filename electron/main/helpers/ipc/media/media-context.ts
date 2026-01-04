@@ -1,4 +1,4 @@
-import { MEDIA_ADD, MEDIA_GET } from './media-channels'
+import { MEDIA_ADD, MEDIA_GET, MEDIA_REMOVE } from './media-channels'
 import { MediaCreateInput, MediaPaginationOptions } from './media-types'
 
 export function exposeMediaContext() {
@@ -7,5 +7,6 @@ export function exposeMediaContext() {
     get: (options: MediaPaginationOptions) =>
       ipcRenderer.invoke(MEDIA_GET, options),
     add: (media: MediaCreateInput) => ipcRenderer.invoke(MEDIA_ADD, media),
+    remove: (mediaIds: number[]) => ipcRenderer.invoke(MEDIA_REMOVE, mediaIds),
   })
 }

@@ -1,8 +1,8 @@
 import { ipcMain } from 'electron'
 import { Modules } from '../types'
-import { MEDIA_ADD, MEDIA_GET } from './media-channels'
+import { MEDIA_ADD, MEDIA_GET, MEDIA_REMOVE } from './media-channels'
 import { mediaTable } from '@/db/schema'
-import { count, desc } from 'drizzle-orm'
+import { count, desc, inArray } from 'drizzle-orm'
 import { MediaCreateInput, MediaPaginationOptions } from './media-types'
 
 export function addMediaEventListeners({ Database, StorageService }: Modules) {
@@ -54,5 +54,17 @@ export function addMediaEventListeners({ Database, StorageService }: Modules) {
     console.log('Added ', input)
 
     return result[0]
+  })
+  ipcMain.handle(MEDIA_REMOVE, async (_, mediaIds: number[]) => {
+    if (!mediaIds.length) return { deleted: 0 }
+
+    const result = await Database.delete(mediaTable)
+      .where(inArray(mediaTable.id, mediaIds))
+      .returning({ id: mediaTable.id })
+
+    return {
+      deleted: result.length,
+      ids: result.map((r) => r.id),
+    }
   })
 }
