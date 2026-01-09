@@ -21,6 +21,7 @@ export default function HomePage() {
             {t('titleHomePage')}
           </p>
         </span>
+        <img src="images://a27405def14f7ea04110e633d62fa1c2b6285ca4edaa4a848ec2ab20dffcf712.webp" />
         <LanguageSelector />
         <ToggleTheme />
       </div>
