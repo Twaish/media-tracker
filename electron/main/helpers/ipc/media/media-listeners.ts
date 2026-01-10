@@ -3,7 +3,7 @@ import { Modules } from '../types'
 import { MEDIA_ADD, MEDIA_GET, MEDIA_REMOVE } from './media-channels'
 import { mediaTable } from '@/db/schema'
 import { count, desc, inArray } from 'drizzle-orm'
-import { MediaCreateInput, MediaPaginationOptions } from './media-types'
+import { MediaCreateInput, MediaPaginationOptions } from '@shared/types'
 
 export function addMediaEventListeners({ Database, StorageService }: Modules) {
   ipcMain.handle(MEDIA_GET, async (_, options: MediaPaginationOptions) => {
