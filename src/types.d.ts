@@ -1,6 +1,6 @@
 import type {
   ThemeModeContext,
-  ElectronWindow,
+  WindowContext,
   MediaContext,
   GenresContext,
   NotesContext,
@@ -9,7 +9,7 @@ import type {
 declare global {
   interface Window {
     themeMode: ThemeModeContext
-    electronWindow: ElectronWindow
+    electronWindow: WindowContext
     media: MediaContext
     genres: GenresContext
     notes: NotesContext
