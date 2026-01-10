@@ -1,3 +1,4 @@
+import { NotesContext } from '@shared/types'
 import {
   NOTES_ADD,
   NOTES_GET,
@@ -7,11 +8,12 @@ import {
 
 export function exposeNotesContext() {
   const { contextBridge, ipcRenderer } = window.require('electron')
-  contextBridge.exposeInMainWorld('notes', {
+  const notes: NotesContext = {
     get: () => ipcRenderer.invoke(NOTES_GET),
     add: (title: string, note: string) =>
       ipcRenderer.invoke(NOTES_ADD, title, note),
     remove: () => ipcRenderer.invoke(NOTES_REMOVE),
     image: (imagePath: string) => ipcRenderer.invoke(NOTES_IMAGE, imagePath),
-  })
+  }
+  contextBridge.exposeInMainWorld('notes', notes)
 }

@@ -1,3 +1,4 @@
+import { WindowContext } from '@shared/types'
 import {
   WIN_MINIMIZE_CHANNEL,
   WIN_MAXIMIZE_CHANNEL,
@@ -6,9 +7,10 @@ import {
 
 export function exposeWindowContext() {
   const { contextBridge, ipcRenderer } = window.require('electron')
-  contextBridge.exposeInMainWorld('electronWindow', {
+  const context: WindowContext = {
     minimize: () => ipcRenderer.invoke(WIN_MINIMIZE_CHANNEL),
     maximize: () => ipcRenderer.invoke(WIN_MAXIMIZE_CHANNEL),
     close: () => ipcRenderer.invoke(WIN_CLOSE_CHANNEL),
-  })
+  }
+  contextBridge.exposeInMainWorld('electronWindow', context)
 }
