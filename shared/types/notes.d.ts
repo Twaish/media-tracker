@@ -5,7 +5,8 @@ export type Note = InferSelectModel<typeof notesTable>
 export type NoteCreateInput = InferInsertModel<typeof notesTable>
 
 export interface NotesContext {
-  getAll: () => Promise<Note[]>
-  create: (note: NoteCreateInput) => Promise<void>
+  get: () => Promise<Note[]>
+  add: (title: string, note: string) => Promise<Note>
+  remove: () => Promise<void>
   image: (imagePath: string) => Promise<string>
 }
