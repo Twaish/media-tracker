@@ -1,18 +1,17 @@
-// Preload types
-interface ThemeModeContext {
-  toggle: () => Promise<boolean>
-  dark: () => Promise<void>
-  light: () => Promise<void>
-  system: () => Promise<boolean>
-  current: () => Promise<'dark' | 'light' | 'system'>
-}
-interface ElectronWindow {
-  minimize: () => Promise<void>
-  maximize: () => Promise<void>
-  close: () => Promise<void>
-}
+import type {
+  ThemeModeContext,
+  ElectronWindow,
+  MediaContext,
+  GenresContext,
+  NotesContext,
+} from '@shared/types'
 
-declare interface Window {
-  themeMode: ThemeModeContext
-  electronWindow: ElectronWindow
+declare global {
+  interface Window {
+    themeMode: ThemeModeContext
+    electronWindow: ElectronWindow
+    media: MediaContext
+    genres: GenresContext
+    notes: NotesContext
+  }
 }

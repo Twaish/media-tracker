@@ -3,9 +3,10 @@
   "compilerOptions": {
     "outDir": "./out/main",
     "paths": {
-      "@/*": ["./electron/main/*"]
+      "@/*": ["./electron/main/*"],
+      "@shared/*": ["./shared/*"]
     }
   },
-  "include": ["./electron/main/**/*"],
+  "include": ["./electron/main/**/*", "./shared/**/*"],
   "exclude": ["./electron/main/tests/**/*"]
 }
