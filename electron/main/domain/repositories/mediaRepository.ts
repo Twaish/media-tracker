@@ -1,4 +1,8 @@
-import { MediaCreateInput, MediaPaginationOptions } from '@shared/types'
+import {
+  MediaCreateInput,
+  MediaPaginationOptions,
+  MediaUpdateInput,
+} from '@shared/types'
 import { Media } from '../entities/media'
 
 export interface MediaRepository {
@@ -13,4 +17,5 @@ export interface MediaRepository {
   }>
   add(media: MediaCreateInput): Promise<Media>
   remove(mediaIds: number[]): Promise<{ deleted: number; ids: number[] }>
+  update(media: MediaUpdateInput): Promise<Media>
 }
