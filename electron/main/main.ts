@@ -4,7 +4,7 @@ import { drizzle } from 'drizzle-orm/libsql'
 
 import StorageService from './core/StorageService'
 import { ElectronWindow } from './core/ElectronWindow'
-import { seedDefaultGenres } from './db/seeding'
+import { seedDatabase } from './db/seeding'
 import registerListeners from './helpers/ipc/listeners-register'
 import registerProtocols from './helpers/ipc/protocols-register'
 
@@ -24,7 +24,7 @@ app.whenReady().then(async () => {
   registerListeners(modules)
   registerProtocols(modules)
 
-  await seedDefaultGenres(database)
+  await seedDatabase(database)
 
   electronWindow.showWindow()
 })
