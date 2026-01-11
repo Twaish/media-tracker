@@ -1,12 +1,6 @@
 import { int, primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core'
 import { mediaTable } from './tables/media.table'
 
-export const notesTable = sqliteTable('notes_table', {
-  id: int().primaryKey({ autoIncrement: true }),
-  title: text().notNull(),
-  note: text().notNull(),
-})
-
 export const genresTable = sqliteTable('genres', {
   id: int().primaryKey({ autoIncrement: true }),
   name: text().notNull().unique(),

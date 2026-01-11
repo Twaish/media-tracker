@@ -1,4 +1,4 @@
-import { notesTable } from '@/db/schema'
+import { notesTable } from '@/db/tables/notes.table'
 import { InferInsertModel, InferSelectModel } from 'drizzle-orm'
 
 export type Note = InferSelectModel<typeof notesTable>

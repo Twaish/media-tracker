@@ -5,7 +5,7 @@ import {
   NOTES_IMAGE,
   NOTES_REMOVE,
 } from './notes-channels'
-import { notesTable } from '@/db/schema'
+import { notesTable } from '@/db/tables/notes.table'
 import { Modules } from '../types'
 
 export function addNotesEventListeners({ Database, StorageService }: Modules) {
