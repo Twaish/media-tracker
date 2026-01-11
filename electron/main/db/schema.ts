@@ -16,6 +16,7 @@ export const notesTable = sqliteTable('notes_table', {
 export const genresTable = sqliteTable('genres', {
   id: int().primaryKey({ autoIncrement: true }),
   name: text().notNull().unique(),
+  isDeletable: int({ mode: 'boolean' }).notNull().default(false),
 })
 
 export const mediaTable = sqliteTable('media', {
