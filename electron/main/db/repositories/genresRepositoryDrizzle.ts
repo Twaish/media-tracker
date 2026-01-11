@@ -6,7 +6,7 @@ import { LibSQLDatabase } from 'drizzle-orm/libsql'
 export class GenresRepositoryDrizzle implements GenresRepository {
   constructor(private readonly db: LibSQLDatabase) {}
 
-  async findAll(): Promise<Genre[]> {
+  async get(): Promise<Genre[]> {
     const rows = await this.db.select().from(genresTable)
     return rows.map(this.toDomain)
   }

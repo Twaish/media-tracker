@@ -7,6 +7,6 @@ export function addGenresEventListeners(modules: Modules) {
   const useCases = createGenresUseCases(modules)
 
   ipcMain.handle(GENRES_GET, () => {
-    return useCases.findAllGenres.execute()
+    return useCases.getGenres.execute()
   })
 }
