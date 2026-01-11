@@ -1,12 +1,16 @@
 import { ipcMain } from 'electron'
 import { GENRES_GET } from './genres-channels'
 import { Modules } from '../types'
-import { genresTable } from '@/db/schema'
+import { createGenresUseCases } from '@/usecases/genres'
 
-export function addGenresEventListeners({ Database }: Modules) {
+export function addGenresEventListeners(modules: Modules) {
+  const useCases = createGenresUseCases(modules)
+
   ipcMain.handle(GENRES_GET, async () => {
-    console.log('GETTING GENRES')
-    const genres = await Database.select().from(genresTable)
-    return genres
+    try {
+      return await useCases.findAllGenres.execute()
+    } catch (err) {
+      console.error(err)
+    }
   })
 }
