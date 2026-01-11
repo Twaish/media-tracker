@@ -1,4 +1,3 @@
-import { DEFAULT_GENRES } from '@/domain/entities/genre'
 import { LibSQLDatabase } from 'drizzle-orm/libsql'
 import { int, sqliteTable, text } from 'drizzle-orm/sqlite-core'
 
@@ -7,6 +6,18 @@ export const genresTable = sqliteTable('genres', {
   name: text().notNull().unique(),
   isDeletable: int({ mode: 'boolean' }).notNull().default(false),
 })
+
+export const DEFAULT_GENRES = [
+  'Action',
+  'Adventure',
+  'Comedy',
+  'Drama',
+  'Fantasy',
+  'Romance',
+  'Sci-Fi',
+  'Slice of Life',
+  'Thriller',
+] as const
 
 export async function seedGenresTable(database: LibSQLDatabase) {
   for (const name of DEFAULT_GENRES) {
