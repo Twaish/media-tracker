@@ -1,12 +1,6 @@
-import { MediaStatus, MediaType } from '@/domain/entities/media'
-import { sql } from 'drizzle-orm'
-import {
-  AnySQLiteColumn,
-  int,
-  primaryKey,
-  sqliteTable,
-  text,
-} from 'drizzle-orm/sqlite-core'
+import { int, primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core'
+import { mediaTable } from './tables/media.table'
+
 export const notesTable = sqliteTable('notes_table', {
   id: int().primaryKey({ autoIncrement: true }),
   title: text().notNull(),
@@ -17,26 +11,6 @@ export const genresTable = sqliteTable('genres', {
   id: int().primaryKey({ autoIncrement: true }),
   name: text().notNull().unique(),
   isDeletable: int({ mode: 'boolean' }).notNull().default(false),
-})
-
-export const mediaTable = sqliteTable('media', {
-  id: int().primaryKey({ autoIncrement: true }),
-  title: text().notNull(),
-  currentEpisode: int().notNull().default(0),
-  maxEpisodes: int(),
-  thumbnail: text(),
-
-  mediaType: text().$type<MediaType>().notNull().default('anime'),
-  status: text().$type<MediaStatus>().notNull().default('plan-to-watch'),
-
-  externalLink: text().notNull().default('/'),
-  alternateTitles: text().notNull().default(''),
-
-  watchAfter: int().references((): AnySQLiteColumn => mediaTable.id),
-
-  lastUpdated: int({ mode: 'timestamp_ms' }).default(sql`(unixepoch() * 1000)`),
-  createdAt: int({ mode: 'timestamp_ms' }).default(sql`(unixepoch() * 1000)`),
-  isFavorite: int({ mode: 'boolean' }).notNull().default(false),
 })
 
 export const mediaGenresTable = sqliteTable(

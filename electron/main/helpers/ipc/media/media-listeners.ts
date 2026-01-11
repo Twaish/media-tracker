@@ -1,7 +1,7 @@
 import { ipcMain } from 'electron'
 import { Modules } from '../types'
 import { MEDIA_ADD, MEDIA_GET, MEDIA_REMOVE } from './media-channels'
-import { mediaTable } from '@/db/schema'
+import { mediaTable } from '@/db/tables/media.table'
 import { count, desc, inArray } from 'drizzle-orm'
 import { MediaCreateInput, MediaPaginationOptions } from '@shared/types'
 
