@@ -1,3 +1,4 @@
+import { MediaStatus, MediaType } from '@/domain/entities/media'
 import { sql } from 'drizzle-orm'
 import {
   AnySQLiteColumn,
@@ -24,14 +25,8 @@ export const mediaTable = sqliteTable('media', {
   maxEpisodes: int(),
   thumbnail: text(),
 
-  mediaType: text()
-    .$type<'anime' | 'manga' | 'manhwa' | 'manhua'>()
-    .notNull()
-    .default('anime'),
-  status: text()
-    .$type<'watching' | 'completed' | 'on-hold' | 'dropped' | 'plan-to-watch'>()
-    .notNull()
-    .default('plan-to-watch'),
+  mediaType: text().$type<MediaType>().notNull().default('anime'),
+  status: text().$type<MediaStatus>().notNull().default('plan-to-watch'),
 
   externalLink: text().notNull().default('/'),
   alternateTitles: text().notNull().default(''),
