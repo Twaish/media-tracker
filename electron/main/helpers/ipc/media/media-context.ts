@@ -8,10 +8,15 @@ import {
 export function exposeMediaContext() {
   const { contextBridge, ipcRenderer } = window.require('electron')
   const context: MediaContext = {
-    get: (options: MediaPaginationOptions) =>
-      ipcRenderer.invoke(MEDIA_GET, options),
-    add: (media: MediaCreateInput) => ipcRenderer.invoke(MEDIA_ADD, media),
-    remove: (mediaIds: number[]) => ipcRenderer.invoke(MEDIA_REMOVE, mediaIds),
+    get(options: MediaPaginationOptions) {
+      return ipcRenderer.invoke(MEDIA_GET, options)
+    },
+    add(media: MediaCreateInput) {
+      return ipcRenderer.invoke(MEDIA_ADD, media)
+    },
+    remove(mediaIds: number[]) {
+      return ipcRenderer.invoke(MEDIA_REMOVE, mediaIds)
+    },
   }
   contextBridge.exposeInMainWorld('media', context)
 }
