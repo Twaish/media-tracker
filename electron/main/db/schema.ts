@@ -1,11 +1,6 @@
-import { int, primaryKey, sqliteTable, text } from 'drizzle-orm/sqlite-core'
+import { int, primaryKey, sqliteTable } from 'drizzle-orm/sqlite-core'
 import { mediaTable } from './tables/media.table'
-
-export const genresTable = sqliteTable('genres', {
-  id: int().primaryKey({ autoIncrement: true }),
-  name: text().notNull().unique(),
-  isDeletable: int({ mode: 'boolean' }).notNull().default(false),
-})
+import { genresTable } from './tables/genres.table'
 
 export const mediaGenresTable = sqliteTable(
   'media_genres',
@@ -20,15 +15,3 @@ export const mediaGenresTable = sqliteTable(
   },
   (table) => [primaryKey({ columns: [table.mediaId, table.genreId] })],
 )
-
-export const DEFAULT_GENRES = [
-  'Action',
-  'Adventure',
-  'Comedy',
-  'Drama',
-  'Fantasy',
-  'Romance',
-  'Sci-Fi',
-  'Slice of Life',
-  'Thriller',
-]
