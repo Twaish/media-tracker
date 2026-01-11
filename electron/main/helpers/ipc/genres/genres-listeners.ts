@@ -1,7 +1,7 @@
 import { ipcMain } from 'electron'
 import { GENRES_GET } from './genres-channels'
 import { Modules } from '../types'
-import { genresTable } from '@/db/tables/genres.table'
+import { genresTable } from '@/db/schema'
 
 export function addGenresEventListeners({ Database }: Modules) {
   ipcMain.handle(GENRES_GET, async () => {
