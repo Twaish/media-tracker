@@ -9,11 +9,7 @@ export class Genre {
     }
   }
 
-  static create(params: {
-    id: number
-    name: string
-    isDeletable: boolean
-  }): Genre {
+  static create(params: { name: string; isDeletable: boolean }): Genre {
     if (!params.name || params.name.trim().length === 0) {
       throw new Error('Genre name cannot be empty')
     }
@@ -22,6 +18,10 @@ export class Genre {
       throw new Error('Genre name cannot exceed 25 characters')
     }
 
-    return new Genre(params.id, params.name.trim(), params.isDeletable)
+    return new Genre(null, params.name.trim(), params.isDeletable)
+  }
+
+  withId(id: number) {
+    return new Genre(id, this.name, this.isDeletable)
   }
 }
