@@ -1,13 +1,9 @@
 export class Genre {
-  constructor(
+  private constructor(
     public readonly id: number | null,
     public readonly name: string,
     public readonly isDeletable: boolean,
-  ) {
-    if (!name.trim()) {
-      throw new Error('Genre name cannot be empty')
-    }
-  }
+  ) {}
 
   static create(params: { name: string; isDeletable: boolean }): Genre {
     if (!params.name || params.name.trim().length === 0) {
