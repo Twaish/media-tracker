@@ -6,11 +6,7 @@ import { createGenresUseCases } from '@/usecases/genres'
 export function addGenresEventListeners(modules: Modules) {
   const useCases = createGenresUseCases(modules)
 
-  ipcMain.handle(GENRES_GET, async () => {
-    try {
-      return await useCases.findAllGenres.execute()
-    } catch (err) {
-      console.error(err)
-    }
+  ipcMain.handle(GENRES_GET, () => {
+    return useCases.findAllGenres.execute()
   })
 }
