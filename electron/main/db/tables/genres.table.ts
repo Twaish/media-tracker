@@ -2,7 +2,7 @@ import { LibSQLDatabase } from 'drizzle-orm/libsql'
 import { int, sqliteTable, text } from 'drizzle-orm/sqlite-core'
 
 export const genresTable = sqliteTable('genres', {
-  id: int().primaryKey({ autoIncrement: true }),
+  id: int().primaryKey(),
   name: text().notNull().unique(),
   isDeletable: int({ mode: 'boolean' }).notNull().default(false),
 })
@@ -20,11 +20,14 @@ export const DEFAULT_GENRES = [
 ] as const
 
 export async function seedGenresTable(database: LibSQLDatabase) {
-  for (const name of DEFAULT_GENRES) {
+  await database.transaction(async (tx) => {
     try {
-      await database.insert(genresTable).values({ name }).onConflictDoNothing()
+      await tx
+        .insert(genresTable)
+        .values(DEFAULT_GENRES.map((name) => ({ name })))
+        .onConflictDoNothing()
     } catch (err) {
       console.error(err)
     }
-  }
+  })
 }
