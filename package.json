@@ -56,7 +56,7 @@
     "@types/react-dom": "^19.1.2",
     "drizzle-kit": "^0.31.8",
     "electron": "^36.4.0",
-    "electron-builder": "^26.0.12",
+    "electron-builder": "^26.4.0",
     "electron-playwright-helpers": "^1.7.1",
     "electron-vite": "^5.0.0",
     "eslint": "^9.25.1",
