@@ -1,6 +1,7 @@
 {
   "name": "electron-shadcn",
-  "productName": "electron-shadcn Template",
+  "productName": "ElectronShadCNTemplate",
+  "appId": "electron.shadcn.template",
   "version": "1.0.0",
   "description": "Electron Forge with shadcn-ui (Vite + Typescript)",
   "main": "./out/main/index.js",
@@ -11,7 +12,8 @@
     "dev": "electron-vite dev",
     "start": "electron-vite dev",
     "build": "electron-vite build",
-    "build:release": "npm run build && electron-builder",
+    "release": "electron-builder --config electron-builder.config.ts",
+    "build:release": "npm run build && npm run release",
     "lint": "eslint .",
     "format": "prettier --check .",
     "format:write": "prettier --write .",
