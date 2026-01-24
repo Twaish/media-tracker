@@ -15,12 +15,12 @@ import { findLatestBuild, parseElectronApp } from 'electron-playwright-helpers'
 let electronApp: ElectronApplication
 
 test.beforeAll(async () => {
-  const latestBuild = findLatestBuild()
+  const latestBuild = findLatestBuild('./release')
   const appInfo = parseElectronApp(latestBuild)
   process.env.CI = 'e2e'
 
   electronApp = await electron.launch({
-    args: [appInfo.main],
+    executablePath: appInfo.executable,
   })
   electronApp.on('window', async (page) => {
     const filename = page.url()?.split('/').pop()
@@ -39,7 +39,7 @@ test('renders the first page', async () => {
   const page: Page = await electronApp.firstWindow()
   const title = await page.waitForSelector('h1')
   const text = await title.textContent()
-  expect(text).toBe('electron-shadcn Template')
+  expect(text).toBe('ElectronShadCNTemplate')
 })
 
 test('renders page name', async () => {
