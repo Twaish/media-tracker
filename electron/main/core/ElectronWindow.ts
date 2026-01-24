@@ -70,13 +70,11 @@ export class ElectronWindow {
 
   showWindow() {
     const { mainWindow } = this
-    const thing = process.env['ELECTRON_RENDERER_URL']
-    if (is.dev && thing) {
-      mainWindow.loadURL(thing)
+    const devUrl = process.env['ELECTRON_RENDERER_URL']
+    if (is.dev && devUrl) {
+      mainWindow.loadURL(devUrl)
     } else {
-      mainWindow.loadFile(
-        path.join(__dirname, `../renderer/${'asd'}/index.html`),
-      )
+      mainWindow.loadFile(path.join(__dirname, `../renderer/index.html`))
     }
     mainWindow.show()
     // mainWindow.maximize()
