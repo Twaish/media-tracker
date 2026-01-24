@@ -7,10 +7,15 @@ import { ElectronWindow } from './core/ElectronWindow'
 import { seedDatabase } from './db/seeding'
 import registerListeners from './helpers/ipc/listeners-register'
 import registerProtocols from './helpers/ipc/protocols-register'
+import config from './core/config'
+import { createClient } from '@libsql/client'
+import { runMigrations } from './db/migrate'
 
 app.whenReady().then(async () => {
   console.log('INITIALIZING')
-  const database = drizzle(process.env.DB_FILE_NAME!)
+
+  const dbClient = createClient({ url: config.DB_PATH })
+  const database = drizzle(dbClient)
   const electronWindow = new ElectronWindow()
   const storageService = new StorageService('./Media Images')
 
@@ -24,6 +29,7 @@ app.whenReady().then(async () => {
   registerListeners(modules)
   registerProtocols(modules)
 
+  await runMigrations(database)
   await seedDatabase(database)
 
   electronWindow.showWindow()
