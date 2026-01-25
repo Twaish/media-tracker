@@ -38,9 +38,15 @@ app.whenReady().then(async () => {
 
     logger.info('Initializing storage')
     const storageService = new StorageService('./Media Images')
+    storageService.on('image-stored', (imagePath) => {
+      logger.info(`Stored image ${imagePath}`)
+    })
 
     logger.info('Creating window')
     const electronWindow = new ElectronWindow()
+    electronWindow.on('attempted-navigation', (_, url) => {
+      logger.warn(`Navigation attempted to: ${url}`)
+    })
 
     const modules: Modules = {
       ElectronWindow: electronWindow,
