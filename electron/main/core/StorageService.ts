@@ -4,23 +4,7 @@ import fs from 'fs'
 import sharp from 'sharp'
 import crypto from 'crypto'
 import EventEmitter from 'events'
-
-type StoreImageOptions = {
-  maxWidth?: number
-  maxHeight?: number
-  format?: 'webp' | 'png' | 'jpeg'
-  quality?: number
-}
-
-type StoredImageResult = {
-  hash: string
-  filename: string
-  fullPath: string
-  relativePath: string
-  width: number
-  height: number
-  size: number
-}
+import { StoredImageResult, StoreImageOptions } from '@shared/types'
 
 export class StorageService extends EventEmitter {
   dataPath: string
