@@ -19,6 +19,7 @@ import {
   createFileTransport,
 } from './core/logger/transports'
 import { WinstonLogger } from './core/logger'
+import { Modules } from './helpers/ipc/types'
 
 app.whenReady().then(async () => {
   const { DB_PATH, LOG_PATH } = config
@@ -26,27 +27,51 @@ app.whenReady().then(async () => {
   const consoleTransport = createConsoleTransport(consoleFormat)
   const fileTransport = createFileTransport(LOG_PATH, fileFormat)
   const logger = new WinstonLogger([consoleTransport, fileTransport])
+
   logger.header('Initializing')
+  logger.info('Application starting')
+  logger.debug(`Log file path: ${LOG_PATH}`)
+  logger.debug(`Database path: ${DB_PATH}`)
+
   try {
+    logger.header('Infrastructure')
+    logger.info('Initializing database client')
     const dbClient = createClient({ url: DB_PATH })
     const database = drizzle(dbClient)
+
+    logger.info('Creating electron window')
     const electronWindow = new ElectronWindow()
+
+    logger.info('Initializing storage service')
     const storageService = new StorageService('./Media Images')
 
-    const modules = {
+    const modules: Modules = {
       ElectronWindow: electronWindow,
       window: electronWindow.window,
       Database: database,
       StorageService: storageService,
+      logger: logger,
     }
 
+    logger.header('IPC / Protocols')
+    logger.info('Registering IPC listeners')
     registerListeners(modules)
+
+    logger.info('Registering custom protocols')
     registerProtocols(modules)
 
+    logger.header('Database')
+    logger.info('Running database migrations')
     await runMigrations(database)
+
+    logger.info('Seeding database')
     await seedDatabase(database)
 
+    logger.header('Startup')
+    logger.info('Showing main window')
     electronWindow.showWindow()
+
+    logger.info('App ready')
   } catch (err) {
     logger.header('Fatal Error')
     logger.error(
