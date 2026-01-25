@@ -3,6 +3,7 @@ import type {
   WindowContext,
   MediaContext,
   GenresContext,
+  StorageContext,
 } from '@shared/types'
 
 declare global {
@@ -11,5 +12,6 @@ declare global {
     electronWindow: WindowContext
     media: MediaContext
     genres: GenresContext
+    storage: StorageContext
   }
 }
