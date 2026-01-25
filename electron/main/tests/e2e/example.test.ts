@@ -21,6 +21,7 @@ test.beforeAll(async () => {
 
   electronApp = await electron.launch({
     executablePath: appInfo.executable,
+    args: ['--no-sandbox', '--disable-gpu'],
   })
   electronApp.on('window', async (page) => {
     const filename = page.url()?.split('/').pop()
