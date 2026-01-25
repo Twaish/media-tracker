@@ -1,4 +1,4 @@
-import StorageService from '@/core/StorageService'
+import { StorageService } from '@/core/StorageService'
 import { MediaRepository } from '@/domain/repositories/mediaRepository'
 import { MediaUpdateInput } from '@shared/types'
 

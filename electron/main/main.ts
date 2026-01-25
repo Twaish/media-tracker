@@ -4,7 +4,7 @@ import { createClient } from '@libsql/client'
 import { drizzle } from 'drizzle-orm/libsql'
 
 import config from './core/config'
-import StorageService from './core/StorageService'
+import { StorageService } from './core/StorageService'
 import { ElectronWindow } from './core/ElectronWindow'
 
 import { seedDatabase } from './db/seeding'

@@ -21,7 +21,7 @@ type StoredImageResult = {
   size: number
 }
 
-export default class StorageService {
+export class StorageService {
   dataPath: string
   fullPath: string
   basePath: string
