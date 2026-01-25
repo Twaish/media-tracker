@@ -22,7 +22,7 @@ export class WinstonLogger implements ILogger {
         line =
           char.repeat(padLen) + text + char.repeat(width - text.length - padLen)
       }
-      this.logger.info(line)
+      console.log(line)
     }
   }
 
