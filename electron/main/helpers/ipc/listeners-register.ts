@@ -4,6 +4,7 @@ import { addNotesEventListeners } from './notes/notes-listeners'
 import { addGenresEventListeners } from './genres/genres-listeners'
 import { Modules } from './types'
 import { addMediaEventListeners } from './media/media-listeners'
+import { addStorageEventListeners } from './storage/storage-listeners'
 
 export default function registerListeners(modules: Modules) {
   addWindowEventListeners(modules)
@@ -11,4 +12,5 @@ export default function registerListeners(modules: Modules) {
   addNotesEventListeners(modules)
   addGenresEventListeners(modules)
   addMediaEventListeners(modules)
+  addStorageEventListeners(modules)
 }
