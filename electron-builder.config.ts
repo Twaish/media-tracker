@@ -14,6 +14,7 @@ const config: Configuration = {
   win: { target: 'nsis', icon: 'assets/icon.ico' },
   mac: { target: 'dmg', icon: 'assets/icon.icns' },
   linux: { target: ['AppImage', 'deb'], icon: 'assets/icon.png' },
+  publish: null,
 }
 
 export default config
