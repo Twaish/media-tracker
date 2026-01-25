@@ -4,6 +4,7 @@ import RemoveMedia from './removeMedia'
 import AddMedia from './addMedia'
 import GetMedia from './getMedia'
 import UpdateMedia from './updateMedia'
+import SetMediaToWatchNext from './setMediaToWatchNext'
 
 export function createMediaUseCases({ Database, StorageService }: Modules) {
   const repo = new MediaRepositoryDrizzle(Database)
@@ -13,5 +14,6 @@ export function createMediaUseCases({ Database, StorageService }: Modules) {
     addMedia: new AddMedia(repo, StorageService),
     getMedia: new GetMedia(repo),
     updateMedia: new UpdateMedia(repo, StorageService),
+    setMediaToWatchNext: new SetMediaToWatchNext(repo),
   }
 }

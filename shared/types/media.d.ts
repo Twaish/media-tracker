@@ -24,4 +24,5 @@ export interface MediaContext {
   add: (media: MediaCreateInput) => Promise<Media>
   remove: (mediaIds: number[]) => Promise<void>
   update: (media: MediaUpdateInput) => Promise<Media>
+  setNextMedia: (mediaId: number, nextMediaId: number) => Promise<void>
 }
