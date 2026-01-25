@@ -28,10 +28,7 @@ app.whenReady().then(async () => {
   const fileTransport = createFileTransport(LOG_PATH, fileFormat)
   const logger = new WinstonLogger([consoleTransport, fileTransport])
 
-  logger.header('Initializing')
-  logger.info('Application starting')
-  logger.debug(`Log file path: ${LOG_PATH}`)
-  logger.debug(`Database path: ${DB_PATH}`)
+  logger.debug(`Config:\n${JSON.stringify(config, null, 2)}`)
 
   try {
     logger.header('Infrastructure')
@@ -39,11 +36,11 @@ app.whenReady().then(async () => {
     const dbClient = createClient({ url: DB_PATH })
     const database = drizzle(dbClient)
 
-    logger.info('Creating electron window')
-    const electronWindow = new ElectronWindow()
-
-    logger.info('Initializing storage service')
+    logger.info('Initializing storage')
     const storageService = new StorageService('./Media Images')
+
+    logger.info('Creating window')
+    const electronWindow = new ElectronWindow()
 
     const modules: Modules = {
       ElectronWindow: electronWindow,
@@ -61,22 +58,20 @@ app.whenReady().then(async () => {
     registerProtocols(modules)
 
     logger.header('Database')
-    logger.info('Running database migrations')
+    logger.info('Running migrations')
     await runMigrations(database)
 
-    logger.info('Seeding database')
+    logger.info('Seeding')
     await seedDatabase(database)
 
     logger.header('Startup')
     logger.info('Showing main window')
     electronWindow.showWindow()
 
-    logger.info('App ready')
+    logger.header('App ready')
   } catch (err) {
     logger.header('Fatal Error')
-    logger.error(
-      `Application failed during initialization: ${err instanceof Error ? err : String(err)}`,
-    )
+    logger.error(`App failed: ${err instanceof Error ? err : String(err)}`)
     app.quit()
   }
 })
