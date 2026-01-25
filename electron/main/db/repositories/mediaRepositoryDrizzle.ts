@@ -12,6 +12,33 @@ import { inArray, desc, count, eq } from 'drizzle-orm'
 export class MediaRepositoryDrizzle implements MediaRepository {
   constructor(private readonly db: LibSQLDatabase) {}
 
+  async getById(id: number): Promise<Media> {
+    const [row] = await this.db
+      .select()
+      .from(mediaTable)
+      .where(eq(mediaTable.id, id))
+
+    if (!row) {
+      throw new Error(`Media with id ${id} not found`)
+    }
+
+    const genreRows = await this.db
+      .select({
+        id: genresTable.id,
+        name: genresTable.name,
+      })
+      .from(mediaGenresTable)
+      .innerJoin(genresTable, eq(mediaGenresTable.genreId, genresTable.id))
+      .where(eq(mediaGenresTable.mediaId, id))
+
+    const genreDTOs = genreRows.map((row) => ({
+      id: row.id,
+      name: row.name,
+    }))
+
+    return this.toDomain(row, genreDTOs)
+  }
+
   async getWithPagination(options: MediaPaginationOptions): Promise<{
     data: Media[]
     pagination: {
