@@ -11,7 +11,7 @@ export default class AddMedia {
   async execute(media: MediaCreateInput) {
     let thumbnail: string | undefined
 
-    if (media.thumbnail) {
+    if (media?.thumbnail) {
       const stored = await this.storage.storeImage(media.thumbnail)
       thumbnail = stored.relativePath
     }
