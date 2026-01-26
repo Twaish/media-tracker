@@ -35,7 +35,6 @@ export const Rippler = ({
 
   useEffect(() => {
     const button = buttonRef?.current
-    console.log(button)
     if (!button) {
       return
     }
