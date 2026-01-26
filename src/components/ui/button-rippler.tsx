@@ -1,5 +1,4 @@
 import { useEffect, useRef } from 'react'
-import './button-rippler.css'
 
 export const Rippler = ({
   buttonRef,
