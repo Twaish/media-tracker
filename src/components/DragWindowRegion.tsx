@@ -27,8 +27,12 @@ export default function DragWindowRegion({ title }: DragWindowRegionProps) {
 
 function WindowButtons() {
   return (
-    <div className="flex">
-      <Button variant={'ghost'} onClick={minimizeWindow} className="h-auto p-2">
+    <div className="m-1 flex">
+      <Button
+        variant={'ghost'}
+        onClick={minimizeWindow}
+        className="h-min px-2.25 py-1.5"
+      >
         <svg
           aria-hidden="true"
           role="img"
@@ -40,7 +44,11 @@ function WindowButtons() {
         </svg>
       </Button>
 
-      <Button variant={'ghost'} onClick={maximizeWindow} className="h-auto p-2">
+      <Button
+        variant={'ghost'}
+        onClick={maximizeWindow}
+        className="h-min px-2.25 py-1.5"
+      >
         <svg
           aria-hidden="true"
           role="img"
@@ -59,7 +67,11 @@ function WindowButtons() {
         </svg>
       </Button>
 
-      <Button variant={'ghost'} onClick={closeWindow} className="h-auto p-2">
+      <Button
+        variant={'ghost'}
+        onClick={closeWindow}
+        className="h-min px-2.25 py-1.5"
+      >
         <svg
           aria-hidden="true"
           role="img"
