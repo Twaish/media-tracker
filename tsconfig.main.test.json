@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "composite": true,
+    "noEmit": true,
+    "types": ["vitest/globals"],
+    "paths": {
+      "@/*": ["./electron/main/*"],
+      "@domain/*": ["./electron/main/domain/*"],
+      "@shared/*": ["./shared/*"]
+    }
+  },
+  "include": [
+    "./electron/main/tests/**/*",
+    "./electron/main/**/*",
+    "./shared/**/*"
+  ]
+}
