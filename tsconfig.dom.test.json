@@ -4,5 +4,5 @@
     "noEmit": true,
     "types": ["vitest/globals"]
   },
-  "include": ["./src/**/*", "./shared/**/*", "./electron/main/tests/unit/**/*"]
+  "include": ["./src/**/*", "./shared/**/*", "./electron/main/tests/dom/**/*"]
 }
