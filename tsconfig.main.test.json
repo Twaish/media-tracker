@@ -13,5 +13,6 @@
     "./electron/main/tests/**/*",
     "./electron/main/**/*",
     "./shared/**/*"
-  ]
+  ],
+  "exclude": ["electron/main/tests/dom/**/*"]
 }
