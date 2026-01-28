@@ -11,10 +11,10 @@ export default defineConfig({
     },
   },
   test: {
-    dir: './electron/main/tests/unit',
+    dir: './electron/main/tests/dom',
     globals: true,
     environment: 'jsdom',
-    setupFiles: './electron/main/tests/unit/setup.ts',
+    setupFiles: './electron/main/tests/dom/setup.ts',
     css: true,
     reporters: ['verbose'],
     coverage: {
