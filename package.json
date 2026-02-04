@@ -102,11 +102,11 @@
     "lucide-react": "^0.503.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-i18next": "^15.5.1",
+    "react-i18next": "^16.5.3",
     "sharp": "^0.34.5",
-    "tailwind-merge": "^3.2.0",
+    "tailwind-merge": "^3.4.0",
     "tailwindcss-animate": "^1.0.7",
     "winston": "^3.19.0",
-    "zustand": "^5.0.5"
+    "zustand": "^5.0.10"
   }
 }
