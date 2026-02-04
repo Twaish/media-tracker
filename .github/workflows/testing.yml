@@ -32,6 +32,8 @@ jobs:
         run: npx playwright install --with-deps
       - name: Create Executable
         run: npm run build:release
+      - name: Initialize database
+        run: npm run db:generate
       - name: Run Playwright tests
         run: npm run test:e2e
       - uses: actions/upload-artifact@v4
