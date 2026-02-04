@@ -10,6 +10,15 @@ cd your-project-name
 npm i
 ```
 
+## Release
+```bash
+# Initialize the database
+npm run db:generate
+
+# Build the release file
+npm run build:release
+```
+
 ## Feature Todo List
 - Create splash screen (Fixes FOUC)
 - AI compatibility (Check for local Ollama)
