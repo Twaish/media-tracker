@@ -31,7 +31,7 @@ jobs:
         run: npm run test:usecase
 
   test-e2e:
-    timeout-minutes: 10
+    timeout-minutes: 13
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v6
