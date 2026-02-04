@@ -18,6 +18,18 @@ jobs:
       - name: Run unit tests
         run: npm run test:unit
 
+  test-usecase:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install dependencies
+        run: ci
+      - name: Run usecase tests
+        run: npm run test:usecase
+
   test-e2e:
     timeout-minutes: 10
     runs-on: windows-latest
