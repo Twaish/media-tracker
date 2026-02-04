@@ -2,6 +2,7 @@ import {
   MEDIA_ADD,
   MEDIA_GET,
   MEDIA_REMOVE,
+  MEDIA_SET_NEXT_MEDIA,
   MEDIA_UPDATE,
 } from './media-channels'
 import {
@@ -25,6 +26,9 @@ export function exposeMediaContext() {
     },
     update(media: MediaUpdateInput) {
       return ipcRenderer.invoke(MEDIA_UPDATE, media)
+    },
+    setNextMedia(mediaId: number, nextMediaId: number) {
+      return ipcRenderer.invoke(MEDIA_SET_NEXT_MEDIA, mediaId, nextMediaId)
     },
   }
   contextBridge.exposeInMainWorld('media', context)

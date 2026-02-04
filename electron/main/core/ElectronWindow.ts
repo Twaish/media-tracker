@@ -1,10 +1,12 @@
 import { is } from '@electron-toolkit/utils'
 import { BrowserWindow, shell } from 'electron'
+import EventEmitter from 'events'
 import path from 'path'
 
-export class ElectronWindow {
+export class ElectronWindow extends EventEmitter {
   private mainWindow: BrowserWindow
   constructor() {
+    super()
     const preload = path.join(__dirname, '../preload/index.js')
     const mainWindow = new BrowserWindow({
       width: 1145,
@@ -35,8 +37,8 @@ export class ElectronWindow {
       return { action: 'deny' }
     })
     mainWindow.webContents.on('will-navigate', (event, url) => {
-      console.log(`Navigation attempted to: ${url}`)
       event.preventDefault()
+      this.emit('navigation-attempt', event, url)
     })
     this.mainWindow = mainWindow
   }
@@ -70,13 +72,11 @@ export class ElectronWindow {
 
   showWindow() {
     const { mainWindow } = this
-    const thing = process.env['ELECTRON_RENDERER_URL']
-    if (is.dev && thing) {
-      mainWindow.loadURL(thing)
+    const devUrl = process.env['ELECTRON_RENDERER_URL']
+    if (is.dev && devUrl) {
+      mainWindow.loadURL(devUrl)
     } else {
-      mainWindow.loadFile(
-        path.join(__dirname, `../renderer/${'asd'}/index.html`),
-      )
+      mainWindow.loadFile(path.join(__dirname, `../renderer/index.html`))
     }
     mainWindow.show()
     // mainWindow.maximize()

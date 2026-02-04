@@ -6,6 +6,7 @@ import {
 import { Media } from '../entities/media'
 
 export interface MediaRepository {
+  getById(id: number): Promise<Media>
   getWithPagination(options: MediaPaginationOptions): Promise<{
     data: Media[]
     pagination: {

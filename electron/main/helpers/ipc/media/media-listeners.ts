@@ -4,6 +4,7 @@ import {
   MEDIA_ADD,
   MEDIA_GET,
   MEDIA_REMOVE,
+  MEDIA_SET_NEXT_MEDIA,
   MEDIA_UPDATE,
 } from './media-channels'
 import {
@@ -28,4 +29,10 @@ export function addMediaEventListeners(modules: Modules) {
   ipcMain.handle(MEDIA_UPDATE, (_, update: MediaUpdateInput) => {
     return useCases.updateMedia.execute(update)
   })
+  ipcMain.handle(
+    MEDIA_SET_NEXT_MEDIA,
+    (_, mediaId: number, nextMediaId: number) => {
+      return useCases.setMediaToWatchNext.execute(mediaId, nextMediaId)
+    },
+  )
 }

@@ -1,32 +1,85 @@
 import 'dotenv/config'
 import { app, BrowserWindow } from 'electron'
+import { createClient } from '@libsql/client'
 import { drizzle } from 'drizzle-orm/libsql'
 
-import StorageService from './core/StorageService'
+import config from './core/config'
+import { StorageService } from './core/StorageService'
 import { ElectronWindow } from './core/ElectronWindow'
+
 import { seedDatabase } from './db/seeding'
+import { runMigrations } from './db/migrate'
+
 import registerListeners from './helpers/ipc/listeners-register'
 import registerProtocols from './helpers/ipc/protocols-register'
 
+import { consoleFormat, fileFormat } from './core/logger/formats'
+import {
+  createConsoleTransport,
+  createFileTransport,
+} from './core/logger/transports'
+import { WinstonLogger } from './core/logger'
+import { Modules } from './helpers/ipc/types'
+
 app.whenReady().then(async () => {
-  console.log('INITIALIZING')
-  const database = drizzle(process.env.DB_FILE_NAME!)
-  const electronWindow = new ElectronWindow()
-  const storageService = new StorageService('./Media Images')
+  const { DB_PATH, LOG_PATH } = config
 
-  const modules = {
-    ElectronWindow: electronWindow,
-    window: electronWindow.window,
-    Database: database,
-    StorageService: storageService,
+  const consoleTransport = createConsoleTransport(consoleFormat)
+  const fileTransport = createFileTransport(LOG_PATH, fileFormat)
+  const logger = new WinstonLogger([consoleTransport, fileTransport])
+
+  logger.debug(`Config:\n${JSON.stringify(config, null, 2)}`)
+
+  try {
+    logger.header('Infrastructure')
+    logger.info('Initializing database client')
+    const dbClient = createClient({ url: DB_PATH })
+    const database = drizzle(dbClient)
+
+    logger.info('Initializing storage')
+    const storageService = new StorageService('./Media Images')
+    storageService.on('image-stored', (imagePath) => {
+      logger.info(`Stored image ${imagePath}`)
+    })
+
+    logger.info('Creating window')
+    const electronWindow = new ElectronWindow()
+    electronWindow.on('attempted-navigation', (_, url) => {
+      logger.warn(`Navigation attempted to: ${url}`)
+    })
+
+    const modules: Modules = {
+      ElectronWindow: electronWindow,
+      window: electronWindow.window,
+      Database: database,
+      StorageService: storageService,
+      logger: logger,
+    }
+
+    logger.header('IPC / Protocols')
+    logger.info('Registering IPC listeners')
+    registerListeners(modules)
+
+    logger.info('Registering custom protocols')
+    registerProtocols(modules)
+
+    logger.header('Database')
+    logger.info('Running migrations')
+    await runMigrations(database)
+
+    logger.info('Seeding')
+    await seedDatabase(database)
+
+    logger.header('Startup')
+    logger.info('Showing main window')
+    electronWindow.showWindow()
+
+    logger.header('App ready')
+  } catch (err) {
+    logger.header('Fatal Error')
+    logger.error(`App failed: ${err instanceof Error ? err : String(err)}`)
+    app.quit()
   }
-
-  registerListeners(modules)
-  registerProtocols(modules)
-
-  await seedDatabase(database)
-
-  electronWindow.showWindow()
 })
 
 //osX only

@@ -3,29 +3,15 @@ import path from 'path'
 import fs from 'fs'
 import sharp from 'sharp'
 import crypto from 'crypto'
+import EventEmitter from 'events'
+import { StoredImageResult, StoreImageOptions } from '@shared/types'
 
-type StoreImageOptions = {
-  maxWidth?: number
-  maxHeight?: number
-  format?: 'webp' | 'png' | 'jpeg'
-  quality?: number
-}
-
-type StoredImageResult = {
-  hash: string
-  filename: string
-  fullPath: string
-  relativePath: string
-  width: number
-  height: number
-  size: number
-}
-
-export default class StorageService {
+export class StorageService extends EventEmitter {
   dataPath: string
   fullPath: string
   basePath: string
   constructor(basePath: string) {
+    super()
     this.dataPath = app.getPath('userData')
     this.fullPath = path.join(this.dataPath, basePath)
     this.basePath = basePath
@@ -66,7 +52,7 @@ export default class StorageService {
     if (!fs.existsSync(fullPath)) {
       fs.writeFile(fullPath, resizedBuffer, (err) => {
         if (err) throw err
-        console.log('Wrote file ' + fullPath)
+        this.emit('image-stored', fullPath)
       })
     }
 

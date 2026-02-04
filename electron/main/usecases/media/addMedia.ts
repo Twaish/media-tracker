@@ -1,4 +1,4 @@
-import StorageService from '@/core/StorageService'
+import { StorageService } from '@/core/StorageService'
 import { MediaRepository } from '@/domain/repositories/mediaRepository'
 import { MediaCreateInput } from '@shared/types'
 
@@ -11,7 +11,7 @@ export default class AddMedia {
   async execute(media: MediaCreateInput) {
     let thumbnail: string | undefined
 
-    if (media.thumbnail) {
+    if (media?.thumbnail) {
       const stored = await this.storage.storeImage(media.thumbnail)
       thumbnail = stored.relativePath
     }
