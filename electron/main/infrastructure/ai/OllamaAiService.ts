@@ -1,13 +1,20 @@
 import { IAiService } from '@/application/ai/aiService'
-import ollama from 'ollama'
+import { Ollama } from 'ollama'
 
 export class OllamaAiService implements IAiService {
+  ollama: Ollama
+  constructor() {
+    this.ollama = new Ollama({
+      host: 'http://localhost:11434',
+    })
+  }
+
   async getVersion(): Promise<string> {
-    const version = await ollama.version()
+    const version = await this.ollama.version()
     return version.version
   }
   async listModels(): Promise<string[]> {
-    const modelsResponse = await ollama.list()
+    const modelsResponse = await this.ollama.list()
     const models = modelsResponse.models.map((m) => m.name)
     return models
   }
