@@ -1,4 +1,4 @@
-import { GenresRepositoryDrizzle } from '@/db/repositories/genresRepositoryDrizzle'
+import { GenresRepositoryDrizzle } from '@/infrastructure/db/repositories/genresRepositoryDrizzle'
 import { Modules } from '@/helpers/ipc/types'
 import GetGenres from './getGenres'
 

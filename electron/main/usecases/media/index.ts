@@ -1,4 +1,4 @@
-import { MediaRepositoryDrizzle } from '@/db/repositories/mediaRepositoryDrizzle'
+import { MediaRepositoryDrizzle } from '@/infrastructure/db/repositories/mediaRepositoryDrizzle'
 import { Modules } from '@/helpers/ipc/types'
 import RemoveMedia from './removeMedia'
 import AddMedia from './addMedia'

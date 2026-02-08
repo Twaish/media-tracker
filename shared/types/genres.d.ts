@@ -1,4 +1,4 @@
-import { genresTable } from '@/db/schema'
+import { genresTable } from '@/infrastructure/db/schema'
 import { InferInsertModel, InferSelectModel } from 'drizzle-orm'
 
 export type Genre = InferSelectModel<typeof genresTable>

@@ -1,4 +1,4 @@
-import { mediaTable } from '@/db/schema'
+import { mediaTable } from '@/infrastructure/db/schema'
 import { InferInsertModel, InferSelectModel } from 'drizzle-orm'
 
 export type Media = InferSelectModel<typeof mediaTable>

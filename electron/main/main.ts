@@ -7,8 +7,8 @@ import config from './core/config'
 import { StorageService } from './core/StorageService'
 import { ElectronWindow } from './core/ElectronWindow'
 
-import { seedDatabase } from './db/seeding'
-import { runMigrations } from './db/migrate'
+import { seedDatabase } from './infrastructure/db/seeding'
+import { runMigrations } from './infrastructure/db/migrate'
 
 import registerListeners from './helpers/ipc/listeners-register'
 import registerProtocols from './helpers/ipc/protocols-register'
