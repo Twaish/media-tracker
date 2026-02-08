@@ -1,4 +1,4 @@
-import { IAiService } from '@/application/ai/aiService'
+import { IAiService } from '@/application/ai/IAiService'
 
 export default class CheckAiCompatibility {
   constructor(private readonly aiService: IAiService) {}

@@ -1,4 +1,4 @@
-import { IAiService } from '@/application/ai/aiService'
+import { IAiService } from '@/application/ai/IAiService'
 import { ILogger } from '@/application/logging/ILogger'
 import { ElectronWindow } from '@/core/ElectronWindow'
 import { StorageService } from '@/core/StorageService'

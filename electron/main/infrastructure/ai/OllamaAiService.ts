@@ -1,4 +1,4 @@
-import { IAiService } from '@/application/ai/aiService'
+import { IAiService } from '@/application/ai/IAiService'
 import { Ollama } from 'ollama'
 
 export class OllamaAiService implements IAiService {
