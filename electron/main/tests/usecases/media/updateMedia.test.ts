@@ -1,5 +1,5 @@
 import { describe, it, beforeEach, expect, vi } from 'vitest'
-import { MediaRepository } from '@/domain/repositories/mediaRepository'
+import { MediaRepository } from '@/application/db/repositories/mediaRepository'
 import { StorageService } from '@/core/StorageService'
 import UpdateMedia from '@/usecases/media/updateMedia'
 import { makeMedia } from '../utils'

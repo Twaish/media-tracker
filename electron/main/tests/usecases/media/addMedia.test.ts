@@ -1,7 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { MediaRepository } from '@/domain/repositories/mediaRepository'
-import { Media } from '@/domain/entities/media'
-import { MediaCreateInput, StoredImageResult } from '@shared/types'
+import { MediaRepository } from '@/application/db/repositories/mediaRepository'
 import { StorageService } from '@/core/StorageService'
 import AddMedia from '@/usecases/media/addMedia'
 import { makeMedia } from '../utils'

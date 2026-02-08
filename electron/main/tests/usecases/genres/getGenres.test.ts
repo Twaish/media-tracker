@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { GenresRepository } from '@/domain/repositories/genresRepository'
+import { GenresRepository } from '@/application/db/repositories/genresRepository'
 import { Genre } from '@/domain/entities/genre'
 import GetGenres from '@/usecases/genres/getGenres'
 
