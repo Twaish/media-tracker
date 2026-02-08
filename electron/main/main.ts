@@ -13,12 +13,12 @@ import { runMigrations } from './infrastructure/db/migrate'
 import registerListeners from './helpers/ipc/listeners-register'
 import registerProtocols from './helpers/ipc/protocols-register'
 
-import { consoleFormat, fileFormat } from './core/logger/formats'
+import { consoleFormat, fileFormat } from './infrastructure/logging/formats'
 import {
   createConsoleTransport,
   createFileTransport,
-} from './core/logger/transports'
-import { WinstonLogger } from './core/logger'
+} from './infrastructure/logging/transports'
+import { WinstonLogger } from './infrastructure/logging'
 import { Modules } from './helpers/ipc/types'
 import { OllamaAiService } from './infrastructure/ai/OllamaAiService'
 
