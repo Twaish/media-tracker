@@ -20,6 +20,7 @@ import {
 } from './core/logger/transports'
 import { WinstonLogger } from './core/logger'
 import { Modules } from './helpers/ipc/types'
+import { OllamaAiService } from './infrastructure/ai/OllamaAiService'
 
 app.whenReady().then(async () => {
   const { DB_PATH, LOG_PATH } = config
@@ -42,6 +43,9 @@ app.whenReady().then(async () => {
       logger.info(`Stored image ${imagePath}`)
     })
 
+    logger.info('Initializing AI services')
+    const aiService = new OllamaAiService()
+
     logger.info('Creating window')
     const electronWindow = new ElectronWindow()
     electronWindow.on('attempted-navigation', (_, url) => {
@@ -53,6 +57,7 @@ app.whenReady().then(async () => {
       window: electronWindow.window,
       Database: database,
       StorageService: storageService,
+      AiService: aiService,
       logger: logger,
     }
 

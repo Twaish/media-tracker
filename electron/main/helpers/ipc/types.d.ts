@@ -1,3 +1,4 @@
+import { IAiService } from '@/application/ai/aiService'
 import { ElectronWindow } from '@/core/ElectronWindow'
 import { WinstonLogger } from '@/core/logger'
 import { StorageService } from '@/core/StorageService'
@@ -10,4 +11,5 @@ declare interface Modules {
   Database: LibSQLDatabase
   window: BrowserWindow
   logger: WinstonLogger
+  AiService: IAiService
 }
