@@ -5,7 +5,7 @@ import {
 } from '@shared/types'
 import { Media } from '@/domain/entities/media'
 
-export interface MediaRepository {
+export interface IMediaRepository {
   getById(id: number): Promise<Media>
   getWithPagination(options: MediaPaginationOptions): Promise<{
     data: Media[]

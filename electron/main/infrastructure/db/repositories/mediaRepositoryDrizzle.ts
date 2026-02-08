@@ -1,6 +1,6 @@
 import { genresTable, mediaGenresTable, mediaTable } from '../schema'
 import { LibSQLDatabase } from 'drizzle-orm/libsql'
-import { MediaRepository } from '@/application/db/repositories/mediaRepository'
+import { IMediaRepository } from '@/application/db/repositories/IMediaRepository'
 import { GenreDTO, Media } from '@/domain/entities/media'
 import {
   MediaCreateInput,
@@ -9,7 +9,7 @@ import {
 } from '@shared/types'
 import { inArray, desc, count, eq } from 'drizzle-orm'
 
-export class MediaRepositoryDrizzle implements MediaRepository {
+export class MediaRepositoryDrizzle implements IMediaRepository {
   constructor(private readonly db: LibSQLDatabase) {}
 
   async getById(id: number): Promise<Media> {

@@ -1,12 +1,12 @@
 import { describe, it, beforeEach, expect, vi } from 'vitest'
-import { MediaRepository } from '@/application/db/repositories/mediaRepository'
+import { IMediaRepository } from '@/application/db/repositories/IMediaRepository'
 import { StorageService } from '@/core/StorageService'
 import UpdateMedia from '@/usecases/media/updateMedia'
 import { makeMedia } from '../utils'
 
 describe('UpdateMedia', () => {
   let usecase: UpdateMedia
-  let mockRepo: MediaRepository
+  let mockRepo: IMediaRepository
   let mockStorage: StorageService
 
   const imageResult = {
@@ -22,7 +22,7 @@ describe('UpdateMedia', () => {
   beforeEach(() => {
     mockRepo = {
       update: vi.fn(),
-    } as unknown as MediaRepository
+    } as unknown as IMediaRepository
 
     mockStorage = {
       storeImage: vi.fn(),

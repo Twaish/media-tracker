@@ -1,5 +1,5 @@
 import { Genre } from '@/domain/entities/genre'
 
-export interface GenresRepository {
+export interface IGenresRepository {
   get(): Promise<Genre[]>
 }

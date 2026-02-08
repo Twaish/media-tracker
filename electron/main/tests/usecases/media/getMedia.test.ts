@@ -1,11 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { MediaRepository } from '@/application/db/repositories/mediaRepository'
+import { IMediaRepository } from '@/application/db/repositories/IMediaRepository'
 import { makeMedia } from '../utils'
 import GetMedia from '@/usecases/media/getMedia'
 
 describe('GetMedia', () => {
   let getMedia: GetMedia
-  let mockRepo: MediaRepository
+  let mockRepo: IMediaRepository
 
   const defaultPaginationResult = {
     limit: 12,
@@ -22,7 +22,7 @@ describe('GetMedia', () => {
   beforeEach(() => {
     mockRepo = {
       getWithPagination: vi.fn(),
-    } as unknown as MediaRepository
+    } as unknown as IMediaRepository
 
     getMedia = new GetMedia(mockRepo)
   })

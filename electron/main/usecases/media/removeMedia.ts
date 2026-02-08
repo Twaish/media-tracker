@@ -1,7 +1,7 @@
-import { MediaRepository } from '@/application/db/repositories/mediaRepository'
+import { IMediaRepository } from '@/application/db/repositories/IMediaRepository'
 
 export default class RemoveMedia {
-  constructor(private readonly repo: MediaRepository) {}
+  constructor(private readonly repo: IMediaRepository) {}
 
   execute(mediaIds: number[]) {
     if (!mediaIds.length) return { deleted: 0, ids: [] }

@@ -1,9 +1,9 @@
 import { Genre } from '@/domain/entities/genre'
 import { genresTable } from '../schema'
 import { LibSQLDatabase } from 'drizzle-orm/libsql'
-import { GenresRepository } from '@/application/db/repositories/genresRepository'
+import { IGenresRepository } from '@/application/db/repositories/IGenresRepository'
 
-export class GenresRepositoryDrizzle implements GenresRepository {
+export class GenresRepositoryDrizzle implements IGenresRepository {
   constructor(private readonly db: LibSQLDatabase) {}
 
   async get(): Promise<Genre[]> {

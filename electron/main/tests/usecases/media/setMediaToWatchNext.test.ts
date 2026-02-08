@@ -1,15 +1,15 @@
 import { describe, it, beforeEach, expect, vi } from 'vitest'
-import { MediaRepository } from '@/application/db/repositories/mediaRepository'
+import { IMediaRepository } from '@/application/db/repositories/IMediaRepository'
 import SetMediaToWatchNext from '@/usecases/media/setMediaToWatchNext'
 
 describe('SetMediaToWatchNext', () => {
   let usecase: SetMediaToWatchNext
-  let mockRepo: MediaRepository
+  let mockRepo: IMediaRepository
 
   beforeEach(() => {
     mockRepo = {
       update: vi.fn(),
-    } as unknown as MediaRepository
+    } as unknown as IMediaRepository
 
     usecase = new SetMediaToWatchNext(mockRepo)
   })

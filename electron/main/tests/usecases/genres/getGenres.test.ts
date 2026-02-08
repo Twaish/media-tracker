@@ -1,16 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { GenresRepository } from '@/application/db/repositories/genresRepository'
+import { IGenresRepository } from '@/application/db/repositories/IGenresRepository'
 import { Genre } from '@/domain/entities/genre'
 import GetGenres from '@/usecases/genres/getGenres'
 
 describe('GetGenres', () => {
   let getGenres: GetGenres
-  let mockRepo: GenresRepository
+  let mockRepo: IGenresRepository
 
   beforeEach(() => {
     mockRepo = {
       get: vi.fn(),
-    } as unknown as GenresRepository
+    } as unknown as IGenresRepository
 
     getGenres = new GetGenres(mockRepo)
   })

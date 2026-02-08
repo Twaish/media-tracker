@@ -1,10 +1,10 @@
 import { StorageService } from '@/core/StorageService'
-import { MediaRepository } from '@/application/db/repositories/mediaRepository'
+import { IMediaRepository } from '@/application/db/repositories/IMediaRepository'
 import { MediaCreateInput } from '@shared/types'
 
 export default class AddMedia {
   constructor(
-    private readonly repo: MediaRepository,
+    private readonly repo: IMediaRepository,
     private readonly storage: StorageService,
   ) {}
 

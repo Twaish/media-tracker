@@ -1,15 +1,15 @@
 import { describe, it, beforeEach, expect, vi } from 'vitest'
-import { MediaRepository } from '@/application/db/repositories/mediaRepository'
+import { IMediaRepository } from '@/application/db/repositories/IMediaRepository'
 import RemoveMedia from '@/usecases/media/removeMedia'
 
 describe('RemoveMedia', () => {
   let usecase: RemoveMedia
-  let mockRepo: MediaRepository
+  let mockRepo: IMediaRepository
 
   beforeEach(() => {
     mockRepo = {
       remove: vi.fn(),
-    } as unknown as MediaRepository
+    } as unknown as IMediaRepository
 
     usecase = new RemoveMedia(mockRepo)
   })
