@@ -6,5 +6,5 @@ export function exposeAiContext() {
   const context: AiContext = {
     checkCompatibility: () => ipcRenderer.invoke(AI_CHECK_COMPATIBILITY),
   }
-  contextBridge.exposeInMainWorld('genres', context)
+  contextBridge.exposeInMainWorld('ai', context)
 }
