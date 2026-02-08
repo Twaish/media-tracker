@@ -1,7 +1,10 @@
-import { createLogger, format } from 'winston'
-import { ILogger, IWinstonLogger } from './types'
-import { timestampFormat } from './formats'
 import { StreamTransportInstance } from 'winston/lib/winston/transports'
+import { createLogger, format } from 'winston'
+
+import { IWinstonLogger } from './types'
+import { ILogger } from '@/application/logging/ILogger'
+
+import { timestampFormat } from './formats'
 
 export class WinstonLogger implements ILogger {
   private logger: IWinstonLogger

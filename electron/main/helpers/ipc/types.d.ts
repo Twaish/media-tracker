@@ -1,6 +1,6 @@
 import { IAiService } from '@/application/ai/aiService'
+import { ILogger } from '@/application/logging/ILogger'
 import { ElectronWindow } from '@/core/ElectronWindow'
-import { ILogger } from '@/core/logger'
 import { StorageService } from '@/core/StorageService'
 import { LibSQLDatabase } from 'drizzle-orm/libsql'
 import { BrowserWindow } from 'electron'
