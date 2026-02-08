@@ -1,4 +1,4 @@
-import { GenresRepository } from '@/domain/repositories/genresRepository'
+import { GenresRepository } from '@/application/db/repositories/genresRepository'
 
 export default class GetGenres {
   constructor(private readonly repo: GenresRepository) {}

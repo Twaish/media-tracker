@@ -1,7 +1,7 @@
 import { Genre } from '@/domain/entities/genre'
-import { GenresRepository } from '@/domain/repositories/genresRepository'
 import { genresTable } from '../schema'
 import { LibSQLDatabase } from 'drizzle-orm/libsql'
+import { GenresRepository } from '@/application/db/repositories/genresRepository'
 
 export class GenresRepositoryDrizzle implements GenresRepository {
   constructor(private readonly db: LibSQLDatabase) {}

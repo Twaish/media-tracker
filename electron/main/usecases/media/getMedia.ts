@@ -1,4 +1,4 @@
-import { MediaRepository } from '@/domain/repositories/mediaRepository'
+import { MediaRepository } from '@/application/db/repositories/mediaRepository'
 import { MediaPaginationOptions } from '@shared/types'
 
 export default class GetMedia {

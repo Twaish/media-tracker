@@ -1,6 +1,6 @@
 import { genresTable, mediaGenresTable, mediaTable } from '../schema'
 import { LibSQLDatabase } from 'drizzle-orm/libsql'
-import { MediaRepository } from '@/domain/repositories/mediaRepository'
+import { MediaRepository } from '@/application/db/repositories/mediaRepository'
 import { GenreDTO, Media } from '@/domain/entities/media'
 import {
   MediaCreateInput,

@@ -3,7 +3,7 @@ import {
   MediaPaginationOptions,
   MediaUpdateInput,
 } from '@shared/types'
-import { Media } from '../entities/media'
+import { Media } from '@/domain/entities/media'
 
 export interface MediaRepository {
   getById(id: number): Promise<Media>
