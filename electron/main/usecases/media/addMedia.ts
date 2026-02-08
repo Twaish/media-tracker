@@ -1,5 +1,5 @@
 import { StorageService } from '@/core/StorageService'
-import { MediaRepository } from '@/domain/repositories/mediaRepository'
+import { MediaRepository } from '@/application/db/repositories/mediaRepository'
 import { MediaCreateInput } from '@shared/types'
 
 export default class AddMedia {
