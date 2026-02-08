@@ -100,6 +100,7 @@
     "i18next": "^25.0.1",
     "immer": "^10.1.1",
     "lucide-react": "^0.503.0",
+    "ollama": "^0.6.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-i18next": "^16.5.3",
