@@ -5,7 +5,7 @@ const databaseFilePath = './local.db'
 
 export default defineConfig({
   out: './drizzle',
-  schema: './electron/main/db/schema.ts',
+  schema: './electron/main/infrastructure/db/schema.ts',
   dialect: 'sqlite',
   dbCredentials: {
     url: `file:${path.resolve(databaseFilePath)}`,
