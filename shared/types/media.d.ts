@@ -25,4 +25,8 @@ export interface MediaContext {
   remove: (mediaIds: number[]) => Promise<void>
   update: (media: MediaUpdateInput) => Promise<Media>
   setNextMedia: (mediaId: number, nextMediaId: number) => Promise<void>
+  resolveExternalLink: (
+    mediaId: number,
+    index: number,
+  ) => Promise<string | null>
 }

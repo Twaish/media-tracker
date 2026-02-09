@@ -4,6 +4,7 @@ import {
   MEDIA_ADD,
   MEDIA_GET,
   MEDIA_REMOVE,
+  MEDIA_RESOLVE_EXTERNAL_LINK,
   MEDIA_SET_NEXT_MEDIA,
   MEDIA_UPDATE,
 } from './media-channels'
@@ -33,6 +34,12 @@ export function addMediaEventListeners(modules: Modules) {
     MEDIA_SET_NEXT_MEDIA,
     (_, mediaId: number, nextMediaId: number) => {
       return useCases.setMediaToWatchNext.execute(mediaId, nextMediaId)
+    },
+  )
+  ipcMain.handle(
+    MEDIA_RESOLVE_EXTERNAL_LINK,
+    (_, mediaId: number, index: number) => {
+      return useCases.resolveExternalMediaLink.execute(mediaId, index)
     },
   )
 }
