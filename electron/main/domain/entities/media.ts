@@ -103,4 +103,8 @@ export class Media {
       this.genres,
     )
   }
+
+  getExternalLink() {
+    return this.externalLink
+  }
 }
