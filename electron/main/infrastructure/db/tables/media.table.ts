@@ -17,7 +17,7 @@ export const mediaTable = sqliteTable('media', {
   mediaType: text().$type<MediaType>().notNull().default('anime'),
   status: text().$type<MediaStatus>().notNull().default('plan-to-watch'),
 
-  externalLink: text().notNull().default('/'),
+  externalLink: text(),
   alternateTitles: text().notNull().default(''),
 
   watchAfter: int().references((): AnySQLiteColumn => mediaTable.id),

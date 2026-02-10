@@ -23,7 +23,7 @@ type MediaParams = {
   thumbnail: string | null
   mediaType: MediaType
   status: MediaStatus
-  externalLink: string
+  externalLink: string | null
   alternateTitles: string
   watchAfter: number | null
   lastUpdated: Date | null
@@ -41,7 +41,7 @@ export class Media {
     private readonly thumbnail: string | null,
     private readonly mediaType: MediaType,
     private readonly status: MediaStatus,
-    private readonly externalLink: string,
+    private readonly externalLink: string | null,
     private readonly alternateTitles: string,
     private readonly watchAfter: number | null,
     private readonly lastUpdated: Date | null,
@@ -58,7 +58,7 @@ export class Media {
       thumbnail,
       mediaType = 'anime',
       status = 'plan-to-watch',
-      externalLink = '/',
+      externalLink,
       alternateTitles = '',
       watchAfter,
       lastUpdated = new Date(),
