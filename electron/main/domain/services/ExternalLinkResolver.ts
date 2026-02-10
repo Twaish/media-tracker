@@ -1,13 +1,9 @@
-import { IMediaRepository } from '@/application/db/repositories/IMediaRepository'
-
 export class ExternalLinkResolver {
   private readonly SUPPORTED_PLACEHOLDERS = [
     '{{chapter}}',
     '{{episode}}',
     '{{index}}',
   ]
-
-  constructor(private repo: IMediaRepository) {}
 
   public validateTemplate(template: string): {
     isValid: boolean
@@ -35,28 +31,19 @@ export class ExternalLinkResolver {
     return { isValid: true }
   }
 
-  async resolveExternalUrl(
-    mediaId: number,
+  async resolveExternalLink(
+    template: string,
     index: number,
   ): Promise<string | null> {
-    const media = await this.repo.getById(mediaId)
-    if (!media) {
+    if (!template) {
       return null
     }
 
-    const externalLink = media.getExternalLink()
-    if (!externalLink) {
-      return null
-    }
-
-    const validation = this.validateTemplate(externalLink)
+    const validation = this.validateTemplate(template)
     if (!validation.isValid) {
       return null
     }
 
-    return externalLink.replace(
-      /{{(chapter|episode|index)}}/g,
-      index.toString(),
-    )
+    return template.replace(/{{(chapter|episode|index)}}/g, index.toString())
   }
 }
