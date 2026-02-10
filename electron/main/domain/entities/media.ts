@@ -107,4 +107,12 @@ export class Media {
   getExternalLink() {
     return this.externalLink
   }
+
+  getCurrentEpisode() {
+    return this.currentEpisode
+  }
+
+  getMaxEpisodes() {
+    return this.maxEpisodes
+  }
 }
