@@ -31,10 +31,7 @@ export class ExternalLinkResolver {
     return { isValid: true }
   }
 
-  async resolveExternalLink(
-    template: string,
-    index: number,
-  ): Promise<string | null> {
+  resolveExternalLink(template: string, index: number): string | null {
     if (!template) {
       return null
     }
