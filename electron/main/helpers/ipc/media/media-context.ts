@@ -31,8 +31,8 @@ export function exposeMediaContext() {
     setNextMedia(mediaId: number, nextMediaId: number) {
       return ipcRenderer.invoke(MEDIA_SET_NEXT_MEDIA, mediaId, nextMediaId)
     },
-    resolveExternalLink(mediaId: number, index: number) {
-      return ipcRenderer.invoke(MEDIA_RESOLVE_EXTERNAL_LINK, mediaId, index)
+    resolveExternalLink(mediaId: number) {
+      return ipcRenderer.invoke(MEDIA_RESOLVE_EXTERNAL_LINK, mediaId)
     },
   }
   contextBridge.exposeInMainWorld('media', context)

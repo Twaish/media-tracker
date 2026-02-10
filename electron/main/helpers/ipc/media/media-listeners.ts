@@ -36,10 +36,7 @@ export function addMediaEventListeners(modules: Modules) {
       return useCases.setMediaToWatchNext.execute(mediaId, nextMediaId)
     },
   )
-  ipcMain.handle(
-    MEDIA_RESOLVE_EXTERNAL_LINK,
-    (_, mediaId: number, index: number) => {
-      return useCases.resolveExternalMediaLink.execute(mediaId, index)
-    },
-  )
+  ipcMain.handle(MEDIA_RESOLVE_EXTERNAL_LINK, (_, mediaId: number) => {
+    return useCases.resolveExternalMediaLink.execute(mediaId)
+  })
 }

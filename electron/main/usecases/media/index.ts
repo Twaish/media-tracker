@@ -10,7 +10,7 @@ import { ExternalLinkResolver } from '@/domain/services/ExternalLinkResolver'
 
 export function createMediaUseCases({ Database, StorageService }: Modules) {
   const repo = new MediaRepositoryDrizzle(Database)
-  const resolver = new ExternalLinkResolver(repo)
+  const resolver = new ExternalLinkResolver()
 
   return {
     removeMedia: new RemoveMedia(repo),
@@ -18,6 +18,6 @@ export function createMediaUseCases({ Database, StorageService }: Modules) {
     getMedia: new GetMedia(repo),
     updateMedia: new UpdateMedia(repo, StorageService),
     setMediaToWatchNext: new SetMediaToWatchNext(repo),
-    resolveExternalMediaLink: new ResolveExternalMediaLink(resolver),
+    resolveExternalMediaLink: new ResolveExternalMediaLink(repo, resolver),
   }
 }
