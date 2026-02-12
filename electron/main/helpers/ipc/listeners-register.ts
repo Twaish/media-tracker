@@ -14,5 +14,5 @@ export default function registerListeners(modules: Modules) {
   addMediaEventListeners(modules)
   addStorageEventListeners(modules)
   addAiEventListeners(modules)
-  addSearchEventListeners()
+  addSearchEventListeners(modules)
 }
