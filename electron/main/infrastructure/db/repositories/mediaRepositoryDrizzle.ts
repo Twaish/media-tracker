@@ -7,7 +7,23 @@ import {
   MediaPaginationOptions,
   MediaUpdateInput,
 } from '@shared/types'
-import { inArray, desc, count, eq } from 'drizzle-orm'
+import {
+  inArray,
+  desc,
+  count,
+  eq,
+  like,
+  and,
+  exists,
+  not,
+  ne,
+  lt,
+  lte,
+  gt,
+  gte,
+} from 'drizzle-orm'
+import { Filter } from '@/domain/services/QueryResolver'
+import { SQLiteColumn } from 'drizzle-orm/sqlite-core'
 
 export class MediaRepositoryDrizzle implements IMediaRepository {
   constructor(private readonly db: LibSQLDatabase) {}
@@ -181,6 +197,175 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
     return {
       deleted: rows.length,
       ids: rows.map((r) => r.id),
+    }
+  }
+
+  async search({
+    title,
+    filters = [],
+    pagination,
+  }: {
+    title?: string
+    filters?: Filter[]
+    pagination: MediaPaginationOptions
+  }) {
+    const { page = 1, limit = 12 } = pagination ?? {}
+    const offset = (page - 1) * limit
+
+    const conditions = []
+
+    if (title) {
+      conditions.push(like(mediaTable.title, `%${title}%`))
+    }
+
+    for (const filter of filters) {
+      const filterField = filter.field.toLowerCase()
+      if (filterField === 'genre') {
+        conditions.push(this.buildGenreCondition(filter))
+        continue
+      }
+
+      const column = this.resolveColumn(filterField)
+      if (!column) continue
+
+      conditions.push(this.buildScalarCondition(column, filter))
+    }
+
+    const whereClause = conditions.length > 0 ? and(...conditions) : undefined
+
+    const [mediaRows, totalCount] = await Promise.all([
+      this.db
+        .select()
+        .from(mediaTable)
+        .where(whereClause)
+        .limit(limit)
+        .offset(offset)
+        .orderBy(desc(mediaTable.createdAt)),
+      this.db.select({ count: count() }).from(mediaTable).where(whereClause),
+    ])
+
+    const totalItems = Number(totalCount[0].count)
+    const totalPages = Math.ceil(totalItems / limit)
+
+    if (mediaRows.length === 0) {
+      return {
+        data: [],
+        pagination: {
+          page,
+          limit,
+          totalPages,
+          totalItems,
+        },
+      }
+    }
+
+    const mediaIds = mediaRows.map((m) => m.id)
+
+    const genreRows = await this.db
+      .select({
+        mediaId: mediaGenresTable.mediaId,
+        genreId: genresTable.id,
+        genreName: genresTable.name,
+      })
+      .from(mediaGenresTable)
+      .innerJoin(genresTable, eq(mediaGenresTable.genreId, genresTable.id))
+      .where(inArray(mediaGenresTable.mediaId, mediaIds))
+
+    const genresMap = genreRows.reduce<
+      Record<number, { id: number; name: string }[]>
+    >((acc, row) => {
+      if (!acc[row.mediaId]) acc[row.mediaId] = []
+      acc[row.mediaId].push({
+        id: row.genreId,
+        name: row.genreName,
+      })
+      return acc
+    }, {})
+
+    return {
+      data: mediaRows.map((row) => this.toDomain(row, genresMap[row.id] ?? [])),
+      pagination: {
+        page,
+        limit,
+        totalPages,
+        totalItems,
+      },
+    }
+  }
+
+  private resolveColumn(field: string): SQLiteColumn | null {
+    switch (field.toLowerCase()) {
+      case 'title':
+        return mediaTable.title
+      case 'id':
+        return mediaTable.id
+      case 'currentepisode':
+        return mediaTable.currentEpisode
+      case 'maxepisodes':
+        return mediaTable.maxEpisodes
+      case 'mediatype':
+        return mediaTable.mediaType
+      case 'status':
+        return mediaTable.status
+      default:
+        return null
+    }
+  }
+
+  private buildGenreCondition(filter: Filter) {
+    const subquery = this.db
+      .select({ id: mediaGenresTable.mediaId })
+      .from(mediaGenresTable)
+      .innerJoin(genresTable, eq(mediaGenresTable.genreId, genresTable.id))
+      .where(
+        and(
+          eq(mediaGenresTable.mediaId, mediaTable.id),
+          inArray(genresTable.name, filter.values as string[]),
+        ),
+      )
+
+    switch (filter.op) {
+      case '=':
+        return exists(subquery)
+      case '!=':
+        return not(exists(subquery))
+      default:
+        throw new Error(`Unsupported operator for genre: ${filter.op}`)
+    }
+  }
+
+  private buildScalarCondition(column: SQLiteColumn, filter: Filter) {
+    const values = filter.values
+
+    switch (filter.op) {
+      case '=':
+        return values.length === 1
+          ? eq(column, values[0])
+          : inArray(column, values)
+      case '!=':
+        return values.length === 1
+          ? ne(column, values[0])
+          : not(inArray(column, values))
+      case '<':
+        this.assertSingleValue(filter)
+        return lt(column, values[0])
+      case '<=':
+        this.assertSingleValue(filter)
+        return lte(column, values[0])
+      case '>':
+        this.assertSingleValue(filter)
+        return gt(column, values[0])
+      case '>=':
+        this.assertSingleValue(filter)
+        return gte(column, values[0])
+      default:
+        throw new Error(`Unsupported operator: ${filter.op satisfies never}`)
+    }
+  }
+
+  private assertSingleValue(filter: Filter) {
+    if (filter.values.length !== 1) {
+      throw new Error(`Operator "${filter.op}" only supports a single value`)
     }
   }
 
