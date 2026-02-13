@@ -21,11 +21,23 @@ import {
   lte,
   gt,
   gte,
+  SQL,
+  sql,
 } from 'drizzle-orm'
 import { Filter } from '@/domain/services/QueryResolver'
 import { SQLiteColumn } from 'drizzle-orm/sqlite-core'
 
 export class MediaRepositoryDrizzle implements IMediaRepository {
+  private readonly columnMap: Record<string, SQLiteColumn> = {
+    id: mediaTable.id,
+    title: mediaTable.title,
+    currentepisode: mediaTable.currentEpisode,
+    maxepisodes: mediaTable.maxEpisodes,
+    mediatype: mediaTable.mediaType,
+    status: mediaTable.status,
+    createdat: mediaTable.createdAt,
+  }
+
   constructor(private readonly db: LibSQLDatabase) {}
 
   async getById(id: number): Promise<Media> {
@@ -55,55 +67,54 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
     return this.toDomain(row, genreDTOs)
   }
 
-  async getWithPagination(options: MediaPaginationOptions): Promise<{
-    data: Media[]
-    pagination: {
-      page: number
-      limit: number
-      totalPages: number
-      totalItems: number
-    }
-  }> {
-    const { page = 1, limit = 12 } = options ?? {}
-    const offset = (page - 1) * limit
+  private async fetchMediaWithGenresQuery(
+    whereClause?: SQL,
+    limit?: number,
+    offset?: number,
+  ) {
+    const query = this.db
+      .select({
+        media: mediaTable,
+        genres: sql<GenreDTO[]>`
+          COALESCE(
+            json_group_array(
+              CASE
+                WHEN ${genresTable.id} IS NOT NULL THEN
+                  json_object(
+                    'id', ${genresTable.id},
+                    'name', ${genresTable.name}
+                  )
+              END
+            ),
+            '[]'
+          )
+        `,
+      })
+      .from(mediaTable)
+      .leftJoin(mediaGenresTable, eq(mediaTable.id, mediaGenresTable.mediaId))
+      .leftJoin(genresTable, eq(mediaGenresTable.genreId, genresTable.id))
+      .where(whereClause)
+      .groupBy(mediaTable.id)
+      .orderBy(desc(mediaTable.createdAt))
 
-    const [media, totalItems, genres] = await Promise.all([
-      this.db
-        .select()
-        .from(mediaTable)
-        .limit(limit)
-        .offset(offset)
-        .orderBy(desc(mediaTable.createdAt)),
-      this.db.select({ count: count() }).from(mediaTable),
-      this.db
-        .select({
-          mediaId: mediaGenresTable.mediaId,
-          genreId: mediaGenresTable.genreId,
-          genreName: genresTable.name,
-        })
-        .from(mediaGenresTable)
-        .innerJoin(genresTable, eq(mediaGenresTable.genreId, genresTable.id)),
+    if (limit) query.limit(limit)
+    if (offset) query.offset(offset)
+
+    const [rows, totalItems] = await Promise.all([
+      query,
+      this.db.select({ count: count() }).from(mediaTable).where(whereClause),
     ])
 
-    const genresMap = genres.reduce<Record<number, GenreDTO[]>>((acc, row) => {
-      if (!acc[row.mediaId]) acc[row.mediaId] = []
-      acc[row.mediaId].push({ id: row.genreId, name: row.genreName })
-      return acc
-    }, {})
-
-    const totalPages = Math.ceil(Number(totalItems[0].count) / limit)
-
     return {
-      data: media.map((media) =>
-        this.toDomain(media, genresMap[media.id] ?? []),
+      media: rows.map(({ media, genres }) =>
+        this.toDomain(media, JSON.parse(genres as unknown as string) ?? []),
       ),
-      pagination: {
-        page,
-        limit,
-        totalPages,
-        totalItems: Number(totalItems[0].count),
-      },
+      totalItems: Number(totalItems[0].count),
     }
+  }
+
+  async getWithPagination(options: MediaPaginationOptions) {
+    return await this.search({ pagination: options })
   }
 
   async add(media: MediaCreateInput): Promise<Media> {
@@ -219,71 +230,22 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
     }
 
     for (const filter of filters) {
-      const filterField = filter.field.toLowerCase()
-      if (filterField === 'genre') {
-        conditions.push(this.buildGenreCondition(filter))
-        continue
-      }
-
-      const column = this.resolveColumn(filterField)
-      if (!column) continue
-
-      conditions.push(this.buildScalarCondition(column, filter))
+      const condition = this.buildCondition(filter)
+      if (condition) conditions.push(condition)
     }
 
     const whereClause = conditions.length > 0 ? and(...conditions) : undefined
 
-    const [mediaRows, totalCount] = await Promise.all([
-      this.db
-        .select()
-        .from(mediaTable)
-        .where(whereClause)
-        .limit(limit)
-        .offset(offset)
-        .orderBy(desc(mediaTable.createdAt)),
-      this.db.select({ count: count() }).from(mediaTable).where(whereClause),
-    ])
+    const { media, totalItems } = await this.fetchMediaWithGenresQuery(
+      whereClause,
+      limit,
+      offset,
+    )
 
-    const totalItems = Number(totalCount[0].count)
     const totalPages = Math.ceil(totalItems / limit)
 
-    if (mediaRows.length === 0) {
-      return {
-        data: [],
-        pagination: {
-          page,
-          limit,
-          totalPages,
-          totalItems,
-        },
-      }
-    }
-
-    const mediaIds = mediaRows.map((m) => m.id)
-
-    const genreRows = await this.db
-      .select({
-        mediaId: mediaGenresTable.mediaId,
-        genreId: genresTable.id,
-        genreName: genresTable.name,
-      })
-      .from(mediaGenresTable)
-      .innerJoin(genresTable, eq(mediaGenresTable.genreId, genresTable.id))
-      .where(inArray(mediaGenresTable.mediaId, mediaIds))
-
-    const genresMap = genreRows.reduce<
-      Record<number, { id: number; name: string }[]>
-    >((acc, row) => {
-      if (!acc[row.mediaId]) acc[row.mediaId] = []
-      acc[row.mediaId].push({
-        id: row.genreId,
-        name: row.genreName,
-      })
-      return acc
-    }, {})
-
     return {
-      data: mediaRows.map((row) => this.toDomain(row, genresMap[row.id] ?? [])),
+      data: media,
       pagination: {
         page,
         limit,
@@ -293,22 +255,41 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
     }
   }
 
-  private resolveColumn(field: string): SQLiteColumn | null {
-    switch (field.toLowerCase()) {
-      case 'title':
-        return mediaTable.title
-      case 'id':
-        return mediaTable.id
-      case 'currentepisode':
-        return mediaTable.currentEpisode
-      case 'maxepisodes':
-        return mediaTable.maxEpisodes
-      case 'mediatype':
-        return mediaTable.mediaType
-      case 'status':
-        return mediaTable.status
+  private buildCondition(filter: Filter): SQL | null {
+    const field = filter.field.toLowerCase()
+    if (field === 'genre') return this.buildGenreCondition(filter)
+
+    const column = this.columnMap[field]
+    if (!column) return null
+
+    const values = filter.values
+    const firstValue = values[0]
+
+    switch (filter.op) {
+      case '=':
+        return values.length === 1
+          ? eq(column, firstValue)
+          : inArray(column, values)
+      case '!=':
+        return values.length === 1
+          ? ne(column, firstValue)
+          : not(inArray(column, values))
+      case '<':
+        this.assertSingleValue(filter)
+        return lt(column, firstValue)
+      case '<=':
+        this.assertSingleValue(filter)
+        return lte(column, firstValue)
+      case '>':
+        this.assertSingleValue(filter)
+        return gt(column, firstValue)
+      case '>=':
+        this.assertSingleValue(filter)
+        return gte(column, firstValue)
       default:
-        return null
+        throw new Error(
+          `Unsupported operator for genre: ${filter.op satisfies never}`,
+        )
     }
   }
 
@@ -331,35 +312,6 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
         return not(exists(subquery))
       default:
         throw new Error(`Unsupported operator for genre: ${filter.op}`)
-    }
-  }
-
-  private buildScalarCondition(column: SQLiteColumn, filter: Filter) {
-    const values = filter.values
-
-    switch (filter.op) {
-      case '=':
-        return values.length === 1
-          ? eq(column, values[0])
-          : inArray(column, values)
-      case '!=':
-        return values.length === 1
-          ? ne(column, values[0])
-          : not(inArray(column, values))
-      case '<':
-        this.assertSingleValue(filter)
-        return lt(column, values[0])
-      case '<=':
-        this.assertSingleValue(filter)
-        return lte(column, values[0])
-      case '>':
-        this.assertSingleValue(filter)
-        return gt(column, values[0])
-      case '>=':
-        this.assertSingleValue(filter)
-        return gte(column, values[0])
-      default:
-        throw new Error(`Unsupported operator: ${filter.op satisfies never}`)
     }
   }
 
