@@ -40,7 +40,7 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
 
   constructor(private readonly db: LibSQLDatabase) {}
 
-  async getById(id: number): Promise<Media> {
+  async getById(id: number) {
     const [row] = await this.db
       .select()
       .from(mediaTable)
@@ -117,7 +117,7 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
     return await this.search({ pagination: options })
   }
 
-  async add(media: MediaCreateInput): Promise<Media> {
+  async add(media: MediaCreateInput) {
     const [newMedia] = await this.db
       .insert(mediaTable)
       .values(media)
@@ -142,7 +142,7 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
     return this.toDomain(newMedia, genreDTOs)
   }
 
-  async update(input: MediaUpdateInput): Promise<Media> {
+  async update(input: MediaUpdateInput) {
     return await this.db.transaction(async (tx) => {
       const { id, genres, ...mediaUpdates } = input
 
@@ -196,9 +196,7 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
     })
   }
 
-  async remove(
-    mediaIds: number[],
-  ): Promise<{ deleted: number; ids: number[] }> {
+  async remove(mediaIds: number[]) {
     if (!mediaIds.length) return { deleted: 0, ids: [] }
     const rows = await this.db
       .delete(mediaTable)
