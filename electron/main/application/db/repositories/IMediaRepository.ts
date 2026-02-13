@@ -22,7 +22,7 @@ export interface IMediaRepository {
     options: MediaPaginationOptions,
   ): Promise<MediaPaginationResult>
   add(media: MediaCreateInput): Promise<Media>
-  remove(mediaIds: number[]): Promise<{ deleted: number; ids: number[] }>
+  remove(ids: number[]): Promise<{ deleted: number; ids: number[] }>
   update(media: MediaUpdateInput): Promise<Media>
   search(options: {
     title?: string

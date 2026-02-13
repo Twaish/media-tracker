@@ -196,11 +196,11 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
     })
   }
 
-  async remove(mediaIds: number[]) {
-    if (!mediaIds.length) return { deleted: 0, ids: [] }
+  async remove(ids: number[]) {
+    if (!ids.length) return { deleted: 0, ids: [] }
     const rows = await this.db
       .delete(mediaTable)
-      .where(inArray(mediaTable.id, mediaIds))
+      .where(inArray(mediaTable.id, ids))
       .returning({ id: mediaTable.id })
 
     return {
