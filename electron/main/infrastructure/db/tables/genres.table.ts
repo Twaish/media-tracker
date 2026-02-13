@@ -20,14 +20,6 @@ export const DEFAULT_GENRES = [
 ] as const
 
 export async function seedGenresTable(database: LibSQLDatabase) {
-  await database.transaction(async (tx) => {
-    try {
-      await tx
-        .insert(genresTable)
-        .values(DEFAULT_GENRES.map((name) => ({ name })))
-        .onConflictDoNothing()
-    } catch (err) {
-      console.error(err)
-    }
-  })
+  const values = DEFAULT_GENRES.map((name) => ({ name }))
+  await database.insert(genresTable).values(values).onConflictDoNothing()
 }
