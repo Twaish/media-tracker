@@ -1,3 +1,6 @@
 export * from './tables/genres.table'
 export * from './tables/media.table'
 export * from './tables/media-genres.table'
+export * from './tables/genres.relations'
+export * from './tables/media.relations'
+export * from './tables/media-genres.relations'
