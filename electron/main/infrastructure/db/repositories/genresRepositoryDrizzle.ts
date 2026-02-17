@@ -1,13 +1,13 @@
-import { Genre } from '@/domain/entities/genre'
-import { genresTable } from '../schema'
-import { LibSQLDatabase } from 'drizzle-orm/libsql'
 import { IGenresRepository } from '@/application/db/repositories/IGenresRepository'
+import { Genre } from '@/domain/entities/genre'
+import { DrizzleDb } from '../types'
+import { genresTable } from '../schema'
 
 export class GenresRepositoryDrizzle implements IGenresRepository {
-  constructor(private readonly db: LibSQLDatabase) {}
+  constructor(private readonly db: DrizzleDb) {}
 
   async get(): Promise<Genre[]> {
-    const rows = await this.db.select().from(genresTable)
+    const rows = await this.db.query.genresTable.findMany()
     return rows.map(this.toDomain)
   }
 
