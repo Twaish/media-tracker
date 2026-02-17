@@ -1,8 +1,5 @@
 import { genresTable, mediaGenresTable, mediaTable } from '../schema'
-import {
-  IMediaRepository,
-  MediaPaginationResult,
-} from '@/application/db/repositories/IMediaRepository'
+import { IMediaRepository } from '@/application/db/repositories/IMediaRepository'
 import { GenreDTO, Media } from '@/domain/entities/media'
 import {
   MediaCreateInput,
@@ -250,12 +247,7 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
       .select({ id: mediaGenresTable.mediaId })
       .from(mediaGenresTable)
       .innerJoin(genresTable, eq(mediaGenresTable.genreId, genresTable.id))
-      .where(
-        and(
-          eq(mediaGenresTable.mediaId, mediaTable.id),
-          inArray(genresTable.name, filter.values as string[]),
-        ),
-      )
+      .where(inArray(genresTable.name, filter.values as string[]))
 
     switch (filter.op) {
       case '=':
