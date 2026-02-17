@@ -3,6 +3,7 @@ import {
   MEDIA_GET,
   MEDIA_REMOVE,
   MEDIA_RESOLVE_EXTERNAL_LINK,
+  MEDIA_SEARCH,
   MEDIA_SET_NEXT_MEDIA,
   MEDIA_UPDATE,
 } from './media-channels'
@@ -33,6 +34,9 @@ export function exposeMediaContext() {
     },
     resolveExternalLink(mediaId: number) {
       return ipcRenderer.invoke(MEDIA_RESOLVE_EXTERNAL_LINK, mediaId)
+    },
+    search(query: string) {
+      return ipcRenderer.invoke(MEDIA_SEARCH, query)
     },
   }
   contextBridge.exposeInMainWorld('media', context)

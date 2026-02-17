@@ -1,3 +1,4 @@
+import { SearchQuery } from '@/domain/services/QueryResolver'
 import { mediaTable } from '@/infrastructure/db/schema'
 import { InferInsertModel, InferSelectModel } from 'drizzle-orm'
 
@@ -26,4 +27,5 @@ export interface MediaContext {
   update: (media: MediaUpdateInput) => Promise<Media>
   setNextMedia: (mediaId: number, nextMediaId: number) => Promise<void>
   resolveExternalLink: (mediaId: number) => Promise<string | null>
+  search: (query: string) => Promise<SearchQuery>
 }

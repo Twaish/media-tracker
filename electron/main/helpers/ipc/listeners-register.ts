@@ -5,7 +5,6 @@ import { Modules } from './types'
 import { addMediaEventListeners } from './media/media-listeners'
 import { addStorageEventListeners } from './storage/storage-listeners'
 import { addAiEventListeners } from './ai/ai-listeners'
-import { addSearchEventListeners } from './search/search-listeners'
 
 export default function registerListeners(modules: Modules) {
   addWindowEventListeners(modules)
@@ -14,5 +13,4 @@ export default function registerListeners(modules: Modules) {
   addMediaEventListeners(modules)
   addStorageEventListeners(modules)
   addAiEventListeners(modules)
-  addSearchEventListeners(modules)
 }

@@ -6,12 +6,15 @@ import UpdateMedia from './updateMedia'
 import SetMediaToWatchNext from './setMediaToWatchNext'
 import ResolveExternalMediaLink from './resolveExternalMediaLink'
 import { ExternalLinkResolver } from '@/domain/services/ExternalLinkResolver'
+import SearchMedia from './searchMedia'
+import { QueryResolver } from '@/domain/services/QueryResolver'
 
 export function createMediaUseCases({
   MediaRepository,
   StorageService,
 }: Modules) {
-  const resolver = new ExternalLinkResolver()
+  const externalLinkResolver = new ExternalLinkResolver()
+  const queryResolver = new QueryResolver()
 
   return {
     removeMedia: new RemoveMedia(MediaRepository),
@@ -21,7 +24,8 @@ export function createMediaUseCases({
     setMediaToWatchNext: new SetMediaToWatchNext(MediaRepository),
     resolveExternalMediaLink: new ResolveExternalMediaLink(
       MediaRepository,
-      resolver,
+      externalLinkResolver,
     ),
+    searchMedia: new SearchMedia(MediaRepository, queryResolver),
   }
 }
