@@ -1,9 +1,9 @@
-import { migrate } from 'drizzle-orm/libsql/migrator'
-import type { LibSQLDatabase } from 'drizzle-orm/libsql'
 import path from 'path'
 import { app } from 'electron'
+import { migrate } from 'drizzle-orm/libsql/migrator'
+import { DrizzleDb } from './types'
 
-export async function runMigrations(db: LibSQLDatabase) {
+export async function runMigrations(db: DrizzleDb) {
   const appPath = app.getAppPath()
 
   const migrationsPath = path.join(appPath, 'drizzle')
