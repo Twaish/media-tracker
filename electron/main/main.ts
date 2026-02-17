@@ -19,8 +19,8 @@ import {
 import { WinstonLogger } from './infrastructure/logging'
 import { Modules } from './helpers/ipc/types'
 import { OllamaAiService } from './infrastructure/ai/OllamaAiService'
-import { MediaRepositoryDrq } from './infrastructure/db/repositories/mediaRepositoryDrq'
 import { createDb } from './infrastructure/db/client'
+import { MediaRepositoryDrizzle } from './infrastructure/db/repositories/mediaRepositoryDrizzle'
 import { GenresRepositoryDrizzle } from './infrastructure/db/repositories/genresRepositoryDrizzle'
 
 app.whenReady().then(async () => {
@@ -36,7 +36,7 @@ app.whenReady().then(async () => {
     logger.header('Infrastructure')
     logger.info('Initializing database client & repositories')
     const database = createDb(DB_PATH)
-    const mediaRepository = new MediaRepositoryDrq(database)
+    const mediaRepository = new MediaRepositoryDrizzle(database)
     const genresRepository = new GenresRepositoryDrizzle(database)
 
     logger.info('Initializing storage')

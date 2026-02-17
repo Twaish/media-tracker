@@ -28,7 +28,7 @@ import { Filter } from '@/domain/services/QueryResolver'
 import { SQLiteColumn } from 'drizzle-orm/sqlite-core'
 import { DrizzleDb } from '../types'
 
-export class MediaRepositoryDrq implements IMediaRepository {
+export class MediaRepositoryDrizzle implements IMediaRepository {
   private readonly columnMap: Record<string, SQLiteColumn> = {
     id: mediaTable.id,
     title: mediaTable.title,
