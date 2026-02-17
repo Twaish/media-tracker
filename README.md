@@ -20,7 +20,6 @@ npm run build:release
 ```
 
 ## Feature Todo List
-- Switch to Drizzle Relational Queries
 - Create splash screen (Fixes FOUC)
 - Automatically fill information of media by link using AI
 - Add summary to current episode using AI (Continue without missing context)
