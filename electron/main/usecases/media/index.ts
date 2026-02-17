@@ -1,4 +1,3 @@
-import { MediaRepositoryDrizzle } from '@/infrastructure/db/repositories/mediaRepositoryDrizzle'
 import { Modules } from '@/helpers/ipc/types'
 import RemoveMedia from './removeMedia'
 import AddMedia from './addMedia'
@@ -8,16 +7,21 @@ import SetMediaToWatchNext from './setMediaToWatchNext'
 import ResolveExternalMediaLink from './resolveExternalMediaLink'
 import { ExternalLinkResolver } from '@/domain/services/ExternalLinkResolver'
 
-export function createMediaUseCases({ Database, StorageService }: Modules) {
-  const repo = new MediaRepositoryDrizzle(Database)
+export function createMediaUseCases({
+  MediaRepository,
+  StorageService,
+}: Modules) {
   const resolver = new ExternalLinkResolver()
 
   return {
-    removeMedia: new RemoveMedia(repo),
-    addMedia: new AddMedia(repo, StorageService),
-    getMedia: new GetMedia(repo),
-    updateMedia: new UpdateMedia(repo, StorageService),
-    setMediaToWatchNext: new SetMediaToWatchNext(repo),
-    resolveExternalMediaLink: new ResolveExternalMediaLink(repo, resolver),
+    removeMedia: new RemoveMedia(MediaRepository),
+    addMedia: new AddMedia(MediaRepository, StorageService),
+    getMedia: new GetMedia(MediaRepository),
+    updateMedia: new UpdateMedia(MediaRepository, StorageService),
+    setMediaToWatchNext: new SetMediaToWatchNext(MediaRepository),
+    resolveExternalMediaLink: new ResolveExternalMediaLink(
+      MediaRepository,
+      resolver,
+    ),
   }
 }

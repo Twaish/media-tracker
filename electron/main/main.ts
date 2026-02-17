@@ -1,7 +1,5 @@
 import 'dotenv/config'
 import { app, BrowserWindow } from 'electron'
-import { createClient } from '@libsql/client'
-import { drizzle } from 'drizzle-orm/libsql'
 
 import config from './core/config'
 import { StorageService } from './core/StorageService'
@@ -21,6 +19,9 @@ import {
 import { WinstonLogger } from './infrastructure/logging'
 import { Modules } from './helpers/ipc/types'
 import { OllamaAiService } from './infrastructure/ai/OllamaAiService'
+import { MediaRepositoryDrq } from './infrastructure/db/repositories/mediaRepositoryDrq'
+import { createDb } from './infrastructure/db/client'
+import { GenresRepositoryDrizzle } from './infrastructure/db/repositories/genresRepositoryDrizzle'
 
 app.whenReady().then(async () => {
   const { DB_PATH, LOG_PATH } = config
@@ -33,9 +34,10 @@ app.whenReady().then(async () => {
 
   try {
     logger.header('Infrastructure')
-    logger.info('Initializing database client')
-    const dbClient = createClient({ url: DB_PATH })
-    const database = drizzle(dbClient)
+    logger.info('Initializing database client & repositories')
+    const database = createDb(DB_PATH)
+    const mediaRepository = new MediaRepositoryDrq(database)
+    const genresRepository = new GenresRepositoryDrizzle(database)
 
     logger.info('Initializing storage')
     const storageService = new StorageService('./Media Images')
@@ -55,10 +57,12 @@ app.whenReady().then(async () => {
     const modules: Modules = {
       ElectronWindow: electronWindow,
       window: electronWindow.window,
-      Database: database,
       StorageService: storageService,
       AiService: aiService,
       logger: logger,
+
+      MediaRepository: mediaRepository,
+      GenresRepository: genresRepository,
     }
 
     logger.header('IPC / Protocols')
