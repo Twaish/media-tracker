@@ -20,6 +20,7 @@ import {
   gt,
   gte,
   SQL,
+  sql,
 } from 'drizzle-orm'
 import { Filter } from '@/domain/services/QueryResolver'
 import { SQLiteColumn } from 'drizzle-orm/sqlite-core'
@@ -243,11 +244,17 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
   }
 
   private buildGenreCondition(filter: Filter) {
+    const lowercasedValues = filter.values
+      .filter((v) => typeof v === 'string')
+      .map((v) => v.toLowerCase())
+
+    if (lowercasedValues.length === 0) return null
+
     const subquery = this.db
       .select({ id: mediaGenresTable.mediaId })
       .from(mediaGenresTable)
       .innerJoin(genresTable, eq(mediaGenresTable.genreId, genresTable.id))
-      .where(inArray(genresTable.name, filter.values as string[]))
+      .where(inArray(sql`lower(${genresTable.name})`, lowercasedValues))
 
     switch (filter.op) {
       case '=':
