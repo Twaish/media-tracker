@@ -1,5 +1,5 @@
-import { LibSQLDatabase } from 'drizzle-orm/libsql'
 import { int, sqliteTable, text } from 'drizzle-orm/sqlite-core'
+import { DrizzleDb } from '../types'
 
 export const genresTable = sqliteTable('genres', {
   id: int().primaryKey(),
@@ -19,7 +19,7 @@ export const DEFAULT_GENRES = [
   'Thriller',
 ] as const
 
-export async function seedGenresTable(database: LibSQLDatabase) {
+export async function seedGenresTable(database: DrizzleDb) {
   const values = DEFAULT_GENRES.map((name) => ({ name }))
   await database.insert(genresTable).values(values).onConflictDoNothing()
 }
