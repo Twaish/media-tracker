@@ -30,6 +30,17 @@ npm run build:release
 - Backup/Restore using versioning system (delta-based)
 - Fuzzy searching (Cosine similarity)
 - Quick action menu
+- Full keyboard navigable
+- Cloud sync
+- User defined fields with type system
+- Rule engine. Run automation on conditions:
+```
+WHEN currentEpisode >= maxEpisodes
+THEN set status = Completed
+ADD add tag = "Finished"
+```
+- Soft delete
+- Bulk edit
 - Settings
 - Plugin system
 - CLI
