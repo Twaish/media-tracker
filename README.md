@@ -35,6 +35,10 @@ npm run build:release
 - CLI
 - Encrypted storage/libraries
 - Watch plans (Ex. Steins;Gate (2011) 1-22, Steins;Gate 0 (2018) 1-23, Steins;Gate (2011) 23-24, ...)
+
+## Features
+- AI compatibility (Check for local Ollama)
+- External link schema for auto interpolating episodes to URI: `http://comics.com/comics/123456&chapter={{chapter}}`
 - Searching using following schema : `<title?> [property operator value[, value...]]*`. Supported operators: `=  !=  <  <=  >  >=`. Example query: `One Punch Man [genre=Comedy, Fighting][genre!=Thriller][year>=2015]` would result in:
 ```json
 // AST Representation
