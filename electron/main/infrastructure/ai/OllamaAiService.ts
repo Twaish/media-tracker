@@ -1,6 +1,7 @@
 import { IAiService } from '@/application/ai/IAiService'
 import { Ollama } from 'ollama'
 
+// TODO: Allow user to define host through options/settings
 export class OllamaAiService implements IAiService {
   ollama: Ollama
   constructor() {
