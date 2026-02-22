@@ -2,7 +2,7 @@ import { IAiService } from '@/application/ai/IAiService'
 import { Config, Ollama } from 'ollama'
 import { IAiSettingsProvider } from '@/application/ai/IAiSettingsProvider'
 
-export class OllamaAiService implements IAiService {
+export class OllamaService implements IAiService {
   ollama: Ollama
   currentHost: string
   generation = 0

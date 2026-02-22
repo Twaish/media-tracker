@@ -3,7 +3,7 @@ import { JsonStore } from '@/core/JsonStore'
 import { IAiSettingsProvider } from '@/application/ai/IAiSettingsProvider'
 import { AiSettings } from '@/application/ai/AiSettings'
 
-export class OllamaAiSettingsProvider
+export class OllamaSettingsProvider
   extends EventEmitter
   implements IAiSettingsProvider
 {
