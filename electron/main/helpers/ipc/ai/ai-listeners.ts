@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron'
 import { createAiUseCases } from '@/usecases/ai'
-import { AI_CHECK_COMPATIBILITY } from './ai-channels'
+import { AI_CHECK_COMPATIBILITY, AI_UPDATE_HOST } from './ai-channels'
 import { Modules } from '../types'
 
 export function addAiEventListeners(modules: Modules) {
@@ -8,5 +8,8 @@ export function addAiEventListeners(modules: Modules) {
 
   ipcMain.handle(AI_CHECK_COMPATIBILITY, () => {
     return useCases.checkAiCompatibility.execute()
+  })
+  ipcMain.handle(AI_UPDATE_HOST, (_, host: string) => {
+    return useCases.updateAiHost.execute(host)
   })
 }

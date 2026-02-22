@@ -13,4 +13,5 @@ export type AiStatus = AiStatusFailure | AiStatusSuccess
 
 export interface AiContext {
   checkCompatibility: () => Promise<AiStatus>
+  updateHost: (host: string) => Promise<void>
 }

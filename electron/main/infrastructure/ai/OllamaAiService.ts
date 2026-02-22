@@ -1,21 +1,38 @@
 import { IAiService } from '@/application/ai/IAiService'
-import { Ollama } from 'ollama'
+import { Config, Ollama } from 'ollama'
+import { IAiSettingsProvider } from '@/application/ai/IAiSettingsProvider'
 
-// TODO: Allow user to define host through options/settings
 export class OllamaAiService implements IAiService {
   ollama: Ollama
-  constructor() {
-    this.ollama = new Ollama({
-      host: 'http://localhost:11434',
-    })
-  }
+  currentHost: string
+  generation = 0
+  constructor(settings: IAiSettingsProvider) {
+    this.currentHost = settings.host
+    this.ollama = this.createClient(settings.host)
 
+    settings.onHostChanged(this.reconnect)
+  }
+  private createClient(
+    host: string,
+    options: Partial<Omit<Config, 'host'>> = {},
+  ): Ollama {
+    return new Ollama({ host, ...options })
+  }
+  private reconnect = (host: string) => {
+    if (this.currentHost === host) return
+
+    this.currentHost = host
+    this.ollama.abort()
+    this.ollama = this.createClient(host)
+  }
   async getVersion(): Promise<string> {
-    const version = await this.ollama.version()
+    const client = this.ollama
+    const version = await client.version()
     return version.version
   }
   async listModels(): Promise<string[]> {
-    const modelsResponse = await this.ollama.list()
+    const client = this.ollama
+    const modelsResponse = await client.list()
     const models = modelsResponse.models.map((m) => m.name)
     return models
   }

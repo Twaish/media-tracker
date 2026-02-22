@@ -7,12 +7,14 @@ import { IAiService } from '@/application/ai/IAiService'
 import { ILogger } from '@/application/logging/ILogger'
 import { IGenresRepository } from '@/application/db/repositories/IGenresRepository'
 import { IMediaRepository } from '@/application/db/repositories/IMediaRepository'
+import { IAiSettingsProvider } from '@/application/ai/IAiSettingsProvider'
 
 declare interface Modules {
   ElectronWindow: ElectronWindow
   StorageService: StorageService
   window: BrowserWindow
   logger: ILogger
+  AiSettingsProvider: IAiSettingsProvider
   AiService: IAiService
 
   MediaRepository: IMediaRepository

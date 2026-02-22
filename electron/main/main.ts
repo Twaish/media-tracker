@@ -22,6 +22,8 @@ import { OllamaAiService } from './infrastructure/ai/OllamaAiService'
 import { createDb } from './infrastructure/db/client'
 import { MediaRepositoryDrizzle } from './infrastructure/db/repositories/mediaRepositoryDrizzle'
 import { GenresRepositoryDrizzle } from './infrastructure/db/repositories/genresRepositoryDrizzle'
+import { JsonStore } from './core/JsonStore'
+import { OllamaAiSettingsProvider } from './infrastructure/ai/OllamaAiSettingsProvider'
 
 app.whenReady().then(async () => {
   const { DB_PATH, LOG_PATH } = config
@@ -40,13 +42,17 @@ app.whenReady().then(async () => {
     const genresRepository = new GenresRepositoryDrizzle(database)
 
     logger.info('Initializing storage')
+    const settingsStore = new JsonStore('./Settings')
     const storageService = new StorageService('./Media Images')
     storageService.on('image-stored', (imagePath) => {
       logger.info(`Stored image ${imagePath}`)
     })
 
     logger.info('Initializing AI services')
-    const aiService = new OllamaAiService()
+    const aiSettings = new OllamaAiSettingsProvider(settingsStore)
+    await aiSettings.init()
+
+    const aiService = new OllamaAiService(aiSettings)
 
     logger.info('Creating window')
     const electronWindow = new ElectronWindow()
@@ -58,6 +64,7 @@ app.whenReady().then(async () => {
       ElectronWindow: electronWindow,
       window: electronWindow.window,
       StorageService: storageService,
+      AiSettingsProvider: aiSettings,
       AiService: aiService,
       logger: logger,
 

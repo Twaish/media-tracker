@@ -1,10 +1,15 @@
 import { AiContext } from '@shared/types/ai'
-import { AI_CHECK_COMPATIBILITY } from './ai-channels'
+import { AI_CHECK_COMPATIBILITY, AI_UPDATE_HOST } from './ai-channels'
 
 export function exposeAiContext() {
   const { contextBridge, ipcRenderer } = window.require('electron')
   const context: AiContext = {
-    checkCompatibility: () => ipcRenderer.invoke(AI_CHECK_COMPATIBILITY),
+    checkCompatibility() {
+      return ipcRenderer.invoke(AI_CHECK_COMPATIBILITY)
+    },
+    updateHost(host: string) {
+      return ipcRenderer.invoke(AI_UPDATE_HOST, host)
+    },
   }
   contextBridge.exposeInMainWorld('ai', context)
 }
