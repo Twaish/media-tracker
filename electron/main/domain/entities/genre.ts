@@ -1,23 +1,48 @@
+export type GenreProps = {
+  name: string
+  isDeletable: boolean
+}
+
+export type PersistedGenre = GenreProps & {
+  id: number
+}
+
 export class Genre {
   private constructor(
     public readonly id: number | null,
-    public readonly name: string,
-    public readonly isDeletable: boolean,
+    public readonly props: GenreProps,
   ) {}
 
-  static create(params: { name: string; isDeletable: boolean }): Genre {
-    if (!params.name || params.name.trim().length === 0) {
+  get name() {
+    return this.props.name
+  }
+  get isDeletable() {
+    return this.props.isDeletable
+  }
+
+  static create(props: GenreProps): Genre {
+    if (!props.name || props.name.trim().length === 0) {
       throw new Error('Genre name cannot be empty')
     }
 
-    if (params.name.length > 25) {
+    if (props.name.length > 25) {
       throw new Error('Genre name cannot exceed 25 characters')
     }
 
-    return new Genre(null, params.name.trim(), params.isDeletable)
+    return new Genre(null, props)
   }
 
   withId(id: number) {
-    return new Genre(id, this.name, this.isDeletable)
+    return new Genre(id, this.props)
+  }
+
+  toDTO() {
+    if (this.id === null) {
+      throw new Error(`Cannot convert unsaved Genre to DTO`)
+    }
+    return {
+      id: this.id,
+      ...this.props,
+    }
   }
 }
