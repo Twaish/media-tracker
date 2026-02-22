@@ -24,7 +24,7 @@ import {
 } from 'drizzle-orm'
 import { Filter } from '@/domain/services/QueryResolver'
 import { SQLiteColumn } from 'drizzle-orm/sqlite-core'
-import { DrizzleDb } from '../types'
+import { DrizzleDb, Executor } from '../types'
 
 export class MediaRepositoryDrizzle implements IMediaRepository {
   private readonly columnMap: Record<string, SQLiteColumn> = {
@@ -39,8 +39,8 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
 
   constructor(private readonly db: DrizzleDb) {}
 
-  async getById(id: number) {
-    const media = await this.db.query.mediaTable.findFirst({
+  async getById(id: number, executor: Executor = this.db) {
+    const media = await executor.query.mediaTable.findFirst({
       where: (m) => eq(m.id, id),
       with: {
         mediaGenres: {
@@ -61,7 +61,7 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
   }
 
   async add(input: MediaCreateInput) {
-    const insertedId = await this.db.transaction(async (tx) => {
+    return this.db.transaction(async (tx) => {
       const { genres = [], ...mediaData } = input
 
       const [inserted] = await tx
@@ -78,14 +78,12 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
         )
       }
 
-      return inserted.id
+      return this.getById(inserted.id, tx)
     })
-
-    return this.getById(insertedId)
   }
 
   async update(input: MediaUpdateInput) {
-    const updatedId = await this.db.transaction(async (tx) => {
+    return this.db.transaction(async (tx) => {
       const { id, genres, ...mediaUpdates } = input
 
       if (Object.keys(mediaUpdates).length > 0) {
@@ -110,10 +108,8 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
         }
       }
 
-      return id
+      return this.getById(id, tx)
     })
-
-    return this.getById(updatedId)
   }
 
   async remove(ids: number[]) {
