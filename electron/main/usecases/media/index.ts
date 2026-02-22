@@ -8,6 +8,7 @@ import ResolveExternalMediaLink from './resolveExternalMediaLink'
 import { ExternalLinkResolver } from '@/domain/services/ExternalLinkResolver'
 import SearchMedia from './searchMedia'
 import { QueryResolver } from '@/domain/services/QueryResolver'
+import GetMediaById from './getMediaById'
 
 export function createMediaUseCases({
   MediaRepository,
@@ -27,5 +28,6 @@ export function createMediaUseCases({
       externalLinkResolver,
     ),
     searchMedia: new SearchMedia(MediaRepository, queryResolver),
+    getMediaById: new GetMediaById(MediaRepository),
   }
 }

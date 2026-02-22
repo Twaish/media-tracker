@@ -1,6 +1,7 @@
 import {
   MEDIA_ADD,
   MEDIA_GET,
+  MEDIA_GET_BY_ID,
   MEDIA_REMOVE,
   MEDIA_RESOLVE_EXTERNAL_LINK,
   MEDIA_SEARCH,
@@ -37,6 +38,9 @@ export function exposeMediaContext() {
     },
     search(query: string) {
       return ipcRenderer.invoke(MEDIA_SEARCH, query)
+    },
+    getById(mediaId: number) {
+      return ipcRenderer.invoke(MEDIA_GET_BY_ID, mediaId)
     },
   }
   contextBridge.exposeInMainWorld('media', context)

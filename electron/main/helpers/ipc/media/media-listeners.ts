@@ -3,6 +3,7 @@ import { Modules } from '../types'
 import {
   MEDIA_ADD,
   MEDIA_GET,
+  MEDIA_GET_BY_ID,
   MEDIA_REMOVE,
   MEDIA_RESOLVE_EXTERNAL_LINK,
   MEDIA_SEARCH,
@@ -42,5 +43,8 @@ export function addMediaEventListeners(modules: Modules) {
   })
   ipcMain.handle(MEDIA_SEARCH, (_, query: string) => {
     return useCases.searchMedia.execute(query)
+  })
+  ipcMain.handle(MEDIA_GET_BY_ID, (_, mediaId: number) => {
+    return useCases.getMediaById.execute(mediaId)
   })
 }

@@ -24,4 +24,5 @@ export interface MediaContext {
   setNextMedia: (mediaId: number, nextMediaId: number) => Promise<void>
   resolveExternalLink: (mediaId: number) => Promise<string | null>
   search: (query: string) => Promise<SearchQuery>
+  getById: (mediaId: number) => Promise<PersistedMedia>
 }
