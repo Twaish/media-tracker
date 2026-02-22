@@ -34,20 +34,20 @@ type MediaParams = {
 
 export class Media {
   private constructor(
-    private readonly id: number | null,
-    private readonly title: string,
-    private readonly currentEpisode: number,
-    private readonly maxEpisodes: number | null,
-    private readonly thumbnail: string | null,
-    private readonly mediaType: MediaType,
-    private readonly status: MediaStatus,
-    private readonly externalLink: string | null,
-    private readonly alternateTitles: string,
-    private readonly watchAfter: number | null,
-    private readonly lastUpdated: Date | null,
-    private readonly createdAt: Date | null,
-    private readonly isFavorite: boolean,
-    private readonly genres: GenreDTO[],
+    public readonly id: number | null,
+    public readonly title: string,
+    public readonly currentEpisode: number,
+    public readonly maxEpisodes: number | null,
+    public readonly thumbnail: string | null,
+    public readonly mediaType: MediaType,
+    public readonly status: MediaStatus,
+    public readonly externalLink: string | null,
+    public readonly alternateTitles: string,
+    public readonly watchAfter: number | null,
+    public readonly lastUpdated: Date | null,
+    public readonly createdAt: Date | null,
+    public readonly isFavorite: boolean,
+    public readonly genres: GenreDTO[],
   ) {}
 
   static create(params: Omit<MediaParams, 'id'>): Media {
@@ -102,17 +102,5 @@ export class Media {
       this.isFavorite,
       this.genres,
     )
-  }
-
-  getExternalLink() {
-    return this.externalLink
-  }
-
-  getCurrentEpisode() {
-    return this.currentEpisode
-  }
-
-  getMaxEpisodes() {
-    return this.maxEpisodes
   }
 }

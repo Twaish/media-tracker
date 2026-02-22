@@ -13,13 +13,13 @@ export default class ResolveExternalMediaLink {
       return null
     }
 
-    const externalLink = media.getExternalLink()
+    const externalLink = media.externalLink
     if (!externalLink) {
       return null
     }
 
-    let nextEpisode = media.getCurrentEpisode() + 1
-    const maxEpisodes = media.getMaxEpisodes()
+    let nextEpisode = media.currentEpisode + 1
+    const maxEpisodes = media.maxEpisodes
     if (maxEpisodes) {
       nextEpisode = nextEpisode > maxEpisodes ? maxEpisodes : nextEpisode
     }
