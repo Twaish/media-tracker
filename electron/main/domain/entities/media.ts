@@ -81,24 +81,24 @@ export class Media {
     return this.props.genres
   }
 
-  static create(input: MediaProps): Media {
-    const props: MediaProps = {
-      title: input.title,
-      currentEpisode: input.currentEpisode ?? 0,
-      maxEpisodes: input.maxEpisodes ?? null,
-      thumbnail: input.thumbnail ?? null,
-      type: input.type ?? 'anime',
-      status: input.status ?? 'plan-to-watch',
-      externalLink: input.externalLink ?? null,
-      alternateTitles: input.alternateTitles ?? '',
-      watchAfter: input.watchAfter ?? null,
-      lastUpdated: input.lastUpdated ?? new Date(),
-      createdAt: input.createdAt ?? new Date(),
-      isFavorite: input.isFavorite ?? false,
-      genres: input.genres ?? [],
+  static create(props: MediaProps): Media {
+    const mediaProps: MediaProps = {
+      title: props.title,
+      currentEpisode: props.currentEpisode ?? 0,
+      maxEpisodes: props.maxEpisodes ?? null,
+      thumbnail: props.thumbnail ?? null,
+      type: props.type ?? 'anime',
+      status: props.status ?? 'plan-to-watch',
+      externalLink: props.externalLink ?? null,
+      alternateTitles: props.alternateTitles ?? '',
+      watchAfter: props.watchAfter ?? null,
+      lastUpdated: props.lastUpdated ?? new Date(),
+      createdAt: props.createdAt ?? new Date(),
+      isFavorite: props.isFavorite ?? false,
+      genres: props.genres ?? [],
     }
 
-    return new Media(null, props)
+    return new Media(null, mediaProps)
   }
 
   withId(id: number) {
