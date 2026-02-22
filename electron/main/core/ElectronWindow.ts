@@ -70,17 +70,14 @@ export class ElectronWindow extends EventEmitter {
     return this.mainWindow
   }
 
+  loadUrl(url: string) {
+    this.mainWindow.loadURL(url)
+  }
+
   showWindow() {
-    const { mainWindow } = this
-    const devUrl = process.env['ELECTRON_RENDERER_URL']
-    if (is.dev && devUrl) {
-      mainWindow.loadURL(devUrl)
-    } else {
-      mainWindow.loadFile(path.join(__dirname, `../renderer/index.html`))
-    }
-    mainWindow.show()
+    this.mainWindow.show()
     // mainWindow.maximize()
     // @ts-expect-error Available
-    mainWindow.openDevTools()
+    this.mainWindow.openDevTools()
   }
 }
