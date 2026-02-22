@@ -6,11 +6,12 @@ export class OllamaAiService implements IAiService {
   ollama: Ollama
   currentHost: string
   generation = 0
-  constructor(settings: IAiSettingsProvider) {
+  constructor(settingsProvider: IAiSettingsProvider) {
+    const settings = settingsProvider.settings
     this.currentHost = settings.host
-    this.ollama = this.createClient(settings.host)
+    this.ollama = this.createClient(this.currentHost)
 
-    settings.onHostChanged(this.reconnect)
+    settingsProvider.onHostChanged(this.reconnect)
   }
   private createClient(
     host: string,

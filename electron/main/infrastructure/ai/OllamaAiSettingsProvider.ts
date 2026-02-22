@@ -8,13 +8,13 @@ export class OllamaAiSettingsProvider
   implements IAiSettingsProvider
 {
   private readonly filename = 'ollama-settings'
-  private settings: AiSettings
+  private _settings: AiSettings
   private store: JsonStore
 
   constructor(store: JsonStore) {
     super()
     this.store = store
-    this.settings = { host: 'http://localhost:11434/' }
+    this._settings = { host: 'http://localhost:11434/' }
   }
 
   onHostChanged(listener: (host: string) => void): () => void {
@@ -26,14 +26,14 @@ export class OllamaAiSettingsProvider
     const saved = await this.store.get<AiSettings>(this.filename)
 
     if (saved) {
-      this.settings = saved
+      this._settings = saved
     } else {
-      await this.store.set(this.filename, this.settings)
+      await this.store.set(this.filename, this._settings)
     }
   }
 
-  get host(): string {
-    return this.settings.host
+  get settings() {
+    return { ...this._settings }
   }
 
   private normalizeHost(host: string) {
@@ -46,12 +46,12 @@ export class OllamaAiSettingsProvider
   }
 
   async updateHost(newHost: string) {
-    if (this.settings.host === newHost) return
+    if (this._settings.host === newHost) return
 
     const normalizedHost = this.normalizeHost(newHost)
-    this.settings.host = normalizedHost
+    this._settings.host = normalizedHost
 
-    await this.store.set(this.filename, this.settings)
+    await this.store.set(this.filename, this._settings)
 
     this.emit('hostChanged', normalizedHost)
   }

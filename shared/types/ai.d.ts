@@ -1,3 +1,5 @@
+import { AiSettings } from '@/application/ai/AiSettings'
+
 export type AiStatusSuccess = {
   available: true
   version: string
@@ -14,4 +16,5 @@ export type AiStatus = AiStatusFailure | AiStatusSuccess
 export interface AiContext {
   checkCompatibility: () => Promise<AiStatus>
   updateHost: (host: string) => Promise<void>
+  getSettings: () => Promise<AiSettings>
 }

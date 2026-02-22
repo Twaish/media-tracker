@@ -1,5 +1,7 @@
+import { AiSettings } from './AiSettings'
+
 export interface IAiSettingsProvider {
-  host: string
+  settings: AiSettings
   init(): Promise<void>
   updateHost(newHost: string): Promise<void>
   onHostChanged(listener: (host: string) => void): () => void
