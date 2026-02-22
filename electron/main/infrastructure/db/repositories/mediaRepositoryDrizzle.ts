@@ -61,7 +61,7 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
   }
 
   async add(input: MediaCreateInput) {
-    return this.db.transaction(async (tx) => {
+    const insertedId = await this.db.transaction(async (tx) => {
       const { genres = [], ...mediaData } = input
 
       const [inserted] = await tx
@@ -78,23 +78,14 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
         )
       }
 
-      const created = await tx.query.mediaTable.findFirst({
-        where: (m) => eq(m.id, inserted.id),
-        with: {
-          mediaGenres: {
-            with: { genre: true },
-          },
-        },
-      })
-
-      if (!created) throw new Error('Failed to load created media')
-
-      return this.toDomain(created)
+      return inserted.id
     })
+
+    return this.getById(insertedId)
   }
 
   async update(input: MediaUpdateInput) {
-    return this.db.transaction(async (tx) => {
+    const updatedId = await this.db.transaction(async (tx) => {
       const { id, genres, ...mediaUpdates } = input
 
       if (Object.keys(mediaUpdates).length > 0) {
@@ -119,19 +110,10 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
         }
       }
 
-      const updated = await tx.query.mediaTable.findFirst({
-        where: (m) => eq(m.id, id),
-        with: {
-          mediaGenres: {
-            with: { genre: true },
-          },
-        },
-      })
-
-      if (!updated) throw new Error(`Media with id ${id} not found`)
-
-      return this.toDomain(updated)
+      return id
     })
+
+    return this.getById(updatedId)
   }
 
   async remove(ids: number[]) {
