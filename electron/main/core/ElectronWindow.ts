@@ -74,6 +74,10 @@ export class ElectronWindow extends EventEmitter {
     this.mainWindow.loadURL(url)
   }
 
+  ready() {
+    this.emit('ready')
+  }
+
   showWindow() {
     this.mainWindow.show()
     // mainWindow.maximize()

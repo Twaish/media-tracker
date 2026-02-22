@@ -7,3 +7,6 @@ export async function maximizeWindow() {
 export async function closeWindow() {
   await window.electronWindow.close()
 }
+export async function readyWindow() {
+  await window.electronWindow.ready()
+}
