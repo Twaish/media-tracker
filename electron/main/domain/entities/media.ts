@@ -1,3 +1,5 @@
+import { PersistedGenre } from './genre'
+
 export const MEDIA_TYPES = ['anime', 'manga', 'manhwa', 'manhua'] as const
 export const MEDIA_STATUS = [
   'watching',
@@ -9,11 +11,6 @@ export const MEDIA_STATUS = [
 
 export type MediaType = (typeof MEDIA_TYPES)[number]
 export type MediaStatus = (typeof MEDIA_STATUS)[number]
-
-export type GenreDTO = {
-  id: number
-  name: string
-}
 
 type MediaProps = {
   title: string
@@ -28,7 +25,7 @@ type MediaProps = {
   lastUpdated: Date | null
   createdAt: Date | null
   isFavorite: boolean
-  genres: GenreDTO[]
+  genres: PersistedGenre[]
 }
 
 export type PersistedMedia = MediaProps & {

@@ -1,6 +1,6 @@
 import { genresTable, mediaGenresTable, mediaTable } from '../schema'
 import { IMediaRepository } from '@/application/db/repositories/IMediaRepository'
-import { GenreDTO, Media, PersistedMedia } from '@/domain/entities/media'
+import { Media, PersistedMedia } from '@/domain/entities/media'
 import {
   MediaCreateInput,
   MediaPaginationOptions,
@@ -25,6 +25,7 @@ import {
 import { Filter } from '@/domain/services/QueryResolver'
 import { SQLiteColumn } from 'drizzle-orm/sqlite-core'
 import { DrizzleDb, Executor } from '../types'
+import { Genre, PersistedGenre } from '@/domain/entities/genre'
 
 export class MediaRepositoryDrizzle implements IMediaRepository {
   private readonly columnMap: Record<string, SQLiteColumn> = {
@@ -257,10 +258,14 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
       }[]
     },
   ): PersistedMedia {
-    const genres: GenreDTO[] = row.mediaGenres.map((mg) => ({
-      id: mg.genre.id,
-      name: mg.genre.name,
-    }))
+    const genres: PersistedGenre[] = row.mediaGenres.map((mg) =>
+      Genre.create({
+        name: mg.genre.name,
+        isDeletable: mg.genre.isDeletable,
+      })
+        .withId(mg.genre.id)
+        .toDTO(),
+    )
 
     return Media.create({
       ...row,
