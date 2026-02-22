@@ -24,9 +24,10 @@ import { MediaRepositoryDrizzle } from './infrastructure/db/repositories/mediaRe
 import { GenresRepositoryDrizzle } from './infrastructure/db/repositories/genresRepositoryDrizzle'
 import { JsonStore } from './core/JsonStore'
 import { OllamaSettingsProvider } from './infrastructure/ai/OllamaSettingsProvider'
+import { TaskService } from './core/TaskService'
 
 app.whenReady().then(async () => {
-  const { DB_PATH, LOG_PATH } = config
+  const { DB_PATH, LOG_PATH, APP_URL } = config
 
   const consoleTransport = createConsoleTransport(consoleFormat)
   const fileTransport = createFileTransport(LOG_PATH, fileFormat)
@@ -40,6 +41,9 @@ app.whenReady().then(async () => {
     const database = createDb(DB_PATH)
     const mediaRepository = new MediaRepositoryDrizzle(database)
     const genresRepository = new GenresRepositoryDrizzle(database)
+
+    logger.info('Initializing task service')
+    const taskService = new TaskService()
 
     logger.info('Initializing storage')
     const settingsStore = new JsonStore('./Settings')
@@ -55,15 +59,16 @@ app.whenReady().then(async () => {
     const ollamaService = new OllamaService(ollamaSettings)
 
     logger.info('Creating window')
-    const electronWindow = new ElectronWindow()
-    electronWindow.on('attempted-navigation', (_, url) => {
+    const mainWindow = new ElectronWindow()
+    mainWindow.on('attempted-navigation', (_, url) => {
       logger.warn(`Navigation attempted to: ${url}`)
     })
 
     const modules: Modules = {
-      ElectronWindow: electronWindow,
-      window: electronWindow.window,
+      ElectronWindow: mainWindow,
+      window: mainWindow.window,
       StorageService: storageService,
+      TaskService: taskService,
       logger: logger,
 
       AiSettingsProvider: ollamaSettings,
@@ -80,6 +85,8 @@ app.whenReady().then(async () => {
     logger.info('Registering custom protocols')
     registerProtocols(modules)
 
+    mainWindow.loadUrl(APP_URL)
+
     logger.header('Database')
     logger.info('Running migrations')
     await runMigrations(database)
@@ -89,7 +96,7 @@ app.whenReady().then(async () => {
 
     logger.header('Startup')
     logger.info('Showing main window')
-    electronWindow.showWindow()
+    mainWindow.showWindow()
 
     logger.header('App ready')
   } catch (err) {
