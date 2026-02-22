@@ -2,9 +2,9 @@ import { genresTable, mediaGenresTable, mediaTable } from '../schema'
 import { IMediaRepository } from '@/application/db/repositories/IMediaRepository'
 import { Media, PersistedMedia } from '@/domain/entities/media'
 import {
-  MediaCreateInput,
+  AddMediaDTO,
   MediaPaginationOptions,
-  MediaUpdateInput,
+  UpdateMediaDTO,
 } from '@shared/types'
 import {
   inArray,
@@ -61,7 +61,7 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
     return this.search({ pagination: options })
   }
 
-  async add(input: MediaCreateInput) {
+  async add(input: AddMediaDTO) {
     return this.db.transaction(async (tx) => {
       const { genres = [], ...mediaData } = input
 
@@ -83,7 +83,7 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
     })
   }
 
-  async update(input: MediaUpdateInput) {
+  async update(input: UpdateMediaDTO) {
     return this.db.transaction(async (tx) => {
       const { id, genres, ...mediaUpdates } = input
 

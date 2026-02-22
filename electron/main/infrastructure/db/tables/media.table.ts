@@ -18,7 +18,7 @@ export const mediaTable = sqliteTable('media', {
   status: text().$type<MediaStatus>().notNull().default('plan-to-watch'),
 
   externalLink: text(),
-  alternateTitles: text().notNull().default(''),
+  alternateTitles: text(),
 
   watchAfter: int().references((): AnySQLiteColumn => mediaTable.id),
 

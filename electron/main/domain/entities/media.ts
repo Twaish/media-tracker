@@ -12,7 +12,7 @@ export const MEDIA_STATUS = [
 export type MediaType = (typeof MEDIA_TYPES)[number]
 export type MediaStatus = (typeof MEDIA_STATUS)[number]
 
-type MediaProps = {
+export type MediaProps = {
   title: string
   currentEpisode: number
   maxEpisodes: number | null
@@ -20,7 +20,7 @@ type MediaProps = {
   type: MediaType
   status: MediaStatus
   externalLink: string | null
-  alternateTitles: string
+  alternateTitles: string | null
   watchAfter: number | null
   lastUpdated: Date | null
   createdAt: Date | null
@@ -87,7 +87,7 @@ export class Media {
       type: props.type ?? 'anime',
       status: props.status ?? 'plan-to-watch',
       externalLink: props.externalLink ?? null,
-      alternateTitles: props.alternateTitles ?? '',
+      alternateTitles: props.alternateTitles ?? null,
       watchAfter: props.watchAfter ?? null,
       lastUpdated: props.lastUpdated ?? new Date(),
       createdAt: props.createdAt ?? new Date(),

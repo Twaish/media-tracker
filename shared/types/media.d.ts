@@ -1,14 +1,15 @@
+import { MediaProps, PersistedMedia } from '@/domain/entities/media'
 import { SearchQuery } from '@/domain/services/QueryResolver'
-import { mediaTable } from '@/infrastructure/db/schema'
-import { InferInsertModel, InferSelectModel } from 'drizzle-orm'
 
-export type Media = InferSelectModel<typeof mediaTable>
-export type MediaCreateInput = InferInsertModel<typeof mediaTable> & {
+export type AddMediaDTO = Omit<
+  MediaProps,
+  'genres' | 'createdAt' | 'lastUpdated'
+> & {
   genres: number[]
 }
-export type MediaUpdateInput = Partial<
-  Omit<MediaCreateInput, 'id' | 'createdAt'>
-> & { id: number }
+export type UpdateMediaDTO = Partial<AddMediaDTO> & {
+  id: number
+}
 
 export interface MediaPaginationOptions {
   page: number
@@ -16,10 +17,10 @@ export interface MediaPaginationOptions {
 }
 
 export interface MediaContext {
-  get: (options: MediaPaginationOptions) => Promise<Media[]>
-  add: (media: MediaCreateInput) => Promise<Media>
+  get: (options: MediaPaginationOptions) => Promise<PersistedMedia[]>
+  add: (media: AddMediaDTO) => Promise<PersistedMedia>
   remove: (mediaIds: number[]) => Promise<void>
-  update: (media: MediaUpdateInput) => Promise<Media>
+  update: (media: UpdateMediaDTO) => Promise<PersistedMedia>
   setNextMedia: (mediaId: number, nextMediaId: number) => Promise<void>
   resolveExternalLink: (mediaId: number) => Promise<string | null>
   search: (query: string) => Promise<SearchQuery>
