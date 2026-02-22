@@ -1,4 +1,4 @@
-type WatchPlanProps = {
+export type WatchPlanProps = {
   name: string
   segments: WatchPlanSegmentProps[]
   createdAt: Date | null
@@ -56,7 +56,7 @@ export class WatchPlan {
   }
 }
 
-type WatchPlanSegmentProps = {
+export type WatchPlanSegmentProps = {
   mediaId: number
   startEpisode: number
   endEpisode: number

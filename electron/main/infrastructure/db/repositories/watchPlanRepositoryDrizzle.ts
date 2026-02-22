@@ -1,4 +1,4 @@
-import { mediaTable, watchPlanSegmentsTable, watchPlansTable } from '../schema'
+import { watchPlanSegmentsTable, watchPlansTable } from '../schema'
 import { inArray, eq } from 'drizzle-orm'
 import { DrizzleDb, Executor } from '../types'
 import { IWatchPlanRepository } from '@/application/db/repositories/IWatchPlanRepository'
@@ -7,10 +7,7 @@ import {
   WatchPlan,
   WatchPlanSegment,
 } from '@/domain/entities/watchPlan'
-import {
-  WatchPlanCreateInput,
-  WatchPlanUpdateInput,
-} from '@shared/types/watchPlans'
+import { AddWatchPlanDTO, UpdateWatchPlanDTO } from '@shared/types/watchPlans'
 
 export class WatchPlanRepositoryDrizzle implements IWatchPlanRepository {
   constructor(private readonly db: DrizzleDb) {}
@@ -42,7 +39,7 @@ export class WatchPlanRepositoryDrizzle implements IWatchPlanRepository {
     return rows.map(this.toDomain)
   }
 
-  async add(input: WatchPlanCreateInput) {
+  async add(input: AddWatchPlanDTO) {
     return this.db.transaction(async (tx) => {
       const { segments, ...watchPlanData } = input
 
@@ -65,7 +62,7 @@ export class WatchPlanRepositoryDrizzle implements IWatchPlanRepository {
     })
   }
 
-  async update(input: WatchPlanUpdateInput) {
+  async update(input: UpdateWatchPlanDTO) {
     return this.db.transaction(async (tx) => {
       const { id, segments, ...watchPlanUpdates } = input
 

@@ -1,18 +1,14 @@
-import { WatchPlan, WatchPlanSegment } from '@/domain/entities/watchPlan'
-import { watchPlansTable } from '@/infrastructure/db/schema'
-import { InferInsertModel } from 'drizzle-orm'
+import { PersistedWatchPlan, WatchPlanProps } from '@/domain/entities/watchPlan'
 
-export type WatchPlanCreateInput = InferInsertModel<typeof watchPlansTable> & {
-  segments: WatchPlanSegment[]
+export type AddWatchPlanDTO = Omit<WatchPlanProps, 'createdAt'>
+
+export type UpdateWatchPlanDTO = Partial<AddWatchPlanDTO> & {
+  id: number
 }
 
-export type WatchPlanUpdateInput = Partial<
-  Omit<WatchPlanCreateInput, 'id' | 'createdAt'>
-> & { id: number; segments: WatchPlanSegment[] }
-
 export interface WatchPlansContext {
-  get: () => Promise<WatchPlan[]>
-  add: (watchPlan: WatchPlanCreateInput) => Promise<WatchPlan>
+  get: () => Promise<PersistedWatchPlan[]>
+  add: (watchPlan: AddWatchPlanDTO) => Promise<PersistedWatchPlan>
   remove: (ids: number[]) => Promise<void>
-  update: (media: WatchPlanUpdateInput) => Promise<WatchPlan>
+  update: (media: UpdateWatchPlanDTO) => Promise<PersistedWatchPlan>
 }
