@@ -21,6 +21,7 @@ import {
   gte,
   SQL,
   sql,
+  isNull,
 } from 'drizzle-orm'
 import { Filter } from '@/domain/services/QueryResolver'
 import { SQLiteColumn } from 'drizzle-orm/sqlite-core'
@@ -42,7 +43,7 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
 
   async getById(id: number, executor: Executor = this.db) {
     const media = await executor.query.mediaTable.findFirst({
-      where: (m) => eq(m.id, id),
+      where: (m) => and(eq(m.id, id), isNull(m.deletedAt)),
       with: {
         mediaGenres: {
           with: {
@@ -115,8 +116,11 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
 
   async remove(ids: number[]) {
     if (!ids.length) return { deleted: 0, ids: [] }
+
+    const now = new Date()
     const rows = await this.db
-      .delete(mediaTable)
+      .update(mediaTable)
+      .set({ deletedAt: now })
       .where(inArray(mediaTable.id, ids))
       .returning({ id: mediaTable.id })
 
@@ -150,7 +154,10 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
       if (condition) conditions.push(condition)
     }
 
-    const whereClause = conditions.length > 0 ? and(...conditions) : undefined
+    const whereClause =
+      conditions.length > 0
+        ? and(...conditions, isNull(mediaTable.deletedAt))
+        : isNull(mediaTable.deletedAt)
 
     const [rows, totalItems] = await Promise.all([
       this.db.query.mediaTable.findMany({

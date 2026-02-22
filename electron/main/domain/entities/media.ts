@@ -26,6 +26,7 @@ export type MediaProps = {
   createdAt: Date | null
   isFavorite: boolean
   genres: PersistedGenre[]
+  deletedAt: Date | null
 }
 
 export type PersistedMedia = MediaProps & {
@@ -77,6 +78,9 @@ export class Media {
   get genres() {
     return this.props.genres
   }
+  get deletedAt() {
+    return this.props.deletedAt
+  }
 
   static create(props: MediaProps): Media {
     const mediaProps: MediaProps = {
@@ -93,6 +97,7 @@ export class Media {
       createdAt: props.createdAt ?? new Date(),
       isFavorite: props.isFavorite ?? false,
       genres: props.genres ?? [],
+      deletedAt: props.deletedAt ?? null,
     }
 
     return new Media(null, mediaProps)

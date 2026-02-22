@@ -3,7 +3,7 @@ import { SearchQuery } from '@/domain/services/QueryResolver'
 
 export type AddMediaDTO = Omit<
   MediaProps,
-  'genres' | 'createdAt' | 'lastUpdated'
+  'genres' | 'createdAt' | 'lastUpdated' | 'deletedAt'
 > & {
   genres: number[]
 }

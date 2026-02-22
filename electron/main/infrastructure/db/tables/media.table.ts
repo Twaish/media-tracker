@@ -25,4 +25,6 @@ export const mediaTable = sqliteTable('media', {
   lastUpdated: int({ mode: 'timestamp_ms' }).default(sql`(unixepoch() * 1000)`),
   createdAt: int({ mode: 'timestamp_ms' }).default(sql`(unixepoch() * 1000)`),
   isFavorite: int({ mode: 'boolean' }).notNull().default(false),
+
+  deletedAt: int({ mode: 'timestamp_ms' }),
 })
