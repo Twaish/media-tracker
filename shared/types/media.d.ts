@@ -15,11 +15,6 @@ export interface MediaPaginationOptions {
   limit: number
 }
 
-export interface MediaGenresInput {
-  mediaId: number
-  genreIds: number[]
-}
-
 export interface MediaContext {
   get: (options: MediaPaginationOptions) => Promise<Media[]>
   add: (media: MediaCreateInput) => Promise<Media>
