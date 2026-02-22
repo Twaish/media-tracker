@@ -14,7 +14,7 @@ export const mediaTable = sqliteTable('media', {
   maxEpisodes: int(),
   thumbnail: text(),
 
-  mediaType: text().$type<MediaType>().notNull().default('anime'),
+  type: text().$type<MediaType>().notNull().default('anime'),
   status: text().$type<MediaStatus>().notNull().default('plan-to-watch'),
 
   externalLink: text(),

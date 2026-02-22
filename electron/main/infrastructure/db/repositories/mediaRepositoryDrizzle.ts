@@ -32,7 +32,7 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
     title: mediaTable.title,
     currentepisode: mediaTable.currentEpisode,
     maxepisodes: mediaTable.maxEpisodes,
-    mediatype: mediaTable.mediaType,
+    type: mediaTable.type,
     status: mediaTable.status,
     createdat: mediaTable.createdAt,
   }

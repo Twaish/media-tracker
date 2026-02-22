@@ -21,7 +21,7 @@ type MediaParams = {
   currentEpisode: number
   maxEpisodes: number | null
   thumbnail: string | null
-  mediaType: MediaType
+  type: MediaType
   status: MediaStatus
   externalLink: string | null
   alternateTitles: string
@@ -56,7 +56,7 @@ export class Media {
       currentEpisode = 0,
       maxEpisodes,
       thumbnail,
-      mediaType = 'anime',
+      type = 'anime',
       status = 'plan-to-watch',
       externalLink,
       alternateTitles = '',
@@ -73,7 +73,7 @@ export class Media {
       currentEpisode,
       maxEpisodes,
       thumbnail,
-      mediaType,
+      type,
       status,
       externalLink,
       alternateTitles,
