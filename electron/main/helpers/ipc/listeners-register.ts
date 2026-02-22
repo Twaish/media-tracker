@@ -6,6 +6,7 @@ import { addMediaEventListeners } from './media/media-listeners'
 import { addStorageEventListeners } from './storage/storage-listeners'
 import { addAiEventListeners } from './ai/ai-listeners'
 import { addTasksEventListeners } from './tasks/tasks-listeners'
+import { addWatchPlansEventListeners } from './watchPlans/watch-plans-listeners'
 
 export default function registerListeners(modules: Modules) {
   addWindowEventListeners(modules)
@@ -15,4 +16,5 @@ export default function registerListeners(modules: Modules) {
   addStorageEventListeners(modules)
   addAiEventListeners(modules)
   addTasksEventListeners(modules)
+  addWatchPlansEventListeners(modules)
 }
