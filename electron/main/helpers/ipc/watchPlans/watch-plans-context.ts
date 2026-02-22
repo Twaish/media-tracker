@@ -1,7 +1,7 @@
 import {
-  WatchPlanCreateInput,
+  AddWatchPlanDTO,
+  UpdateWatchPlanDTO,
   WatchPlansContext,
-  WatchPlanUpdateInput,
 } from '@shared/types/watchPlans'
 import {
   WATCH_PLAN_ADD,
@@ -16,13 +16,13 @@ export function exposeWatchPlansContext() {
     get() {
       return ipcRenderer.invoke(WATCH_PLAN_GET)
     },
-    add(watchPlan: WatchPlanCreateInput) {
+    add(watchPlan: AddWatchPlanDTO) {
       return ipcRenderer.invoke(WATCH_PLAN_ADD, watchPlan)
     },
     remove(ids: number[]) {
       return ipcRenderer.invoke(WATCH_PLAN_REMOVE, ids)
     },
-    update(watchPlan: WatchPlanUpdateInput) {
+    update(watchPlan: UpdateWatchPlanDTO) {
       return ipcRenderer.invoke(WATCH_PLAN_UPDATE, watchPlan)
     },
   }

@@ -6,10 +6,7 @@ import {
   WATCH_PLAN_REMOVE,
   WATCH_PLAN_UPDATE,
 } from './watch-plans-channels'
-import {
-  WatchPlanCreateInput,
-  WatchPlanUpdateInput,
-} from '@shared/types/watchPlans'
+import { AddWatchPlanDTO, UpdateWatchPlanDTO } from '@shared/types/watchPlans'
 import { createWatchPlanUseCases } from '@/usecases/watchplan'
 
 export function addWatchPlansEventListeners(modules: Modules) {
@@ -18,13 +15,13 @@ export function addWatchPlansEventListeners(modules: Modules) {
   ipcMain.handle(WATCH_PLAN_GET, () => {
     return useCases.getWatchPlans.execute()
   })
-  ipcMain.handle(WATCH_PLAN_ADD, (_, watchPlan: WatchPlanCreateInput) => {
+  ipcMain.handle(WATCH_PLAN_ADD, (_, watchPlan: AddWatchPlanDTO) => {
     return useCases.addWatchPlan.execute(watchPlan)
   })
   ipcMain.handle(WATCH_PLAN_REMOVE, (_, ids: number[]) => {
     return useCases.removeWatchPlans.execute(ids)
   })
-  ipcMain.handle(WATCH_PLAN_UPDATE, (_, watchPlan: WatchPlanUpdateInput) => {
+  ipcMain.handle(WATCH_PLAN_UPDATE, (_, watchPlan: UpdateWatchPlanDTO) => {
     return useCases.updateWatchPlan.execute(watchPlan)
   })
 }

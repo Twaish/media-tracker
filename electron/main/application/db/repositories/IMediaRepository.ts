@@ -1,9 +1,9 @@
 import {
-  MediaCreateInput,
+  AddMediaDTO,
   MediaPaginationOptions,
-  MediaUpdateInput,
+  UpdateMediaDTO,
 } from '@shared/types'
-import { Media, PersistedMedia } from '@/domain/entities/media'
+import { PersistedMedia } from '@/domain/entities/media'
 import { Filter } from '@/domain/services/QueryResolver'
 
 export type MediaPaginationResult = {
@@ -21,9 +21,9 @@ export interface IMediaRepository {
   getWithPagination(
     options: MediaPaginationOptions,
   ): Promise<MediaPaginationResult>
-  add(media: MediaCreateInput): Promise<PersistedMedia>
+  add(media: AddMediaDTO): Promise<PersistedMedia>
   remove(ids: number[]): Promise<{ deleted: number; ids: number[] }>
-  update(media: MediaUpdateInput): Promise<PersistedMedia>
+  update(media: UpdateMediaDTO): Promise<PersistedMedia>
   search(options: {
     title?: string
     filters?: Filter[]

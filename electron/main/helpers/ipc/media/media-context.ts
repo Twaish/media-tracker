@@ -9,9 +9,9 @@ import {
 } from './media-channels'
 import {
   MediaPaginationOptions,
-  MediaCreateInput,
   MediaContext,
-  MediaUpdateInput,
+  AddMediaDTO,
+  UpdateMediaDTO,
 } from '@shared/types'
 
 export function exposeMediaContext() {
@@ -20,13 +20,13 @@ export function exposeMediaContext() {
     get(options: MediaPaginationOptions) {
       return ipcRenderer.invoke(MEDIA_GET, options)
     },
-    add(media: MediaCreateInput) {
+    add(media: AddMediaDTO) {
       return ipcRenderer.invoke(MEDIA_ADD, media)
     },
     remove(mediaIds: number[]) {
       return ipcRenderer.invoke(MEDIA_REMOVE, mediaIds)
     },
-    update(media: MediaUpdateInput) {
+    update(media: UpdateMediaDTO) {
       return ipcRenderer.invoke(MEDIA_UPDATE, media)
     },
     setNextMedia(mediaId: number, nextMediaId: number) {

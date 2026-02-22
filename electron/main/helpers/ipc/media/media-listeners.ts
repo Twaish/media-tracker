@@ -10,9 +10,9 @@ import {
   MEDIA_UPDATE,
 } from './media-channels'
 import {
-  MediaCreateInput,
+  AddMediaDTO,
   MediaPaginationOptions,
-  MediaUpdateInput,
+  UpdateMediaDTO,
 } from '@shared/types'
 import { createMediaUseCases } from '@/usecases/media'
 
@@ -22,13 +22,13 @@ export function addMediaEventListeners(modules: Modules) {
   ipcMain.handle(MEDIA_GET, (_, options: MediaPaginationOptions) => {
     return useCases.getMedia.execute(options)
   })
-  ipcMain.handle(MEDIA_ADD, (_, input: MediaCreateInput) => {
+  ipcMain.handle(MEDIA_ADD, (_, input: AddMediaDTO) => {
     return useCases.addMedia.execute(input)
   })
   ipcMain.handle(MEDIA_REMOVE, (_, mediaIds: number[]) => {
     return useCases.removeMedia.execute(mediaIds)
   })
-  ipcMain.handle(MEDIA_UPDATE, (_, update: MediaUpdateInput) => {
+  ipcMain.handle(MEDIA_UPDATE, (_, update: UpdateMediaDTO) => {
     return useCases.updateMedia.execute(update)
   })
   ipcMain.handle(
