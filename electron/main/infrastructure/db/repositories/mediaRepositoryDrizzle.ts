@@ -1,6 +1,6 @@
 import { genresTable, mediaGenresTable, mediaTable } from '../schema'
 import { IMediaRepository } from '@/application/db/repositories/IMediaRepository'
-import { GenreDTO, Media } from '@/domain/entities/media'
+import { GenreDTO, Media, PersistedMedia } from '@/domain/entities/media'
 import {
   MediaCreateInput,
   MediaPaginationOptions,
@@ -256,7 +256,7 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
         genre: typeof genresTable.$inferSelect
       }[]
     },
-  ): Media {
+  ): PersistedMedia {
     const genres: GenreDTO[] = row.mediaGenres.map((mg) => ({
       id: mg.genre.id,
       name: mg.genre.name,
@@ -265,6 +265,8 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
     return Media.create({
       ...row,
       genres,
-    }).withId(row.id)
+    })
+      .withId(row.id)
+      .toDTO()
   }
 }

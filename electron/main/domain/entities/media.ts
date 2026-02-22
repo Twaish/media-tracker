@@ -15,8 +15,7 @@ export type GenreDTO = {
   name: string
 }
 
-type MediaParams = {
-  id: number | null
+type MediaProps = {
   title: string
   currentEpisode: number
   maxEpisodes: number | null
@@ -32,75 +31,87 @@ type MediaParams = {
   genres: GenreDTO[]
 }
 
+export type PersistedMedia = MediaProps & {
+  id: number
+}
+
 export class Media {
   private constructor(
     public readonly id: number | null,
-    public readonly title: string,
-    public readonly currentEpisode: number,
-    public readonly maxEpisodes: number | null,
-    public readonly thumbnail: string | null,
-    public readonly mediaType: MediaType,
-    public readonly status: MediaStatus,
-    public readonly externalLink: string | null,
-    public readonly alternateTitles: string,
-    public readonly watchAfter: number | null,
-    public readonly lastUpdated: Date | null,
-    public readonly createdAt: Date | null,
-    public readonly isFavorite: boolean,
-    public readonly genres: GenreDTO[],
+    public readonly props: MediaProps,
   ) {}
 
-  static create(params: Omit<MediaParams, 'id'>): Media {
-    const {
-      title,
-      currentEpisode = 0,
-      maxEpisodes,
-      thumbnail,
-      type = 'anime',
-      status = 'plan-to-watch',
-      externalLink,
-      alternateTitles = '',
-      watchAfter,
-      lastUpdated = new Date(),
-      createdAt = new Date(),
-      isFavorite = false,
-      genres = [],
-    } = params
+  get title() {
+    return this.props.title
+  }
+  get currentEpisode() {
+    return this.props.currentEpisode
+  }
+  get maxEpisodes() {
+    return this.props.maxEpisodes
+  }
+  get thumbnail() {
+    return this.props.thumbnail
+  }
+  get type() {
+    return this.props.type
+  }
+  get status() {
+    return this.props.status
+  }
+  get externalLink() {
+    return this.props.externalLink
+  }
+  get alternateTitles() {
+    return this.props.alternateTitles
+  }
+  get watchAfter() {
+    return this.props.watchAfter
+  }
+  get lastUpdated() {
+    return this.props.lastUpdated
+  }
+  get createdAt() {
+    return this.props.createdAt
+  }
+  get isFavorite() {
+    return this.props.isFavorite
+  }
+  get genres() {
+    return this.props.genres
+  }
 
-    return new Media(
-      null,
-      title,
-      currentEpisode,
-      maxEpisodes,
-      thumbnail,
-      type,
-      status,
-      externalLink,
-      alternateTitles,
-      watchAfter,
-      lastUpdated,
-      createdAt,
-      isFavorite,
-      genres,
-    )
+  static create(input: MediaProps): Media {
+    const props: MediaProps = {
+      title: input.title,
+      currentEpisode: input.currentEpisode ?? 0,
+      maxEpisodes: input.maxEpisodes ?? null,
+      thumbnail: input.thumbnail ?? null,
+      type: input.type ?? 'anime',
+      status: input.status ?? 'plan-to-watch',
+      externalLink: input.externalLink ?? null,
+      alternateTitles: input.alternateTitles ?? '',
+      watchAfter: input.watchAfter ?? null,
+      lastUpdated: input.lastUpdated ?? new Date(),
+      createdAt: input.createdAt ?? new Date(),
+      isFavorite: input.isFavorite ?? false,
+      genres: input.genres ?? [],
+    }
+
+    return new Media(null, props)
   }
 
   withId(id: number) {
-    return new Media(
-      id,
-      this.title,
-      this.currentEpisode,
-      this.maxEpisodes,
-      this.thumbnail,
-      this.mediaType,
-      this.status,
-      this.externalLink,
-      this.alternateTitles,
-      this.watchAfter,
-      this.lastUpdated,
-      this.createdAt,
-      this.isFavorite,
-      this.genres,
-    )
+    return new Media(id, this.props)
+  }
+
+  toDTO(): PersistedMedia {
+    if (this.id === null) {
+      throw new Error(`Cannot convert unsaved Media to DTO`)
+    }
+    return {
+      id: this.id,
+      ...this.props,
+    }
   }
 }
