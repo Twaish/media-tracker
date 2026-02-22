@@ -1,5 +1,5 @@
-import { Genre } from '@/domain/entities/genre'
+import { PersistedGenre } from '@/domain/entities/genre'
 
 export interface IGenresRepository {
-  get(): Promise<Genre[]>
+  get(): Promise<PersistedGenre[]>
 }

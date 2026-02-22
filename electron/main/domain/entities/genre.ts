@@ -36,7 +36,7 @@ export class Genre {
     return new Genre(id, this.props)
   }
 
-  toDTO() {
+  toDTO(): PersistedGenre {
     if (this.id === null) {
       throw new Error(`Cannot convert unsaved Genre to DTO`)
     }
