@@ -4,6 +4,7 @@ import type {
   MediaContext,
   GenresContext,
   StorageContext,
+  TasksContext,
 } from '@shared/types'
 
 declare global {
@@ -13,5 +14,6 @@ declare global {
     media: MediaContext
     genres: GenresContext
     storage: StorageContext
+    tasks: TasksContext
   }
 }

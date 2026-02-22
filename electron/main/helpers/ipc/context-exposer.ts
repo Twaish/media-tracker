@@ -2,6 +2,7 @@ import { exposeAiContext } from './ai/ai-context'
 import { exposeGenresContext } from './genres/genres-context'
 import { exposeMediaContext } from './media/media-context'
 import { exposeStorageContext } from './storage/storage-context'
+import { exposeTasksContext } from './tasks/tasks-context'
 import { exposeThemeContext } from './theme/theme-context'
 import { exposeWindowContext } from './window/window-context'
 
@@ -12,4 +13,5 @@ export default function exposeContexts() {
   exposeMediaContext()
   exposeStorageContext()
   exposeAiContext()
+  exposeTasksContext()
 }
