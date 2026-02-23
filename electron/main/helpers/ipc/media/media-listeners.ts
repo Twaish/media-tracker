@@ -2,6 +2,7 @@ import { ipcMain } from 'electron'
 import { Modules } from '../types'
 import {
   MEDIA_ADD,
+  MEDIA_BULK_UPDATE,
   MEDIA_GET,
   MEDIA_GET_BY_ID,
   MEDIA_REMOVE,
@@ -16,6 +17,7 @@ import {
   UpdateMediaDTO,
 } from '@shared/types'
 import { createMediaUseCases } from '@/usecases/media'
+import { BulkUpdateMediaDTO } from '@/application/db/repositories/IMediaRepository'
 
 export function addMediaEventListeners(modules: Modules) {
   const useCases = createMediaUseCases(modules)
@@ -46,5 +48,8 @@ export function addMediaEventListeners(modules: Modules) {
   })
   ipcMain.handle(MEDIA_GET_BY_ID, (_, mediaId: number) => {
     return useCases.getMediaById.execute(mediaId)
+  })
+  ipcMain.handle(MEDIA_BULK_UPDATE, (_, mediaUpdates: BulkUpdateMediaDTO) => {
+    return useCases.bulkUpdateMedia.execute(mediaUpdates)
   })
 }

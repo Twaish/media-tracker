@@ -1,5 +1,7 @@
+import { BulkUpdateMediaDTO } from '@/application/db/repositories/IMediaRepository'
 import {
   MEDIA_ADD,
+  MEDIA_BULK_UPDATE,
   MEDIA_GET,
   MEDIA_GET_BY_ID,
   MEDIA_REMOVE,
@@ -41,6 +43,9 @@ export function exposeMediaContext() {
     },
     getById(mediaId: number) {
       return ipcRenderer.invoke(MEDIA_GET_BY_ID, mediaId)
+    },
+    bulkUpdate(mediaUpdates: BulkUpdateMediaDTO) {
+      return ipcRenderer.invoke(MEDIA_BULK_UPDATE, mediaUpdates)
     },
   }
   contextBridge.exposeInMainWorld('media', context)

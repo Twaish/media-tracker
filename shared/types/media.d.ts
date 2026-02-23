@@ -1,3 +1,4 @@
+import { BulkUpdateMediaDTO } from '@/application/db/repositories/IMediaRepository'
 import { MediaProps, PersistedMedia } from '@/domain/entities/media'
 import { SearchQuery } from '@/domain/services/QueryResolver'
 
@@ -25,4 +26,5 @@ export interface MediaContext {
   resolveExternalLink: (mediaId: number) => Promise<string | null>
   search: (query: string) => Promise<SearchQuery>
   getById: (mediaId: number) => Promise<PersistedMedia>
+  bulkUpdate: (mediaUpdates: BulkUpdateMediaDTO) => Promise<{ affected: 0 }>
 }
