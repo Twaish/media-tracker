@@ -39,7 +39,6 @@ WHEN currentEpisode >= maxEpisodes
 THEN set status = Completed
 ADD add tag = "Finished"
 ```
-- Bulk edit
 - Settings
 - Plugin system
 - CLI
@@ -63,3 +62,4 @@ SearchQuery {
 ```
 - Watch plans (Ex. Steins;Gate (2011) 1-22, Steins;Gate 0 (2018) 1-23, Steins;Gate (2011) 23-24, ...)
 - Soft delete
+- Bulk edit
