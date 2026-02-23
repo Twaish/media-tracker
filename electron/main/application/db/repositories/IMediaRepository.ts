@@ -16,6 +16,20 @@ export type MediaPaginationResult = {
   }
 }
 
+export type BulkUpdateMediaDTO = {
+  ids: number[]
+
+  update?: Partial<Omit<UpdateMediaDTO, 'id' | 'genres'>>
+
+  add?: {
+    genres?: number[]
+  }
+
+  remove?: {
+    genres?: number[]
+  }
+}
+
 export interface IMediaRepository {
   getById(id: number): Promise<PersistedMedia>
   getWithPagination(
@@ -29,4 +43,5 @@ export interface IMediaRepository {
     filters?: Filter[]
     pagination?: MediaPaginationOptions
   }): Promise<MediaPaginationResult>
+  bulkUpdate(mediaUpdates: BulkUpdateMediaDTO): Promise<{ affected: number }>
 }

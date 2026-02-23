@@ -1,5 +1,8 @@
 import { genresTable, mediaGenresTable, mediaTable } from '../schema'
-import { IMediaRepository } from '@/application/db/repositories/IMediaRepository'
+import {
+  BulkUpdateMediaDTO,
+  IMediaRepository,
+} from '@/application/db/repositories/IMediaRepository'
 import { Media, PersistedMedia } from '@/domain/entities/media'
 import {
   AddMediaDTO,
@@ -111,6 +114,49 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
       }
 
       return this.getById(id, tx)
+    })
+  }
+
+  async bulkUpdate(
+    mediaUpdates: BulkUpdateMediaDTO,
+  ): Promise<{ affected: number }> {
+    const { ids, update, add, remove } = mediaUpdates
+
+    if (!ids.length) {
+      return { affected: 0 }
+    }
+
+    return this.db.transaction(async (tx) => {
+      if (update && Object.keys(update).length > 0) {
+        await tx
+          .update(mediaTable)
+          .set(update)
+          .where(and(inArray(mediaTable.id, ids), isNull(mediaTable.deletedAt)))
+      }
+
+      if (add?.genres?.length) {
+        const values = ids.flatMap((mediaId) =>
+          add.genres!.map((genreId) => ({
+            mediaId,
+            genreId,
+          })),
+        )
+
+        await tx.insert(mediaGenresTable).values(values).onConflictDoNothing()
+      }
+
+      if (remove?.genres?.length) {
+        await tx
+          .delete(mediaGenresTable)
+          .where(
+            and(
+              inArray(mediaGenresTable.mediaId, ids),
+              inArray(mediaGenresTable.genreId, remove.genres),
+            ),
+          )
+      }
+
+      return { affected: ids.length }
     })
   }
 
