@@ -7,6 +7,6 @@ export function createAiUseCases({ AiService, AiSettingsProvider }: Modules) {
   return {
     checkAiCompatibility: new CheckAiCompatibility(AiService),
     updateAiHost: new UpdateAiHost(AiSettingsProvider),
-    getSettings: new GetAiSettings(AiSettingsProvider),
+    getAiSettings: new GetAiSettings(AiSettingsProvider),
   }
 }

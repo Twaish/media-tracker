@@ -17,6 +17,6 @@ export function addAiEventListeners(modules: Modules) {
     return useCases.updateAiHost.execute(host)
   })
   ipcMain.handle(AI_GET_SETTINGS, () => {
-    return useCases.getSettings.execute()
+    return useCases.getAiSettings.execute()
   })
 }
