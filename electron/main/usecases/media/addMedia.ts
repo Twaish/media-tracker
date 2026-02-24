@@ -1,6 +1,6 @@
 import { StorageService } from '@/core/StorageService'
 import { IMediaRepository } from '@/application/db/repositories/IMediaRepository'
-import { MediaCreateInput } from '@shared/types'
+import { AddMediaDTO } from '@shared/types'
 
 export default class AddMedia {
   constructor(
@@ -8,8 +8,8 @@ export default class AddMedia {
     private readonly storage: StorageService,
   ) {}
 
-  async execute(media: MediaCreateInput) {
-    let thumbnail: string | undefined
+  async execute(media: AddMediaDTO) {
+    let thumbnail: string | null = null
 
     if (media?.thumbnail) {
       const stored = await this.storage.storeImage(media.thumbnail)

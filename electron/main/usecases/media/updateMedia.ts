@@ -1,6 +1,6 @@
 import { StorageService } from '@/core/StorageService'
 import { IMediaRepository } from '@/application/db/repositories/IMediaRepository'
-import { MediaUpdateInput } from '@shared/types'
+import { UpdateMediaDTO } from '@shared/types'
 
 export default class UpdateMedia {
   constructor(
@@ -8,7 +8,7 @@ export default class UpdateMedia {
     private readonly storage: StorageService,
   ) {}
 
-  async execute(media: MediaUpdateInput) {
+  async execute(media: UpdateMediaDTO) {
     if (media.thumbnail) {
       const stored = await this.storage.storeImage(media.thumbnail)
       const thumbnail = stored.relativePath
