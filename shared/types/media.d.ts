@@ -27,4 +27,5 @@ export interface MediaContext {
   search: (query: string) => Promise<SearchQuery>
   getById: (mediaId: number) => Promise<PersistedMedia>
   bulkUpdate: (mediaUpdates: BulkUpdateMediaDTO) => Promise<{ affected: 0 }>
+  findDuplicates: (media: Partial<AddMediaDTO>) => Promise<PersistedMedia[]>
 }

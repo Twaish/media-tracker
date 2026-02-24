@@ -3,6 +3,7 @@ import { Modules } from '../types'
 import {
   MEDIA_ADD,
   MEDIA_BULK_UPDATE,
+  MEDIA_FIND_DUPLICATES,
   MEDIA_GET,
   MEDIA_GET_BY_ID,
   MEDIA_REMOVE,
@@ -51,5 +52,8 @@ export function addMediaEventListeners(modules: Modules) {
   })
   ipcMain.handle(MEDIA_BULK_UPDATE, (_, mediaUpdates: BulkUpdateMediaDTO) => {
     return useCases.bulkUpdateMedia.execute(mediaUpdates)
+  })
+  ipcMain.handle(MEDIA_FIND_DUPLICATES, (_, media: Partial<AddMediaDTO>) => {
+    return useCases.findMediaDuplicates.execute(media)
   })
 }

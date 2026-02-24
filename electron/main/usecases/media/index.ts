@@ -10,6 +10,7 @@ import SearchMedia from './searchMedia'
 import { QueryResolver } from '@/domain/services/QueryResolver'
 import GetMediaById from './getMediaById'
 import BulkUpdateMedia from './bulkUpdateMedia'
+import FindMediaDuplicates from './findMediaDuplicates'
 
 export function createMediaUseCases({
   MediaRepository,
@@ -31,5 +32,9 @@ export function createMediaUseCases({
     searchMedia: new SearchMedia(MediaRepository, queryResolver),
     getMediaById: new GetMediaById(MediaRepository),
     bulkUpdateMedia: new BulkUpdateMedia(MediaRepository),
+    findMediaDuplicates: new FindMediaDuplicates(
+      MediaRepository,
+      StorageService,
+    ),
   }
 }
