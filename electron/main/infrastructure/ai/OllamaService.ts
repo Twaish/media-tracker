@@ -5,6 +5,7 @@ import { IAiSettingsProvider } from '@/application/ai/IAiSettingsProvider'
 export class OllamaService implements IAiService {
   private ollama: Ollama
   private currentHost: string
+
   constructor(settingsProvider: IAiSettingsProvider) {
     const settings = settingsProvider.settings
     this.currentHost = settings.host
@@ -35,5 +36,13 @@ export class OllamaService implements IAiService {
     const modelsResponse = await client.list()
     const models = modelsResponse.models.map((m) => m.name)
     return models
+  }
+  async isAvailable(): Promise<boolean> {
+    try {
+      await this.ollama.version()
+      return true
+    } catch {
+      return false
+    }
   }
 }
