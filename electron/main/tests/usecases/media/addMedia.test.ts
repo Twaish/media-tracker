@@ -18,6 +18,7 @@ describe('AddMedia', () => {
     height: 480,
     size: 12345,
   }
+  const defaultProps = makeMedia()
 
   beforeEach(() => {
     mockRepo = {
@@ -33,11 +34,12 @@ describe('AddMedia', () => {
 
   it('stores thumbnail and adds media with stored path', async () => {
     const input = {
+      ...defaultProps,
       title: 'Movie',
       thumbnail: 'image/path',
       genres: [],
     }
-    const media = makeMedia()
+    const media = makeMedia({ id: 1 })
 
     vi.mocked(mockStorage.storeImage).mockResolvedValue(imageResult)
 
@@ -57,10 +59,11 @@ describe('AddMedia', () => {
 
   it('adds media without storing image when thumbnail missing', async () => {
     const input = {
+      ...defaultProps,
       title: 'Movie',
       genres: [],
     }
-    const media = makeMedia()
+    const media = makeMedia({ id: 1 })
 
     vi.mocked(mockRepo.add).mockResolvedValue(media)
 
@@ -70,7 +73,7 @@ describe('AddMedia', () => {
 
     expect(mockRepo.add).toHaveBeenCalledWith({
       ...input,
-      thumbnail: undefined,
+      thumbnail: null,
     })
 
     expect(result).toEqual(media)
@@ -79,6 +82,7 @@ describe('AddMedia', () => {
   it('throws if storage fails', async () => {
     const storageError = new Error('Storage failed')
     const input = {
+      ...defaultProps,
       title: 'Movie',
       thumbnail: 'image/path',
       genres: [],
@@ -94,6 +98,7 @@ describe('AddMedia', () => {
   it('throws if repository fails', async () => {
     const repoError = new Error('Database failed')
     const input = {
+      ...defaultProps,
       title: 'Movie',
       thumbnail: 'image/path',
       genres: [],

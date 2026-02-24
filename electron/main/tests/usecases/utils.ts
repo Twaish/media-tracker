@@ -1,15 +1,23 @@
-import { Media } from '@/domain/entities/media'
+import { Media, MediaProps, PersistedMedia } from '@/domain/entities/media'
 
 export function makeMedia(
-  overrides?: Partial<Parameters<typeof Media.create>[0]> & { id?: number },
-): Media {
+  overrides: Partial<MediaProps> & { id: number },
+): PersistedMedia
+
+export function makeMedia(
+  overrides?: Partial<MediaProps> & { id?: undefined },
+): MediaProps
+
+export function makeMedia(
+  overrides?: Partial<MediaProps> & { id?: number },
+): MediaProps | PersistedMedia {
   const { id, ...rest } = overrides ?? {}
   let media = Media.create({
     title: 'Test',
     currentEpisode: 1,
     maxEpisodes: null,
     thumbnail: 'image/path',
-    mediaType: 'anime',
+    type: 'anime',
     status: 'plan-to-watch',
     externalLink: 'http://link.test/',
     alternateTitles: '',
@@ -18,6 +26,7 @@ export function makeMedia(
     createdAt: null,
     isFavorite: false,
     genres: [],
+    deletedAt: null,
     ...rest,
   })
   return id ? media.withId(id) : media
