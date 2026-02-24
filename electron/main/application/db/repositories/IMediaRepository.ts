@@ -44,4 +44,7 @@ export interface IMediaRepository {
     pagination?: MediaPaginationOptions
   }): Promise<MediaPaginationResult>
   bulkUpdate(mediaUpdates: BulkUpdateMediaDTO): Promise<{ affected: number }>
+  findDuplicateCandidates(
+    media: Partial<AddMediaDTO>,
+  ): Promise<PersistedMedia[]>
 }

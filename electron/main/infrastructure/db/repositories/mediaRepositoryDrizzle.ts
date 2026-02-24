@@ -25,6 +25,7 @@ import {
   SQL,
   sql,
   isNull,
+  or,
 } from 'drizzle-orm'
 import { Filter } from '@/domain/services/QueryResolver'
 import { SQLiteColumn } from 'drizzle-orm/sqlite-core'
@@ -235,6 +236,45 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
         totalPages,
       },
     }
+  }
+
+  async findDuplicateCandidates(
+    media: Partial<AddMediaDTO>,
+  ): Promise<PersistedMedia[]> {
+    const conditions = []
+
+    if (media.externalLink) {
+      conditions.push(eq(mediaTable.externalLink, media.externalLink))
+    }
+    if (media.thumbnail) {
+      conditions.push(eq(mediaTable.thumbnail, media.thumbnail))
+    }
+    if (media.title) {
+      conditions.push(eq(mediaTable.title, media.title))
+    }
+    if (media.alternateTitles) {
+      conditions.push(
+        like(mediaTable.alternateTitles, `%${media.alternateTitles}%`),
+      )
+    }
+    if (media.watchAfter) {
+      conditions.push(eq(mediaTable.watchAfter, media.watchAfter))
+    }
+
+    if (conditions.length === 0) return []
+
+    const candidates = await this.db.query.mediaTable.findMany({
+      where: and(or(...conditions), isNull(mediaTable.deletedAt)),
+      with: {
+        mediaGenres: {
+          with: {
+            genre: true,
+          },
+        },
+      },
+    })
+
+    return candidates.map(this.toDomain)
   }
 
   private buildCondition(filter: Filter): SQL | null {
