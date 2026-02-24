@@ -3,9 +3,8 @@ import { Config, Ollama } from 'ollama'
 import { IAiSettingsProvider } from '@/application/ai/IAiSettingsProvider'
 
 export class OllamaService implements IAiService {
-  ollama: Ollama
-  currentHost: string
-  generation = 0
+  private ollama: Ollama
+  private currentHost: string
   constructor(settingsProvider: IAiSettingsProvider) {
     const settings = settingsProvider.settings
     this.currentHost = settings.host
