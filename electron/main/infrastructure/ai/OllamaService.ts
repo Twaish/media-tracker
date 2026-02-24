@@ -45,4 +45,15 @@ export class OllamaService implements IAiService {
       return false
     }
   }
+  async embed(
+    text: string,
+    model: string = 'embeddinggemma',
+  ): Promise<number[]> {
+    const response = await this.ollama.embeddings({
+      model,
+      prompt: text,
+    })
+
+    return response.embedding
+  }
 }
