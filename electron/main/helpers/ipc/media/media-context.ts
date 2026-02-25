@@ -9,6 +9,7 @@ import {
   MEDIA_REMOVE,
   MEDIA_RESOLVE_EXTERNAL_LINK,
   MEDIA_SEARCH,
+  MEDIA_SEARCH_EMBEDDINGS,
   MEDIA_SET_NEXT_MEDIA,
   MEDIA_UPDATE,
 } from './media-channels'
@@ -54,6 +55,9 @@ export function exposeMediaContext() {
     },
     createEmbedding(mediaId: number, model: string) {
       return ipcRenderer.invoke(MEDIA_CREATE_EMBEDDING, mediaId, model)
+    },
+    searchEmbeddings(query: string, model: string) {
+      return ipcRenderer.invoke(MEDIA_SEARCH_EMBEDDINGS, query, model)
     },
   }
   contextBridge.exposeInMainWorld('media', context)

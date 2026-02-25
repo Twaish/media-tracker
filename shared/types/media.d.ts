@@ -33,4 +33,8 @@ export interface MediaContext {
     mediaId: number,
     model: string,
   ) => Promise<PersistedMediaEmbedding>
+  searchEmbeddings: (
+    query: string,
+    model: string,
+  ) => Promise<{ item: number; score: number }[]>
 }

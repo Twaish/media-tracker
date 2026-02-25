@@ -10,6 +10,7 @@ import {
   MEDIA_REMOVE,
   MEDIA_RESOLVE_EXTERNAL_LINK,
   MEDIA_SEARCH,
+  MEDIA_SEARCH_EMBEDDINGS,
   MEDIA_SET_NEXT_MEDIA,
   MEDIA_UPDATE,
 } from './media-channels'
@@ -63,4 +64,7 @@ export function addMediaEventListeners(modules: Modules) {
       return useCases.createMediaEmbedding.execute(mediaId, model)
     },
   )
+  ipcMain.handle(MEDIA_SEARCH_EMBEDDINGS, (_, query: string, model: string) => {
+    return useCases.searchMediaEmbeddings.execute(query, model)
+  })
 }
