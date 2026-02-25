@@ -63,7 +63,7 @@
   "dependencies": {
     "@electron-toolkit/utils": "^4.0.0",
     "@icons-pack/react-simple-icons": "^12.7.0",
-    "@libsql/client": "^0.15.15",
+    "@libsql/client": "^0.17.0",
     "@radix-ui/react-navigation-menu": "^1.2.10",
     "@radix-ui/react-select": "^2.2.5",
     "@radix-ui/react-slot": "^1.2.0",
