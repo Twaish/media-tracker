@@ -11,6 +11,7 @@ import { IAiSettingsProvider } from '@/application/ai/IAiSettingsProvider'
 import { TaskService } from '@/core/TaskService'
 import { IWatchPlanRepository } from '@/application/db/repositories/IWatchPlanRepository'
 import { IMediaEmbeddingRepository } from '@/application/db/repositories/IMediaEmbeddingRepository'
+import { MediaSimilarityService } from '@/domain/services/MediaSimilarityService'
 
 declare interface Modules {
   ElectronWindow: ElectronWindow
@@ -20,6 +21,7 @@ declare interface Modules {
   logger: ILogger
   AiSettingsProvider: IAiSettingsProvider
   AiService: IAiService
+  MediaSimilarityService: MediaSimilarityService
 
   MediaRepository: IMediaRepository
   GenresRepository: IGenresRepository

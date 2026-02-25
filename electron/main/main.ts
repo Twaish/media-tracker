@@ -27,6 +27,7 @@ import { OllamaSettingsProvider } from './infrastructure/ai/OllamaSettingsProvid
 import { TaskService } from './core/TaskService'
 import { WatchPlanRepositoryDrizzle } from './infrastructure/db/repositories/watchPlanRepositoryDrizzle'
 import { MediaEmbeddingRepositoryDrizzle } from './infrastructure/db/repositories/mediaEmbeddingRepositoryDrizzle'
+import { MediaSimilarityService } from './domain/services/MediaSimilarityService'
 
 app.whenReady().then(async () => {
   const { DB_PATH, LOG_PATH, APP_URL } = config
@@ -64,6 +65,11 @@ app.whenReady().then(async () => {
 
     const ollamaService = new OllamaService(ollamaSettings)
 
+    const mediaSimilarityService = new MediaSimilarityService(
+      ollamaService,
+      mediaEmbeddingRepository,
+    )
+
     logger.info('Creating window')
     const mainWindow = new ElectronWindow()
     mainWindow.on('attempted-navigation', (_, url) => {
@@ -79,6 +85,8 @@ app.whenReady().then(async () => {
 
       AiSettingsProvider: ollamaSettings,
       AiService: ollamaService,
+
+      MediaSimilarityService: mediaSimilarityService,
 
       MediaRepository: mediaRepository,
       GenresRepository: genresRepository,
