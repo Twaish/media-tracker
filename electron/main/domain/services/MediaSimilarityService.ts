@@ -42,7 +42,7 @@ export class MediaSimilarityService {
     throw new Error('Method not implemented.')
   }
 
-  buildText(media: MediaProps): string {
+  buildText(media: Partial<MediaProps>): string {
     return `
       Title: ${media.title}
       Alternate Titles: ${media.alternateTitles ?? ''}
