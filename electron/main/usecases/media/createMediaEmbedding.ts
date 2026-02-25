@@ -2,19 +2,20 @@ import { IAiService } from '@/application/ai/IAiService'
 import { IMediaEmbeddingRepository } from '@/application/db/repositories/IMediaEmbeddingRepository'
 import { IMediaRepository } from '@/application/db/repositories/IMediaRepository'
 import { normalize } from '@/core/math/vector'
-import { PersistedMedia } from '@/domain/entities/media'
+import { MediaSimilarityService } from '@/domain/services/MediaSimilarityService'
 
 export default class CreateMediaEmbedding {
   constructor(
     private readonly mediaRepo: IMediaRepository,
     private readonly embeddingRepo: IMediaEmbeddingRepository,
     private readonly aiService: IAiService,
+    private readonly similarityService: MediaSimilarityService,
   ) {}
 
   async execute(mediaId: number, model: string) {
     const media = await this.mediaRepo.getById(mediaId)
 
-    const text = this.buildEmbeddingText(media)
+    const text = this.similarityService.buildText(media)
 
     const embedding = await this.aiService.embed(text, model)
 
@@ -25,13 +26,5 @@ export default class CreateMediaEmbedding {
       model,
       embedding: normalizedEmbedding,
     })
-  }
-
-  private buildEmbeddingText(media: PersistedMedia) {
-    return `
-      Title: ${media.title}
-      Alternate Titles: ${media.alternateTitles ?? ''}
-      Type: ${media.type}
-    `.trim()
   }
 }

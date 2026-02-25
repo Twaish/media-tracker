@@ -46,6 +46,7 @@ export function createMediaUseCases({
       MediaRepository,
       MediaEmbeddingRepository,
       AiService,
+      MediaSimilarityService,
     ),
     searchMediaEmbeddings: new SearchMediaEmbeddings(
       MediaSimilarityService,
