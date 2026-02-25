@@ -10,6 +10,7 @@ import { IMediaRepository } from '@/application/db/repositories/IMediaRepository
 import { IAiSettingsProvider } from '@/application/ai/IAiSettingsProvider'
 import { TaskService } from '@/core/TaskService'
 import { IWatchPlanRepository } from '@/application/db/repositories/IWatchPlanRepository'
+import { IMediaEmbeddingRepository } from '@/application/db/repositories/IMediaEmbeddingRepository'
 
 declare interface Modules {
   ElectronWindow: ElectronWindow
@@ -23,4 +24,5 @@ declare interface Modules {
   MediaRepository: IMediaRepository
   GenresRepository: IGenresRepository
   WatchPlanRepository: IWatchPlanRepository
+  MediaEmbeddingRepository: IMediaEmbeddingRepository
 }
