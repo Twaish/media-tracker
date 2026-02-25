@@ -26,25 +26,6 @@
     "db:push": "npx drizzle-kit push",
     "db:generate": "npx drizzle-kit generate"
   },
-  "build": {
-    "appId": "electron.shadcn.template",
-    "productName": "ElectronShadCNTemplate",
-    "directories": {
-      "output": "release"
-    },
-    "files": [
-      "out/**/*",
-      "node_modules/**/*",
-      "package.json"
-    ],
-    "asar": true,
-    "asarUnpack": [
-      "**/*.node"
-    ],
-    "win": {
-      "target": "nsis"
-    }
-  },
   "devDependencies": {
     "@electron/fuses": "^1.8.0",
     "@eslint/compat": "^1.2.9",
