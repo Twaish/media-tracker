@@ -33,10 +33,10 @@ export const mediaTable = sqliteTable(
 
     deletedAt: int({ mode: 'timestamp_ms' }),
   },
-  (table) => ({
-    externalLinkIdx: index('idx_media_external_link').on(table.externalLink),
-    thumbnailIdx: index('idx_media_thumbnail').on(table.thumbnail),
-    titleIdx: index('idx_media_title').on(table.title),
-    watchAfterIdx: index('idx_media_watch_after').on(table.watchAfter),
-  }),
+  (table) => [
+    index('idx_media_external_link').on(table.externalLink),
+    index('idx_media_thumbnail').on(table.thumbnail),
+    index('idx_media_title').on(table.title),
+    index('idx_media_watch_after').on(table.watchAfter),
+  ],
 )
