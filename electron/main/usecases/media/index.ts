@@ -11,9 +11,12 @@ import { QueryResolver } from '@/domain/services/QueryResolver'
 import GetMediaById from './getMediaById'
 import BulkUpdateMedia from './bulkUpdateMedia'
 import FindMediaDuplicates from './findMediaDuplicates'
+import CreateMediaEmbedding from './createMediaEmbedding'
 
 export function createMediaUseCases({
   MediaRepository,
+  MediaEmbeddingRepository,
+  AiService,
   StorageService,
 }: Modules) {
   const externalLinkResolver = new ExternalLinkResolver()
@@ -35,6 +38,11 @@ export function createMediaUseCases({
     findMediaDuplicates: new FindMediaDuplicates(
       MediaRepository,
       StorageService,
+    ),
+    createMediaEmbedding: new CreateMediaEmbedding(
+      MediaRepository,
+      MediaEmbeddingRepository,
+      AiService,
     ),
   }
 }
