@@ -1,6 +1,7 @@
 import { AiContext } from '@shared/types/ai'
 import {
   AI_CHECK_COMPATIBILITY,
+  AI_CREATE_EMBEDDING,
   AI_GET_SETTINGS,
   AI_UPDATE_HOST,
 } from './ai-channels'
@@ -16,6 +17,9 @@ export function exposeAiContext() {
     },
     getSettings() {
       return ipcRenderer.invoke(AI_GET_SETTINGS)
+    },
+    createEmbedding(text: string, model?: string) {
+      return ipcRenderer.invoke(AI_CREATE_EMBEDDING, text, model)
     },
   }
   contextBridge.exposeInMainWorld('ai', context)
