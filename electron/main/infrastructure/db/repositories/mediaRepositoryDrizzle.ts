@@ -250,7 +250,7 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
       conditions.push(eq(mediaTable.thumbnail, media.thumbnail))
     }
     if (media.title) {
-      conditions.push(eq(mediaTable.title, media.title))
+      conditions.push(like(mediaTable.title, `%${media.title}%`))
     }
     if (media.alternateTitles) {
       conditions.push(
