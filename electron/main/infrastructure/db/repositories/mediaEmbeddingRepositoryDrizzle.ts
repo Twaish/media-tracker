@@ -1,5 +1,5 @@
 import { IMediaEmbeddingRepository } from '@/application/db/repositories/IMediaEmbeddingRepository'
-import { DrizzleDb } from '../types'
+import { DrizzleDb, Executor } from '../types'
 import {
   MediaEmbedding,
   PersistedMediaEmbedding,
@@ -14,14 +14,15 @@ export class MediaEmbeddingRepositoryDrizzle implements IMediaEmbeddingRepositor
   async getByMediaId(
     mediaId: number,
     model: string,
+    executor: Executor = this.db,
   ): Promise<PersistedMediaEmbedding> {
-    const embedding = await this.db.query.mediaEmbeddingsTable.findFirst({
+    const embedding = await executor.query.mediaEmbeddingsTable.findFirst({
       where: (me) => and(eq(me.mediaId, mediaId), eq(me.model, model)),
     })
 
     if (!embedding)
       throw new Error(
-        `Media embedding with id ${model} and model ${model} not found`,
+        `Media embedding with id ${mediaId} and model ${model} not found`,
       )
 
     return this.toDomain(embedding)
@@ -38,7 +39,7 @@ export class MediaEmbeddingRepositoryDrizzle implements IMediaEmbeddingRepositor
         embedding,
       })
 
-      return this.getByMediaId(mediaEmbedding.mediaId, mediaEmbedding.model)
+      return this.getByMediaId(mediaEmbedding.mediaId, mediaEmbedding.model, tx)
     })
   }
 
