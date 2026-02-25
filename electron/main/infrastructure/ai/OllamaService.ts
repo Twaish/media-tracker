@@ -5,6 +5,7 @@ import { IAiSettingsProvider } from '@/application/ai/IAiSettingsProvider'
 export class OllamaService implements IAiService {
   private ollama: Ollama
   private currentHost: string
+  private busy: boolean = false
 
   constructor(settingsProvider: IAiSettingsProvider) {
     const settings = settingsProvider.settings
@@ -12,6 +13,20 @@ export class OllamaService implements IAiService {
     this.ollama = this.createClient(this.currentHost)
 
     settingsProvider.onHostChanged(this.reconnect)
+  }
+  // Functions that use models are wrapped in this as they are expensive
+  // Methods like getVersion are lightweight and shouldn't be wrapped,
+  // as they don't use models and therefore don't take many resources
+  private async runExclusive<T>(fn: () => Promise<T>): Promise<T> {
+    if (this.busy) {
+      throw new Error(`OllamaService is busy`)
+    }
+    this.busy = true
+    try {
+      return await fn()
+    } finally {
+      this.busy = false
+    }
   }
   private createClient(
     host: string,
@@ -49,11 +64,13 @@ export class OllamaService implements IAiService {
     text: string,
     model: string = 'embeddinggemma',
   ): Promise<number[]> {
-    const response = await this.ollama.embeddings({
-      model,
-      prompt: text,
-    })
+    return this.runExclusive(async () => {
+      const response = await this.ollama.embeddings({
+        model,
+        prompt: text,
+      })
 
-    return response.embedding
+      return response.embedding
+    })
   }
 }
