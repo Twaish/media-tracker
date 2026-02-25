@@ -4,8 +4,8 @@ import {
   MediaEmbedding,
   PersistedMediaEmbedding,
 } from '@/domain/entities/mediaEmbedding'
-import { and, eq } from 'drizzle-orm'
-import { mediaEmbeddingsTable } from '../schema'
+import { and, eq, isNull } from 'drizzle-orm'
+import { mediaEmbeddingsTable, mediaTable } from '../schema'
 import { AddMediaEmbeddingDTO } from '@shared/types/mediaEmbedding'
 
 export class MediaEmbeddingRepositoryDrizzle implements IMediaEmbeddingRepository {
@@ -41,6 +41,33 @@ export class MediaEmbeddingRepositoryDrizzle implements IMediaEmbeddingRepositor
 
       return this.getByMediaId(mediaEmbedding.mediaId, mediaEmbedding.model, tx)
     })
+  }
+
+  async *streamEmbeddingsByModel(
+    model: string,
+  ): AsyncIterable<{ mediaId: number; embedding: number[] }> {
+    // Drizzle currently doesn't support iterator for SQLite (25-02-2026)
+    // TODO: Use iterator as this loads everything into memory
+    const rows = await this.db
+      .select({
+        mediaId: mediaEmbeddingsTable.mediaId,
+        embedding: mediaEmbeddingsTable.embedding,
+      })
+      .from(mediaEmbeddingsTable)
+      .innerJoin(mediaTable, eq(mediaEmbeddingsTable.mediaId, mediaTable.id))
+      .where(
+        and(
+          eq(mediaEmbeddingsTable.model, model),
+          isNull(mediaTable.deletedAt),
+        ),
+      )
+
+    for (const row of rows) {
+      yield {
+        mediaId: row.mediaId,
+        embedding: JSON.parse(row.embedding),
+      }
+    }
   }
 
   private toDomain(
