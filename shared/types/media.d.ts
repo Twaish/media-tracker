@@ -37,4 +37,5 @@ export interface MediaContext {
     query: string,
     model: string,
   ) => Promise<{ item: number; score: number }[]>
+  getMediaMissingEmbeddings: (model: string) => Promise<number[]>
 }

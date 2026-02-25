@@ -7,6 +7,7 @@ import {
   MEDIA_FIND_DUPLICATES,
   MEDIA_GET,
   MEDIA_GET_BY_ID,
+  MEDIA_GET_MISSING_EMBEDDINGS,
   MEDIA_REMOVE,
   MEDIA_RESOLVE_EXTERNAL_LINK,
   MEDIA_SEARCH,
@@ -66,5 +67,8 @@ export function addMediaEventListeners(modules: Modules) {
   )
   ipcMain.handle(MEDIA_SEARCH_EMBEDDINGS, (_, query: string, model: string) => {
     return useCases.searchMediaEmbeddings.execute(query, model)
+  })
+  ipcMain.handle(MEDIA_GET_MISSING_EMBEDDINGS, (_, model: string) => {
+    return useCases.getMediaMissingEmbeddings.execute(model)
   })
 }

@@ -6,6 +6,7 @@ import {
   MEDIA_FIND_DUPLICATES,
   MEDIA_GET,
   MEDIA_GET_BY_ID,
+  MEDIA_GET_MISSING_EMBEDDINGS,
   MEDIA_REMOVE,
   MEDIA_RESOLVE_EXTERNAL_LINK,
   MEDIA_SEARCH,
@@ -58,6 +59,9 @@ export function exposeMediaContext() {
     },
     searchEmbeddings(query: string, model: string) {
       return ipcRenderer.invoke(MEDIA_SEARCH_EMBEDDINGS, query, model)
+    },
+    getMediaMissingEmbeddings(model: string) {
+      return ipcRenderer.invoke(MEDIA_GET_MISSING_EMBEDDINGS, model)
     },
   }
   contextBridge.exposeInMainWorld('media', context)
