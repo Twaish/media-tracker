@@ -26,6 +26,7 @@ import { JsonStore } from './core/JsonStore'
 import { OllamaSettingsProvider } from './infrastructure/ai/OllamaSettingsProvider'
 import { TaskService } from './core/TaskService'
 import { WatchPlanRepositoryDrizzle } from './infrastructure/db/repositories/watchPlanRepositoryDrizzle'
+import { MediaEmbeddingRepositoryDrizzle } from './infrastructure/db/repositories/mediaEmbeddingRepositoryDrizzle'
 
 app.whenReady().then(async () => {
   const { DB_PATH, LOG_PATH, APP_URL } = config
@@ -43,6 +44,9 @@ app.whenReady().then(async () => {
     const mediaRepository = new MediaRepositoryDrizzle(database)
     const genresRepository = new GenresRepositoryDrizzle(database)
     const watchPlanRepository = new WatchPlanRepositoryDrizzle(database)
+    const mediaEmbeddingRepository = new MediaEmbeddingRepositoryDrizzle(
+      database,
+    )
 
     logger.info('Initializing task service')
     const taskService = new TaskService()
@@ -79,6 +83,7 @@ app.whenReady().then(async () => {
       MediaRepository: mediaRepository,
       GenresRepository: genresRepository,
       WatchPlanRepository: watchPlanRepository,
+      MediaEmbeddingRepository: mediaEmbeddingRepository,
     }
 
     logger.header('IPC / Protocols')
