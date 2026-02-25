@@ -8,4 +8,5 @@ export interface IMediaEmbeddingRepository {
     mediaId: number
     embedding: number[]
   }>
+  getMediaMissingEmbeddings(model: string): Promise<number[]>
 }

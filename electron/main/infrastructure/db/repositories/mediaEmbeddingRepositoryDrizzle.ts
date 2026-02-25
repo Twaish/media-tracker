@@ -70,6 +70,22 @@ export class MediaEmbeddingRepositoryDrizzle implements IMediaEmbeddingRepositor
     }
   }
 
+  async getMediaMissingEmbeddings(model: string): Promise<number[]> {
+    const rows = await this.db
+      .select({ mediaId: mediaTable.id })
+      .from(mediaTable)
+      .leftJoin(
+        mediaEmbeddingsTable,
+        and(
+          eq(mediaTable.id, mediaEmbeddingsTable.mediaId),
+          eq(mediaEmbeddingsTable.model, model),
+        ),
+      )
+      .where(and(isNull(mediaEmbeddingsTable.id), isNull(mediaTable.deletedAt)))
+
+    return rows.map((row) => row.mediaId)
+  }
+
   private toDomain(
     row: typeof mediaEmbeddingsTable.$inferSelect,
   ): PersistedMediaEmbedding {
