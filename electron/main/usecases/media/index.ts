@@ -13,6 +13,7 @@ import BulkUpdateMedia from './bulkUpdateMedia'
 import FindMediaDuplicates from './findMediaDuplicates'
 import CreateMediaEmbedding from './createMediaEmbedding'
 import SearchMediaEmbeddings from './searchMediaEmbeddings'
+import GetMediaMissingEmbeddings from './getMediaMissingEmbeddings'
 
 export function createMediaUseCases({
   MediaRepository,
@@ -49,6 +50,9 @@ export function createMediaUseCases({
     searchMediaEmbeddings: new SearchMediaEmbeddings(
       MediaSimilarityService,
       queryResolver,
+    ),
+    getMediaMissingEmbeddings: new GetMediaMissingEmbeddings(
+      MediaEmbeddingRepository,
     ),
   }
 }
