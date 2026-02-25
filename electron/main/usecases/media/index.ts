@@ -12,10 +12,12 @@ import GetMediaById from './getMediaById'
 import BulkUpdateMedia from './bulkUpdateMedia'
 import FindMediaDuplicates from './findMediaDuplicates'
 import CreateMediaEmbedding from './createMediaEmbedding'
+import SearchMediaEmbeddings from './searchMediaEmbeddings'
 
 export function createMediaUseCases({
   MediaRepository,
   MediaEmbeddingRepository,
+  MediaSimilarityService,
   AiService,
   StorageService,
 }: Modules) {
@@ -43,6 +45,10 @@ export function createMediaUseCases({
       MediaRepository,
       MediaEmbeddingRepository,
       AiService,
+    ),
+    searchMediaEmbeddings: new SearchMediaEmbeddings(
+      MediaSimilarityService,
+      queryResolver,
     ),
   }
 }
