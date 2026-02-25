@@ -1,5 +1,6 @@
 import { BulkUpdateMediaDTO } from '@/application/db/repositories/IMediaRepository'
 import { MediaProps, PersistedMedia } from '@/domain/entities/media'
+import { PersistedMediaEmbedding } from '@/domain/entities/mediaEmbedding'
 import { SearchQuery } from '@/domain/services/QueryResolver'
 
 export type AddMediaDTO = Omit<
@@ -28,4 +29,8 @@ export interface MediaContext {
   getById: (mediaId: number) => Promise<PersistedMedia>
   bulkUpdate: (mediaUpdates: BulkUpdateMediaDTO) => Promise<{ affected: 0 }>
   findDuplicates: (media: Partial<AddMediaDTO>) => Promise<PersistedMedia[]>
+  createEmbedding: (
+    mediaId: number,
+    model: string,
+  ) => Promise<PersistedMediaEmbedding>
 }

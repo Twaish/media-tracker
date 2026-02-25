@@ -3,6 +3,7 @@ import { Modules } from '../types'
 import {
   MEDIA_ADD,
   MEDIA_BULK_UPDATE,
+  MEDIA_CREATE_EMBEDDING,
   MEDIA_FIND_DUPLICATES,
   MEDIA_GET,
   MEDIA_GET_BY_ID,
@@ -56,4 +57,10 @@ export function addMediaEventListeners(modules: Modules) {
   ipcMain.handle(MEDIA_FIND_DUPLICATES, (_, media: Partial<AddMediaDTO>) => {
     return useCases.findMediaDuplicates.execute(media)
   })
+  ipcMain.handle(
+    MEDIA_CREATE_EMBEDDING,
+    (_, mediaId: number, model: string) => {
+      return useCases.createMediaEmbedding.execute(mediaId, model)
+    },
+  )
 }

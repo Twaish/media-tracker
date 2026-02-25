@@ -2,6 +2,7 @@ import { BulkUpdateMediaDTO } from '@/application/db/repositories/IMediaReposito
 import {
   MEDIA_ADD,
   MEDIA_BULK_UPDATE,
+  MEDIA_CREATE_EMBEDDING,
   MEDIA_FIND_DUPLICATES,
   MEDIA_GET,
   MEDIA_GET_BY_ID,
@@ -50,6 +51,9 @@ export function exposeMediaContext() {
     },
     findDuplicates(media: Partial<AddMediaDTO>) {
       return ipcRenderer.invoke(MEDIA_FIND_DUPLICATES, media)
+    },
+    createEmbedding(mediaId: number, model: string) {
+      return ipcRenderer.invoke(MEDIA_CREATE_EMBEDDING, mediaId, model)
     },
   }
   contextBridge.exposeInMainWorld('media', context)
