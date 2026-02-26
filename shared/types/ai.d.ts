@@ -18,4 +18,5 @@ export interface AiContext {
   updateHost: (host: string) => Promise<void>
   getSettings: () => Promise<AiSettings>
   createEmbedding: (text: string, model?: string) => Promise<number[]>
+  getCapabilities: (model: string) => Promise<string[]>
 }

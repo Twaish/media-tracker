@@ -3,6 +3,7 @@ import { createAiUseCases } from '@/usecases/ai'
 import {
   AI_CHECK_COMPATIBILITY,
   AI_CREATE_EMBEDDING,
+  AI_GET_CAPABILITIES,
   AI_GET_SETTINGS,
   AI_UPDATE_HOST,
 } from './ai-channels'
@@ -22,5 +23,8 @@ export function addAiEventListeners(modules: Modules) {
   })
   ipcMain.handle(AI_CREATE_EMBEDDING, (_, text: string, model?: string) => {
     return useCases.createAiTextEmbedding.execute(text, model)
+  })
+  ipcMain.handle(AI_GET_CAPABILITIES, (_, model: string) => {
+    return useCases.getAiModelCapabilities.execute(model)
   })
 }
