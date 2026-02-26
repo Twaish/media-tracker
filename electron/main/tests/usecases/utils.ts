@@ -12,7 +12,7 @@ export function makeMedia(
   overrides?: Partial<MediaProps> & { id?: number },
 ): MediaProps | PersistedMedia {
   const { id, ...rest } = overrides ?? {}
-  let media = Media.create({
+  const media = Media.create({
     title: 'Test',
     currentEpisode: 1,
     maxEpisodes: null,
