@@ -33,6 +33,7 @@ describe('ResolveExternalMediaLink', () => {
 
   it('returns null when media has no external link', async () => {
     const media = makeMedia({
+      id: 1,
       externalLink: null,
       maxEpisodes: null,
       currentEpisode: 1,
@@ -48,6 +49,7 @@ describe('ResolveExternalMediaLink', () => {
 
   it('resolves external link using next episode', async () => {
     const media = makeMedia({
+      id: 1,
       externalLink: 'https://example.com/episode/{{episode}}',
       currentEpisode: 3,
       maxEpisodes: null,
@@ -69,6 +71,7 @@ describe('ResolveExternalMediaLink', () => {
 
   it('caps next episode at max episodes when exceeded', async () => {
     const media = makeMedia({
+      id: 1,
       externalLink: 'https://example.com/episode/{{episode}}',
       currentEpisode: 12,
       maxEpisodes: 12,
