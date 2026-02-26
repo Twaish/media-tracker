@@ -21,13 +21,13 @@ describe('ResolveExternalMediaLink', () => {
     usecase = new ResolveExternalMediaLink(mockRepo, mockResolver)
   })
 
-  it('returns null when media does not exist', async () => {
-    // @ts-expect-error
-    vi.mocked(mockRepo.getById).mockResolvedValue(null)
+  it('throws when media does not exist', async () => {
+    const repoError = new Error(`Media with id 1 not found`)
+    vi.mocked(mockRepo.getById).mockRejectedValue(repoError)
 
-    const result = await usecase.execute(1)
-
-    expect(result).toBeNull()
+    await expect(usecase.execute(1)).rejects.toThrow(
+      'Media with id 1 not found',
+    )
     expect(mockResolver.resolveExternalLink).not.toHaveBeenCalled()
   })
 
