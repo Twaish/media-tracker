@@ -3,7 +3,7 @@
   "productName": "ElectronShadCNTemplate",
   "appId": "electron.shadcn.template",
   "version": "1.0.0",
-  "description": "Electron Forge with shadcn-ui (Vite + Typescript)",
+  "description": "Electron Builder with shadcn-ui (Vite + Typescript)",
   "main": "./out/main/index.js",
   "author": "Axiom",
   "license": "MIT",
