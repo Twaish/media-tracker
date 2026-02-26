@@ -29,17 +29,17 @@ export class WinstonLogger implements ILogger {
     }
   }
 
-  debug(message: string, meta?: any): void {
-    this.logger.debug(message, ...(meta ?? []))
+  debug(message: string, ...meta: unknown[]): void {
+    this.logger.debug(message, ...meta)
   }
-  info(message: string, meta?: any): void {
-    this.logger.info(message, ...(meta ?? []))
+  info(message: string, ...meta: unknown[]): void {
+    this.logger.info(message, ...meta)
   }
-  warn(message: string, meta?: any): void {
-    this.logger.warn(message, ...(meta ?? []))
+  warn(message: string, ...meta: unknown[]): void {
+    this.logger.warn(message, ...meta)
   }
-  error(message: string | Error, meta?: any): void {
-    this.logger.error(message?.toString(), ...(meta ?? []))
+  error(message: string | Error, ...meta: unknown[]): void {
+    this.logger.error(message?.toString(), ...meta)
   }
   header(text: string, width?: number, char?: string): void {
     this.logger.header(text, width, char)
