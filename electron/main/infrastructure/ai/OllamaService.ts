@@ -52,6 +52,11 @@ export class OllamaService implements IAiService {
     const models = modelsResponse.models.map((m) => m.name)
     return models
   }
+  async getModelCapabilities(model: string): Promise<string[]> {
+    const client = this.ollama
+    const modelInfo = await client.show({ model })
+    return modelInfo.capabilities
+  }
   async isAvailable(): Promise<boolean> {
     try {
       await this.ollama.version()
