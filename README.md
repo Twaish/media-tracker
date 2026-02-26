@@ -33,9 +33,109 @@ npm run build:release
 - User defined fields with type system
 - Rule engine. Run automation on conditions:
 ```
-WHEN currentEpisode >= maxEpisodes
-THEN set status = Completed
-ADD add tag = "Finished"
+TEMPLATE LogMediaActivity
+PARAMETERS { 
+  media 
+}
+DO {
+  call http(config("discord.logs.url")) { // resolves value from settings
+    METHOD post
+    BODY {
+      "title": media.title,
+      "status": media.status,
+      "completedAt": now()
+    }
+    HEADERS {
+      "Authorization": concat("Bearer ", secret("discordToken") // resolves value from secrets 
+    }
+    RETRY 3 EXPONENTIAL DELAY 1000
+  }
+}
+--->
+{
+  type: "template",
+  name: "LogMediaActivity",
+  parameters: ["media"]
+  requires: {
+    config: ["discord.logs.url"],
+    secrets: ["discordToken"]
+  },
+  actions: [
+    { 
+      type: "http",
+      url: { 
+        type: "function",
+        name: "config",
+        args: [
+          { type: "literal", value: "discord.logs.url" }
+        ]
+      },
+      method: "POST",
+      body: {
+        type: "object",
+        value: {
+          title: { type: "variable", path: "media.title" },
+          status: { type: "variable", path: "media.status" },
+          completedAt: { type: "function", name: "now", args: [] }
+        }
+      },
+      headers: {
+        type: "object",
+        value: {
+          "Authorization": {
+            type: "function",
+            name: "concat",
+            args: [
+              { type: "literal", value: "Bearer " },
+              {
+                type: "function",
+                name: "secret",
+                args: [
+                  { type: "literal", value: "discordToken" }
+                ]
+              }
+            ]
+          }
+        }
+      }
+      retry: {
+        attempts: 3, 
+        strategy: "exponential", 
+        delayMs: 1000
+      }
+    }
+  ]
+}
+
+ON media currentEpisode >= maxEpisodes
+PRIORITY 1 // Run before others
+DO {
+  set completedAt = now()
+  set status = "Completed"
+  add tag = "Finished"
+  call template("LogMediaActivity")
+  call plugin("obsidian.sync")
+}
+--->
+{
+  id: "rule.autoCompleteOnFinish",
+  priority: 10,
+  enabled: true,
+  condition: {
+    type: "binary",
+    operator: ">=",
+    left: { type: "field", name: "currentEpisode" },
+    right: { type: "field", name: "maxEpisodes" }
+  },
+  execution: "sequential",
+  actions: [
+    { type: "set", field: "completedAt", value: { type: "function", name: "now", args: [] } }
+    { type: "set", field: "status", value: { type: "literal", value: "Completed" } },
+    { type: "append", field: "tag", value: { type: "literal", value: "Finished" } },
+    { type: "template", name: "LogMediaActivity", args: { media: { type: "self" } } },
+    { type: "plugin", name: "obsidian.sync", args: { media: { type: "self" } } }
+  ]
+}
 ```
 - Settings
 - Plugin system
