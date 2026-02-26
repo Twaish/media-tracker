@@ -25,10 +25,8 @@ npm run build:release
 - Add summary to current episode using AI (Continue without missing context)
 - Export/Import to json/csv
 - Viewing statistics
-- Duplicate media detection
 - System tray icon UI for quickly updating progress or adding new media
 - Backup/Restore using versioning system (delta-based)
-- Fuzzy searching (Cosine similarity)
 - Quick action menu
 - Full keyboard navigable
 - Cloud sync
@@ -63,3 +61,5 @@ SearchQuery {
 - Watch plans (Ex. Steins;Gate (2011) 1-22, Steins;Gate 0 (2018) 1-23, Steins;Gate (2011) 23-24, ...)
 - Soft delete
 - Bulk edit
+- Duplicate media detection
+- Fuzzy searching (Cosine similarity)
