@@ -34,14 +34,6 @@ export class MediaSimilarityService {
     return heap.toSortedDescending()
   }
 
-  computeSimilarity(
-    inputText: string,
-    model: string,
-    candidates: { id: number; embedding?: number[] }[],
-  ): Promise<{ id: number; similarity: number }[]> {
-    throw new Error('Method not implemented.')
-  }
-
   buildText(media: Partial<MediaProps>): string {
     return `
       Title: ${media.title}
