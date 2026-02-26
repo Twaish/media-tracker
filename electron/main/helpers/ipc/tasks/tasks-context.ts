@@ -18,12 +18,12 @@ export function exposeTasksContext() {
 
   function createSubscriptionWithCleanup(
     event: string,
-    callback: Function,
-  ): Function {
+    callback: TaskCallback,
+  ): () => void {
     const listener = (_: unknown, task: Task) => {
       callback(task)
     }
-    console.log('LISTENING ON ', event, 'WITH ', callback)
+
     ipcRenderer.on(event, listener)
 
     return () => {

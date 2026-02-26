@@ -15,7 +15,7 @@ export type Task = {
 
 export type TaskCallback = (task: Task) => void
 
-export type TaskEventHandler = (callback: TaskCallback) => Function
+export type TaskEventHandler = (callback: TaskCallback) => () => void
 
 export interface TasksContext {
   onTaskAdded: TaskEventHandler
