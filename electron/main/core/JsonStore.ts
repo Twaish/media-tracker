@@ -35,7 +35,7 @@ export class JsonStore extends EventEmitter {
       const data = await fs.readFile(filePath, 'utf-8')
       const parsedData = JSON.parse(data) as T
       return parsedData
-    } catch (err) {
+    } catch {
       return null
     }
   }
@@ -49,9 +49,10 @@ export class JsonStore extends EventEmitter {
 
   async remove(filename: string): Promise<void> {
     const filePath = this.getSafePath(filename)
-    try {
+
+    if (existsSync(filePath)) {
       await fs.unlink(filePath)
       this.emit('removed', filename, filePath)
-    } catch {}
+    }
   }
 }
