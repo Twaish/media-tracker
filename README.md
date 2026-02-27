@@ -31,7 +31,34 @@ npm run build:release
 - Full keyboard navigable
 - Cloud sync
 - User defined fields with type system
-- Rule engine. Run automation on conditions:
+- Rule engine. Run automation on conditions.
+- Settings
+- Plugin system
+- CLI
+- Encrypted storage/libraries
+
+## Features
+Features that have been implemented in the main process
+- AI compatibility (Check for local Ollama)
+- External link schema for auto interpolating episodes to URI: `http://comics.com/comics/123456&chapter={{chapter}}`
+- Searching using following schema : `<title?> [property operator value[, value...]]*`. Supported operators: `=  !=  <  <=  >  >=`. Example query: `One Punch Man [genre=Comedy, Fighting][genre!=Thriller][year>=2015]` would result in:
+```json
+// AST Representation
+SearchQuery {
+  "title": "One Punch Man",
+  "filters": [
+    { "field": "genre", "op": "=", "values": ["Comedy", "Fighting"] },
+    { "field": "genre", "op": "!=", "values": ["Thriller"] },
+    { "field": "year", "op": ">=", "values": [2015] }
+  ]
+}
+```
+- Watch plans (Ex. Steins;Gate (2011) 1-22, Steins;Gate 0 (2018) 1-23, Steins;Gate (2011) 23-24, ...)
+- Soft delete
+- Bulk edit
+- Duplicate media detection
+- Fuzzy searching (Cosine similarity)
+- Rule engine DSL compiler 
 ```
 TEMPLATE LogMediaActivity
 PARAMETERS { 
@@ -46,7 +73,7 @@ DO {
       "completedAt": now()
     }
     HEADERS {
-      "Authorization": concat("Bearer ", secret("discordToken") // resolves value from secrets 
+      "Authorization": concat("Bearer ", secret("discordToken")) // resolves value from secrets 
     }
     RETRY 3 EXPONENTIAL DELAY 1000
   }
@@ -74,8 +101,8 @@ DO {
       body: {
         type: "object",
         value: {
-          title: { type: "variable", path: "media.title" },
-          status: { type: "variable", path: "media.status" },
+          title: { type: "field", path: "media.title" },
+          status: { type: "field", path: "media.status" },
           completedAt: { type: "function", name: "now", args: [] }
         }
       },
@@ -107,6 +134,7 @@ DO {
   ]
 }
 
+RULE autoCompleteOnFinish
 ON media currentEpisode >= maxEpisodes
 PRIORITY 1 // Run before others
 DO {
@@ -119,7 +147,8 @@ DO {
 --->
 {
   id: "rule.autoCompleteOnFinish",
-  priority: 10,
+  type: "rule",
+  priority: 1,
   enabled: true,
   condition: {
     type: "binary",
@@ -129,7 +158,7 @@ DO {
   },
   execution: "sequential",
   actions: [
-    { type: "set", field: "completedAt", value: { type: "function", name: "now", args: [] } }
+    { type: "set", field: "completedAt", value: { type: "function", name: "now", args: [] } },
     { type: "set", field: "status", value: { type: "literal", value: "Completed" } },
     { type: "append", field: "tag", value: { type: "literal", value: "Finished" } },
     { type: "template", name: "LogMediaActivity", args: { media: { type: "self" } } },
@@ -137,29 +166,3 @@ DO {
   ]
 }
 ```
-- Settings
-- Plugin system
-- CLI
-- Encrypted storage/libraries
-
-## Features
-Features that have been implemented in the main process
-- AI compatibility (Check for local Ollama)
-- External link schema for auto interpolating episodes to URI: `http://comics.com/comics/123456&chapter={{chapter}}`
-- Searching using following schema : `<title?> [property operator value[, value...]]*`. Supported operators: `=  !=  <  <=  >  >=`. Example query: `One Punch Man [genre=Comedy, Fighting][genre!=Thriller][year>=2015]` would result in:
-```json
-// AST Representation
-SearchQuery {
-  "title": "One Punch Man",
-  "filters": [
-    { "field": "genre", "op": "=", "values": ["Comedy", "Fighting"] },
-    { "field": "genre", "op": "!=", "values": ["Thriller"] },
-    { "field": "year", "op": ">=", "values": [2015] }
-  ]
-}
-```
-- Watch plans (Ex. Steins;Gate (2011) 1-22, Steins;Gate 0 (2018) 1-23, Steins;Gate (2011) 23-24, ...)
-- Soft delete
-- Bulk edit
-- Duplicate media detection
-- Fuzzy searching (Cosine similarity)
