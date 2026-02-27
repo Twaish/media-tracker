@@ -43,7 +43,7 @@ export type Action =
   | TemplateAction
   | PluginAction
 
-export const HttpMethods = ['GET', 'POST', 'PUT', 'DELETE'] as const
+export const HttpMethods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'] as const
 
 export type HttpMethod = (typeof HttpMethods)[number]
 
