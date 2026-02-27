@@ -138,6 +138,7 @@ export const KEYWORDS = new Set([
   'TEMPLATE',
   'PARAMETERS',
   'DO',
+  'RULE',
   'ON',
   'PRIORITY',
   'METHOD',

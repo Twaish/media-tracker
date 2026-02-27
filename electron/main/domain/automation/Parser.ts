@@ -24,8 +24,8 @@ export class Parser {
 
   parseTopLevel(): Template | Rule {
     if (this.match('TEMPLATE')) return this.parseTemplate()
-    if (this.match('ON')) return this.parseRule()
-    throw new Error('Expected TEMPLATE or ON')
+    if (this.match('RULE')) return this.parseRule()
+    throw new Error('Expected TEMPLATE or RULE')
   }
 
   private parseTemplate(): Template {
@@ -60,9 +60,11 @@ export class Parser {
   }
 
   private parseRule(): Rule {
+    this.expectKeyword('RULE')
+    const ruleName = this.expect(TokenType.Identifier).value
     this.expectKeyword('ON')
 
-    const entity = this.expect(TokenType.Identifier).value // target (ignored for now)
+    const entity = this.expect(TokenType.Identifier).value
     this.currentRuleEntity = entity
 
     const condition = this.parseCondition()
@@ -80,7 +82,7 @@ export class Parser {
 
     return {
       type: 'rule',
-      id: `rule.${Date.now()}`,
+      id: `rule.${ruleName}`,
       priority,
       enabled: true,
       condition,
@@ -235,8 +237,6 @@ export class Parser {
 
   private parsePrimary(): Expression {
     const token = this.peek()
-
-    console.log(token)
 
     if (token.type === TokenType.String) {
       this.consume()
