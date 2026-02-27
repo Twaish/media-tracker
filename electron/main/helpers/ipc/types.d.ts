@@ -12,15 +12,19 @@ import { TaskService } from '@/core/TaskService'
 import { IWatchPlanRepository } from '@/application/db/repositories/IWatchPlanRepository'
 import { IMediaEmbeddingRepository } from '@/application/db/repositories/IMediaEmbeddingRepository'
 import { MediaSimilarityService } from '@/domain/services/MediaSimilarityService'
+import { RuleEngine } from '@/domain/automation/RuleEngine'
 
 declare interface Modules {
   ElectronWindow: ElectronWindow
   StorageService: StorageService
   TaskService: TaskService
+  RuleEngine: RuleEngine
   window: BrowserWindow
   logger: ILogger
+
   AiSettingsProvider: IAiSettingsProvider
   AiService: IAiService
+
   MediaSimilarityService: MediaSimilarityService
 
   MediaRepository: IMediaRepository

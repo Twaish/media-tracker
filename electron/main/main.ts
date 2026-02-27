@@ -86,9 +86,10 @@ app.whenReady().then(async () => {
 
     const modules: Modules = {
       ElectronWindow: mainWindow,
-      window: mainWindow.window,
       StorageService: storageService,
       TaskService: taskService,
+      RuleEngine: ruleEngine,
+      window: mainWindow.window,
       logger: logger,
 
       AiSettingsProvider: ollamaSettings,
