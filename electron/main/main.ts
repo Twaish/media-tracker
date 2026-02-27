@@ -28,6 +28,9 @@ import { TaskService } from './core/TaskService'
 import { WatchPlanRepositoryDrizzle } from './infrastructure/db/repositories/watchPlanRepositoryDrizzle'
 import { MediaEmbeddingRepositoryDrizzle } from './infrastructure/db/repositories/mediaEmbeddingRepositoryDrizzle'
 import { MediaSimilarityService } from './domain/services/MediaSimilarityService'
+import { RuleEngine } from './domain/automation/RuleEngine'
+import { RuleEnginePrinter } from './domain/automation/RuleEnginePrinter'
+import { RuleEngineCompiler } from './domain/automation/RuleEngineCompiler'
 
 app.whenReady().then(async () => {
   const { DB_PATH, LOG_PATH, APP_URL } = config
@@ -37,6 +40,11 @@ app.whenReady().then(async () => {
   const logger = new WinstonLogger([consoleTransport, fileTransport])
 
   logger.debug(`Config:\n${JSON.stringify(config, null, 2)}`)
+
+  const ruleEngineCompiler = new RuleEngineCompiler()
+  const ruleEnginePrinter = new RuleEnginePrinter()
+
+  const ruleEngine = new RuleEngine(ruleEngineCompiler, ruleEnginePrinter)
 
   try {
     logger.header('Infrastructure')
