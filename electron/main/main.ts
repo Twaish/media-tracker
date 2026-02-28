@@ -31,6 +31,9 @@ import { MediaSimilarityService } from './domain/services/MediaSimilarityService
 import { RuleEngine } from './domain/automation/RuleEngine'
 import { RuleEnginePrinter } from './domain/automation/RuleEnginePrinter'
 import { RuleEngineCompiler } from './domain/automation/RuleEngineCompiler'
+import { ActionExecutor } from './domain/automation/ActionExecutor'
+import { ExpressionEvaluator } from './domain/automation/ExpressionEvaluator'
+import { Rule } from './domain/automation/types'
 
 app.whenReady().then(async () => {
   const { DB_PATH, LOG_PATH, APP_URL } = config
@@ -43,8 +46,15 @@ app.whenReady().then(async () => {
 
   const ruleEngineCompiler = new RuleEngineCompiler()
   const ruleEnginePrinter = new RuleEnginePrinter()
+  const expressionEvaluator = new ExpressionEvaluator()
+  const actionExecutor = new ActionExecutor(expressionEvaluator)
 
-  const ruleEngine = new RuleEngine(ruleEngineCompiler, ruleEnginePrinter)
+  const ruleEngine = new RuleEngine(
+    ruleEngineCompiler,
+    ruleEnginePrinter,
+    expressionEvaluator,
+    actionExecutor,
+  )
 
   try {
     logger.header('Infrastructure')
