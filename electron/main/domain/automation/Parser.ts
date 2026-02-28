@@ -1,7 +1,7 @@
 import {
   Action,
   AppendAction,
-  Condition,
+  BinaryExpression,
   Expression,
   FunctionExpression,
   HttpAction,
@@ -93,7 +93,7 @@ export class Parser {
     }
   }
 
-  private parseCondition(): Condition {
+  private parseCondition(): BinaryExpression {
     const left = this.parseExpression()
     const operator = this.expect(TokenType.Operator).value as any
     const right = this.parseExpression()

@@ -1,19 +1,14 @@
 export type Expression =
   | LiteralExpression
-  | VariableExpression
   | FieldExpression
   | FunctionExpression
   | ObjectExpression
   | SelfExpression
+  | BinaryExpression
 
 export type LiteralExpression = {
   type: 'literal'
   value: string | number | boolean
-}
-
-export type VariableExpression = {
-  type: 'variable'
-  path: string
 }
 
 export type FieldExpression = {
@@ -34,6 +29,13 @@ export type ObjectExpression = {
 
 export type SelfExpression = {
   type: 'self'
+}
+
+export type BinaryExpression = {
+  type: 'binary'
+  operator: '>' | '<' | '>=' | '<=' | '==' | '!='
+  left: Expression
+  right: Expression
 }
 
 export type Action =
@@ -99,15 +101,6 @@ export enum TokenType {
   EOF = 'eof',
 }
 
-export type Condition = BinaryExpression
-
-export type BinaryExpression = {
-  type: 'binary'
-  operator: '>' | '<' | '>=' | '<=' | '==' | '!='
-  left: Expression
-  right: Expression
-}
-
 export type Template = {
   type: 'template'
   name: string
@@ -126,7 +119,7 @@ export type Rule = {
   target: string
   priority: number
   enabled: boolean
-  condition: Condition
+  condition: BinaryExpression
   execution: 'sequential'
   actions: Action[]
 }
@@ -154,3 +147,17 @@ export const KEYWORDS = new Set([
   'set',
   'add',
 ])
+
+export type RuleContext<T> = {
+  current: T
+  previous?: T
+  event?: unknown
+  services: RuleExecutionServices
+  activeRules: Set<string>
+}
+
+export type RuleExecutionServices = {
+  now(): Date
+  callTemplate(name: string, ...args: unknown[]): Promise<void>
+  callPlugin(name: string, ...args: unknown[]): Promise<void>
+}
