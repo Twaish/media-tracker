@@ -49,12 +49,7 @@ app.whenReady().then(async () => {
   const expressionEvaluator = new ExpressionEvaluator()
   const actionExecutor = new ActionExecutor(expressionEvaluator)
 
-  const ruleEngine = new RuleEngine(
-    ruleEngineCompiler,
-    ruleEnginePrinter,
-    expressionEvaluator,
-    actionExecutor,
-  )
+  const ruleEngine = new RuleEngine(expressionEvaluator, actionExecutor)
 
   try {
     logger.header('Infrastructure')

@@ -1,7 +1,5 @@
 import { ActionExecutor } from './ActionExecutor'
 import { ExpressionEvaluator } from './ExpressionEvaluator'
-import { RuleEngineCompiler } from './RuleEngineCompiler'
-import { RuleEnginePrinter } from './RuleEnginePrinter'
 import { Rule, RuleContext, Template } from './types'
 
 export class RuleEngine {
@@ -9,19 +7,9 @@ export class RuleEngine {
   private templates: Record<string, Template> = {}
 
   constructor(
-    private readonly compiler: RuleEngineCompiler,
-    private readonly printer: RuleEnginePrinter,
     private readonly evaluator: ExpressionEvaluator,
     private readonly executor: ActionExecutor,
   ) {}
-
-  compile(source: string): Template | Rule {
-    return this.compiler.compile(source)
-  }
-
-  print(node: Template | Rule): string {
-    return this.printer.print(node)
-  }
 
   registerRule(rule: Rule) {
     const index = this.rules.findIndex((r) => r.id === rule.id)
