@@ -122,6 +122,8 @@ export type Template = {
 export type Rule = {
   type: 'rule'
   id: string
+  trigger: string
+  target: string
   priority: number
   enabled: boolean
   condition: Condition
@@ -140,6 +142,7 @@ export const KEYWORDS = new Set([
   'DO',
   'RULE',
   'ON',
+  'ONCE',
   'PRIORITY',
   'METHOD',
   'BODY',
@@ -148,7 +151,6 @@ export const KEYWORDS = new Set([
   'EXPONENTIAL',
   'DELAY',
   'call',
-  // 'http',
   'set',
   'add',
 ])
