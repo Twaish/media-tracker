@@ -6,7 +6,6 @@ import {
   FunctionExpression,
   HttpAction,
   HttpMethod,
-  HttpMethods,
   LiteralExpression,
   ObjectExpression,
   Rule,
