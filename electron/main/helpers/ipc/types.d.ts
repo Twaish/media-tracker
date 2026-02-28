@@ -13,12 +13,16 @@ import { IWatchPlanRepository } from '@/application/db/repositories/IWatchPlanRe
 import { IMediaEmbeddingRepository } from '@/application/db/repositories/IMediaEmbeddingRepository'
 import { MediaSimilarityService } from '@/domain/services/MediaSimilarityService'
 import { RuleEngine } from '@/domain/automation/RuleEngine'
+import { RuleEngineCompiler } from '@/domain/automation/RuleEngineCompiler'
+import { RuleEnginePrinter } from '@/domain/automation/RuleEnginePrinter'
 
 declare interface Modules {
   ElectronWindow: ElectronWindow
   StorageService: StorageService
   TaskService: TaskService
   RuleEngine: RuleEngine
+  RuleEngineCompiler: RuleEngineCompiler
+  RuleEnginePrinter: RuleEnginePrinter
   window: BrowserWindow
   logger: ILogger
 

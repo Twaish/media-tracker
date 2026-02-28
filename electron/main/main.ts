@@ -94,6 +94,8 @@ app.whenReady().then(async () => {
       StorageService: storageService,
       TaskService: taskService,
       RuleEngine: ruleEngine,
+      RuleEngineCompiler: ruleEngineCompiler,
+      RuleEnginePrinter: ruleEnginePrinter,
       window: mainWindow.window,
       logger: logger,
 
