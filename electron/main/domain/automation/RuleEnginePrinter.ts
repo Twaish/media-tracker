@@ -1,6 +1,6 @@
 import {
   Action,
-  Condition,
+  BinaryExpression,
   Expression,
   HttpAction,
   ObjectExpression,
@@ -51,7 +51,7 @@ export class RuleEnginePrinter {
     return output
   }
 
-  private printCondition(condition: Condition): string {
+  private printCondition(condition: BinaryExpression): string {
     if (condition.type === 'binary') {
       return `${this.printExpression(condition.left)} ${condition.operator} ${this.printExpression(condition.right)}`
     }
@@ -128,9 +128,6 @@ export class RuleEnginePrinter {
 
       case 'field':
         return expr.name
-
-      case 'variable':
-        return expr.path
 
       case 'self':
         return 'self'
