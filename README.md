@@ -135,7 +135,7 @@ DO {
 }
 
 RULE autoCompleteOnFinish
-ON media currentEpisode >= maxEpisodes
+ONCE media currentEpisode >= maxEpisodes
 PRIORITY 1 // Run before others
 DO {
   set completedAt = now()
@@ -150,6 +150,8 @@ DO {
   type: "rule",
   priority: 1,
   enabled: true,
+  trigger: "ONCE",
+  target: "media",
   condition: {
     type: "binary",
     operator: ">=",
