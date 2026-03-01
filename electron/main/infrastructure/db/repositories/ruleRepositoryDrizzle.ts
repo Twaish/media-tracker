@@ -1,6 +1,6 @@
 import { IRuleRepository } from '@/application/db/repositories/IRuleRepository'
 import { PersistedRule, Rule } from '@/domain/entities/rule'
-import { AddRuleDTO, UpdateRuleDTO } from '@shared/types/rules'
+import { AddRuleDTO, UpdateRuleDTO } from '@shared/types/automation'
 import { rulesTable } from '../tables/automation.table'
 import { DrizzleDb, Executor } from '../types'
 import { eq, inArray } from 'drizzle-orm'

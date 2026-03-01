@@ -1,5 +1,5 @@
 import { ITemplateRepository } from '@/application/db/repositories/ITemplateRepository'
-import { AddTemplateDTO, UpdateTemplateDTO } from '@shared/types/template'
+import { AddTemplateDTO, UpdateTemplateDTO } from '@shared/types/automation'
 import { DrizzleDb, Executor } from '../types'
 import { templatesTable } from '../schema'
 import { eq, inArray } from 'drizzle-orm'
@@ -19,6 +19,11 @@ export class TemplateRepositoryDrizzle implements ITemplateRepository {
     if (!row) throw new Error(`Template with id ${id} not found`)
 
     return this.toDomain(row)
+  }
+  async getAll(): Promise<PersistedTemplate[]> {
+    const rows = await this.db.query.templatesTable.findMany()
+
+    return rows.map(this.toDomain)
   }
 
   async add(template: AddTemplateDTO): Promise<PersistedTemplate> {

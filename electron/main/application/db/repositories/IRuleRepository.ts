@@ -1,5 +1,5 @@
 import { PersistedRule } from '@/domain/entities/rule'
-import { AddRuleDTO, UpdateRuleDTO } from '@shared/types/rules'
+import { AddRuleDTO, UpdateRuleDTO } from '@shared/types/automation'
 
 export interface IRuleRepository {
   getById(id: number): Promise<PersistedRule>
