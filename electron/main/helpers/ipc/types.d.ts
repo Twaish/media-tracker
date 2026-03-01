@@ -15,6 +15,8 @@ import { MediaSimilarityService } from '@/domain/services/MediaSimilarityService
 import { RuleEngine } from '@/domain/automation/RuleEngine'
 import { RuleEngineCompiler } from '@/domain/automation/RuleEngineCompiler'
 import { RuleEnginePrinter } from '@/domain/automation/RuleEnginePrinter'
+import { IRuleRepository } from '@/application/db/repositories/IRuleRepository'
+import { ITemplateRepository } from '@/application/db/repositories/ITemplateRepository'
 
 declare interface Modules {
   ElectronWindow: ElectronWindow
@@ -35,4 +37,6 @@ declare interface Modules {
   GenresRepository: IGenresRepository
   WatchPlanRepository: IWatchPlanRepository
   MediaEmbeddingRepository: IMediaEmbeddingRepository
+  RuleRepository: IRuleRepository
+  TemplateRepository: ITemplateRepository
 }

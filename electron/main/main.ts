@@ -33,7 +33,8 @@ import { RuleEnginePrinter } from './domain/automation/RuleEnginePrinter'
 import { RuleEngineCompiler } from './domain/automation/RuleEngineCompiler'
 import { ActionExecutor } from './domain/automation/ActionExecutor'
 import { ExpressionEvaluator } from './domain/automation/ExpressionEvaluator'
-import { Rule } from './domain/automation/types'
+import { RuleRepositoryDrizzle } from './infrastructure/db/repositories/ruleRepositoryDrizzle'
+import { TemplateRepositoryDrizzle } from './infrastructure/db/repositories/templateRepositoryDrizzle'
 
 app.whenReady().then(async () => {
   const { DB_PATH, LOG_PATH, APP_URL } = config
@@ -61,6 +62,8 @@ app.whenReady().then(async () => {
     const mediaEmbeddingRepository = new MediaEmbeddingRepositoryDrizzle(
       database,
     )
+    const ruleRepository = new RuleRepositoryDrizzle(database)
+    const templateRepository = new TemplateRepositoryDrizzle(database)
 
     logger.info('Initializing task service')
     const taskService = new TaskService()
@@ -108,6 +111,8 @@ app.whenReady().then(async () => {
       GenresRepository: genresRepository,
       WatchPlanRepository: watchPlanRepository,
       MediaEmbeddingRepository: mediaEmbeddingRepository,
+      RuleRepository: ruleRepository,
+      TemplateRepository: templateRepository,
     }
 
     logger.header('IPC / Protocols')
