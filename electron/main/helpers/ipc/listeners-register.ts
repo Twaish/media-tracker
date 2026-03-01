@@ -7,6 +7,7 @@ import { addStorageEventListeners } from './storage/storage-listeners'
 import { addAiEventListeners } from './ai/ai-listeners'
 import { addTasksEventListeners } from './tasks/tasks-listeners'
 import { addWatchPlansEventListeners } from './watchPlans/watch-plans-listeners'
+import { addAutomationEventListeners } from './automation/automation-listeners'
 
 export default function registerListeners(modules: Modules) {
   addWindowEventListeners(modules)
@@ -17,4 +18,5 @@ export default function registerListeners(modules: Modules) {
   addAiEventListeners(modules)
   addTasksEventListeners(modules)
   addWatchPlansEventListeners(modules)
+  addAutomationEventListeners(modules)
 }
