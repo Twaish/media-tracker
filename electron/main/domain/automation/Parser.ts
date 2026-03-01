@@ -38,7 +38,6 @@ export class Parser {
 
     return {
       type: 'template',
-      id: `template.${name}`,
       name,
       parameters,
       actions,
@@ -82,7 +81,6 @@ export class Parser {
 
     return {
       type: 'rule',
-      id: `rule.${name}`,
       name,
       trigger,
       target: entity,

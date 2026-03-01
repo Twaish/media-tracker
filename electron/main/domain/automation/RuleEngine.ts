@@ -12,7 +12,7 @@ export class RuleEngine {
   ) {}
 
   registerRule(rule: Rule) {
-    const index = this.rules.findIndex((r) => r.id === rule.id)
+    const index = this.rules.findIndex((r) => r.name === rule.name)
     if (index === -1) {
       this.rules.push(rule)
     }

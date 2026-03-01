@@ -34,9 +34,7 @@ export class RuleEnginePrinter {
   }
 
   private printRule(rule: Rule): string {
-    const ruleName = rule.id.replace(/^rule\./, '')
-
-    let output = `RULE ${ruleName}\n`
+    let output = `RULE ${rule.name}\n`
 
     output += `ON media ${this.printCondition(rule.condition)}\n`
 

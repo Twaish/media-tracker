@@ -80,7 +80,6 @@ DO {
 }
 --->
 {
-  id: "template.LogMediaActivity",
   name: "LogMediaActivity",
   type: "template",
   parameters: ["media"]
@@ -147,7 +146,6 @@ DO {
 }
 --->
 {
-  id: "rule.AutoCompleteOnFinish",
   name: "AutoCompleteOnFinish",
   type: "rule",
   priority: 1,
