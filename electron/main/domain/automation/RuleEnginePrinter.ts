@@ -9,6 +9,12 @@ import {
 } from './types'
 
 export class RuleEnginePrinter {
+  /**
+   * Prints the AST representation to DSL equivalent
+   *
+   * @param node The node to print
+   * @returns DSL equivalent for the provided AST node
+   */
   print(node: TemplateNode | RuleNode): string {
     if (node.type === 'template') return this.printTemplate(node)
     if (node.type === 'rule') return this.printRule(node)
