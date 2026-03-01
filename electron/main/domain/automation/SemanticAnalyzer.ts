@@ -7,6 +7,28 @@ import {
 } from './types'
 
 export class SemanticAnalyzer {
+  /**
+   * Performs static analysis to add configs- and secrets-dependencies
+   *
+   * Given DSL that uses config() or secret()
+   * ```
+   * config("discord.logs.url")
+   * secret("discordToken")
+   * ```
+   *
+   * will enrich the node with
+   * ```json
+   * {
+   *  "requires": {
+   *    "config": ["discord.logs.url"],
+   *    "secret": ["discordToken"]
+   *  }
+   * }
+   * ```
+   *
+   * @param node The node to analyze
+   * @returns The node with requirements
+   */
   enrich(node: TemplateNode | RuleNode): TemplateNode | RuleNode {
     if (node.type === 'template') {
       node.requires = this.extractRequires(node.actions)
