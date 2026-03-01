@@ -5,6 +5,8 @@ import { RuleNode, TemplateNode } from './types'
 
 export class RuleEngineCompiler {
   /**
+   * Compiles DSL defined underneath to an AST
+   *
    * How to define a rule:
    * ```
    * RULE <name>
