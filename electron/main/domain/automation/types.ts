@@ -103,6 +103,7 @@ export enum TokenType {
 
 export type Template = {
   type: 'template'
+  id: string
   name: string
   parameters: string[]
   requires?: {
@@ -115,6 +116,7 @@ export type Template = {
 export type Rule = {
   type: 'rule'
   id: string
+  name: string
   trigger: string
   target: string
   priority: number

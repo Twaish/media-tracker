@@ -38,6 +38,7 @@ export class Parser {
 
     return {
       type: 'template',
+      id: `template.${name}`,
       name,
       parameters,
       actions,
@@ -60,7 +61,7 @@ export class Parser {
 
   private parseRule(): Rule {
     this.expectKeyword('RULE')
-    const ruleName = this.expect(TokenType.Identifier).value
+    const name = this.expect(TokenType.Identifier).value
     const trigger = this.expect(TokenType.Keyword).value
 
     const entity = this.expect(TokenType.Identifier).value
@@ -81,7 +82,8 @@ export class Parser {
 
     return {
       type: 'rule',
-      id: `rule.${ruleName}`,
+      id: `rule.${name}`,
+      name,
       trigger,
       target: entity,
       priority,

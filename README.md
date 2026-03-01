@@ -80,8 +80,9 @@ DO {
 }
 --->
 {
-  type: "template",
+  id: "template.LogMediaActivity",
   name: "LogMediaActivity",
+  type: "template",
   parameters: ["media"]
   requires: {
     config: ["discord.logs.url"],
@@ -134,7 +135,7 @@ DO {
   ]
 }
 
-RULE autoCompleteOnFinish
+RULE AutoCompleteOnFinish
 ONCE media currentEpisode >= maxEpisodes
 PRIORITY 1 // Run before others
 DO {
@@ -146,7 +147,8 @@ DO {
 }
 --->
 {
-  id: "rule.autoCompleteOnFinish",
+  id: "rule.AutoCompleteOnFinish",
+  name: "AutoCompleteOnFinish",
   type: "rule",
   priority: 1,
   enabled: true,
