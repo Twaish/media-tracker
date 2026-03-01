@@ -1,7 +1,13 @@
-import { Action, Expression, LiteralExpression, Rule, Template } from './types'
+import {
+  Action,
+  Expression,
+  LiteralExpression,
+  RuleNode,
+  TemplateNode,
+} from './types'
 
 export class SemanticAnalyzer {
-  enrich(node: Template | Rule): Template | Rule {
+  enrich(node: TemplateNode | RuleNode): TemplateNode | RuleNode {
     if (node.type === 'template') {
       node.requires = this.extractRequires(node.actions)
     }

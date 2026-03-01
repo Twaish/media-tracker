@@ -4,18 +4,18 @@ import {
   Expression,
   HttpAction,
   ObjectExpression,
-  Rule,
-  Template,
+  RuleNode,
+  TemplateNode,
 } from './types'
 
 export class RuleEnginePrinter {
-  print(node: Template | Rule): string {
+  print(node: TemplateNode | RuleNode): string {
     if (node.type === 'template') return this.printTemplate(node)
     if (node.type === 'rule') return this.printRule(node)
     throw new Error(`Unknown node type`)
   }
 
-  private printTemplate(template: Template): string {
+  private printTemplate(template: TemplateNode): string {
     let output = `TEMPLATE ${template.name}\n`
 
     if (template.parameters.length > 0) {
@@ -33,7 +33,7 @@ export class RuleEnginePrinter {
     return output
   }
 
-  private printRule(rule: Rule): string {
+  private printRule(rule: RuleNode): string {
     let output = `RULE ${rule.name}\n`
 
     output += `ON media ${this.printCondition(rule.condition)}\n`

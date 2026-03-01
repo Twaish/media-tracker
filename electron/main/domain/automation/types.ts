@@ -101,7 +101,7 @@ export enum TokenType {
   EOF = 'eof',
 }
 
-export type Template = {
+export type TemplateNode = {
   type: 'template'
   name: string
   parameters: string[]
@@ -112,7 +112,7 @@ export type Template = {
   actions: Action[]
 }
 
-export type Rule = {
+export type RuleNode = {
   type: 'rule'
   name: string
   trigger: string

@@ -8,9 +8,9 @@ import {
   HttpMethod,
   LiteralExpression,
   ObjectExpression,
-  Rule,
+  RuleNode,
   SetAction,
-  Template,
+  TemplateNode,
   Token,
   TokenType,
 } from './types'
@@ -21,13 +21,13 @@ export class Parser {
 
   constructor(private tokens: Token[]) {}
 
-  parseTopLevel(): Template | Rule {
+  parseTopLevel(): TemplateNode | RuleNode {
     if (this.match('TEMPLATE')) return this.parseTemplate()
     if (this.match('RULE')) return this.parseRule()
     throw new Error('Expected TEMPLATE or RULE')
   }
 
-  private parseTemplate(): Template {
+  private parseTemplate(): TemplateNode {
     this.expectKeyword('TEMPLATE')
     const name = this.expect(TokenType.Identifier).value
 
@@ -58,7 +58,7 @@ export class Parser {
     return params
   }
 
-  private parseRule(): Rule {
+  private parseRule(): RuleNode {
     this.expectKeyword('RULE')
     const name = this.expect(TokenType.Identifier).value
     const trigger = this.expect(TokenType.Keyword).value

@@ -1,24 +1,24 @@
 import { ActionExecutor } from './ActionExecutor'
 import { ExpressionEvaluator } from './ExpressionEvaluator'
-import { Rule, RuleContext, Template } from './types'
+import { RuleNode, RuleContext, TemplateNode } from './types'
 
 export class RuleEngine {
-  private rules: Rule[] = []
-  private templates: Record<string, Template> = {}
+  private rules: RuleNode[] = []
+  private templates: Record<string, TemplateNode> = {}
 
   constructor(
     private readonly evaluator: ExpressionEvaluator,
     private readonly executor: ActionExecutor,
   ) {}
 
-  registerRule(rule: Rule) {
+  registerRule(rule: RuleNode) {
     const index = this.rules.findIndex((r) => r.name === rule.name)
     if (index === -1) {
       this.rules.push(rule)
     }
   }
 
-  registerTemplate(template: Template) {
+  registerTemplate(template: TemplateNode) {
     this.templates[template.name] ??= template
   }
 
@@ -39,7 +39,7 @@ export class RuleEngine {
     }
   }
 
-  private shouldFire<T>(rule: Rule, context: RuleContext<T>): boolean {
+  private shouldFire<T>(rule: RuleNode, context: RuleContext<T>): boolean {
     const current = this.evaluator.evaluate(
       rule.condition,
       context.current,

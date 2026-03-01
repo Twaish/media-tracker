@@ -1,7 +1,7 @@
 import { Lexer } from './Lexer'
 import { Parser } from './Parser'
 import { SemanticAnalyzer } from './SemanticAnalyzer'
-import { Rule, Template } from './types'
+import { RuleNode, TemplateNode } from './types'
 
 export class RuleEngineCompiler {
   /**
@@ -43,7 +43,7 @@ export class RuleEngineCompiler {
    * }
    * ```
    */
-  compile(source: string): Template | Rule {
+  compile(source: string): TemplateNode | RuleNode {
     const lexer = new Lexer(source)
     const tokens = lexer.tokenize()
 
