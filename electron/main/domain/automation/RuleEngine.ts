@@ -11,6 +11,11 @@ export class RuleEngine {
     private readonly executor: ActionExecutor,
   ) {}
 
+  /**
+   * Registers a rule allowing it to be executed
+   *
+   * @param rule The rule to register
+   */
   registerRule(rule: RuleNode) {
     const index = this.rules.findIndex((r) => r.name === rule.name)
     if (index === -1) {
@@ -18,17 +23,37 @@ export class RuleEngine {
     }
   }
 
+  /**
+   * Registers a template allowing it to be executed by a rule
+   *
+   * @param template The template to register
+   */
   registerTemplate(template: TemplateNode) {
     this.templates[template.name] ??= template
   }
 
+  /**
+   * Evaluates and execute all applicable rules for a given target
+   *
+   * Rules are:
+   * - Filtered by `enabled === true`
+   * - Matched against the provided = `target`
+   * - Sorted by ascending priority
+   *
+   * @param target Target identifier used to match rules
+   * @param context Execution context containing current and previous state
+   */
   async handle<T extends Record<string, unknown>>(
     target: string,
     context: RuleContext<T>,
   ): Promise<void> {
+    const byPriority = (a: RuleNode, b: RuleNode) => a.priority - b.priority
+    const onlyEnabledAndTargetted = (r: RuleNode) =>
+      r.enabled && r.target === target
+
     const applicable = this.rules
-      .filter((r) => r.enabled && r.target === target)
-      .sort((a, b) => a.priority - b.priority)
+      .filter(onlyEnabledAndTargetted)
+      .sort(byPriority)
 
     for (const rule of applicable) {
       const shouldFire = this.shouldFire(rule, context)
@@ -39,6 +64,17 @@ export class RuleEngine {
     }
   }
 
+  /**
+   * Determines whether a rule should fire based on its trigger type
+   *
+   * Supported triggers:
+   * - `ON`: Fires whenever the condition evaluates to true
+   * - `ONCE`: Fires only when the condition transitions `false (previous) -> true (current)`
+   *
+   * @param rule Rule to evaluate
+   * @param context Execution context containing current and previous state
+   * @returns
+   */
   private shouldFire<T>(rule: RuleNode, context: RuleContext<T>): boolean {
     const current = this.evaluator.evaluate(
       rule.condition,
