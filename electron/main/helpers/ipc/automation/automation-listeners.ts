@@ -10,40 +10,32 @@ import {
   TEMPLATE_REMOVE,
   TEMPLATE_UPDATE,
 } from './automation-channels'
-import {
-  AddRuleDTO,
-  AddTemplateDTO,
-  UpdateRuleDTO,
-  UpdateTemplateDTO,
-} from '@shared/types/automation'
-import { ipcMain } from 'electron'
+import { AutomationContext } from '@shared/types/automation'
+import { registerIpcHandlers } from '../register-ipc-handlers'
 
 export function addAutomationEventListeners(modules: Modules) {
   const useCases = createAutomationUseCases(modules)
 
-  ipcMain.handle(RULE_ADD, (_, rule: AddRuleDTO) => {
-    return useCases.addRule.execute(rule)
-  })
-  ipcMain.handle(RULE_UPDATE, (_, rule: UpdateRuleDTO) => {
-    return useCases.updateRule.execute(rule)
-  })
-  ipcMain.handle(RULE_REMOVE, (_, ids: number[]) => {
-    return useCases.removeRules.execute(ids)
-  })
-  ipcMain.handle(RULE_GET_ENABLED, () => {
-    return useCases.getEnabledRules.execute()
-  })
-
-  ipcMain.handle(TEMPLATE_ADD, (_, template: AddTemplateDTO) => {
-    return useCases.addTemplate.execute(template)
-  })
-  ipcMain.handle(TEMPLATE_UPDATE, (_, template: UpdateTemplateDTO) => {
-    return useCases.updateTemplate.execute(template)
-  })
-  ipcMain.handle(TEMPLATE_REMOVE, (_, ids: number[]) => {
-    return useCases.removeTemplates.execute(ids)
-  })
-  ipcMain.handle(TEMPLATE_GET, () => {
-    return useCases.getAllTemplates.execute()
+  registerIpcHandlers<AutomationContext>({
+    addRule: [RULE_ADD, (_, rule) => useCases.addRule.execute(rule)],
+    updateRule: [RULE_UPDATE, (_, rule) => useCases.updateRule.execute(rule)],
+    removeRules: [RULE_REMOVE, (_, ids) => useCases.removeRules.execute(ids)],
+    getEnabledRules: [
+      RULE_GET_ENABLED,
+      () => useCases.getEnabledRules.execute(),
+    ],
+    addTemplate: [
+      TEMPLATE_ADD,
+      (_, template) => useCases.addTemplate.execute(template),
+    ],
+    updateTemplate: [
+      TEMPLATE_UPDATE,
+      (_, template) => useCases.updateTemplate.execute(template),
+    ],
+    removeTemplates: [
+      TEMPLATE_REMOVE,
+      (_, ids) => useCases.removeTemplates.execute(ids),
+    ],
+    getAllTemplates: [TEMPLATE_GET, () => useCases.getAllTemplates.execute()],
   })
 }
