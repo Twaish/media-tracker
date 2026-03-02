@@ -41,15 +41,15 @@ export type MediaPaginationResult = {
 }
 
 export interface MediaContext {
-  get(options: MediaPaginationOptions): Promise<PersistedMedia[]>
+  get(options: MediaPaginationOptions): Promise<MediaPaginationResult>
   add(media: AddMediaDTO): Promise<PersistedMedia>
-  remove(mediaIds: number[]): Promise<void>
+  remove(mediaIds: number[]): Promise<{ deleted: number; ids: number[] }>
   update(media: UpdateMediaDTO): Promise<PersistedMedia>
   setNextMedia(mediaId: number, nextMediaId: number): Promise<void>
   resolveExternalLink(mediaId: number): Promise<string | null>
   search(query: string): Promise<MediaPaginationResult>
   getById(mediaId: number): Promise<PersistedMedia>
-  bulkUpdate(mediaUpdates: BulkUpdateMediaDTO): Promise<{ affected: 0 }>
+  bulkUpdate(mediaUpdates: BulkUpdateMediaDTO): Promise<{ affected: number }>
   findDuplicates(media: Partial<AddMediaDTO>): Promise<PersistedMedia[]>
   createEmbedding(
     mediaId: number,
