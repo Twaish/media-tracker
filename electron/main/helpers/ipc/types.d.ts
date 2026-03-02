@@ -1,4 +1,4 @@
-import { BrowserWindow } from 'electron'
+import { BrowserWindow, IpcMainInvokeEvent } from 'electron'
 
 import { ElectronWindow } from '@/core/ElectronWindow'
 import { StorageService } from '@/core/StorageService'
@@ -39,4 +39,12 @@ declare interface Modules {
   MediaEmbeddingRepository: IMediaEmbeddingRepository
   RuleRepository: IRuleRepository
   TemplateRepository: ITemplateRepository
+}
+
+type IpcHandler<F> = F extends (...args: infer P) => infer R
+  ? (_: IpcMainInvokeEvent, ...args: P) => R
+  : never
+
+export type IpcHandlers<T> = {
+  [K in keyof T]: [string, IpcHandler<T[K]>]
 }
