@@ -45,7 +45,7 @@ declare interface Modules {
  * Transforms function to Electron IPC handler signature
  */
 type IpcHandler<F> = F extends (...args: infer P) => infer R
-  ? (_: IpcMainInvokeEvent, ...args: P) => R
+  ? (_: IpcMainInvokeEvent, ...args: P) => R | Awaited<R>
   : never
 
 /**
