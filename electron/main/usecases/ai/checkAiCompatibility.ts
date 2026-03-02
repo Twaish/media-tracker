@@ -11,7 +11,7 @@ export default class CheckAiCompatibility {
       ])
 
       return {
-        available: true,
+        available: true as const,
         version,
         models,
       }
@@ -23,7 +23,7 @@ export default class CheckAiCompatibility {
             ? err.message
             : 'Ollama not available'
       return {
-        available: false,
+        available: false as const,
         error: errorMessage,
       }
     }
