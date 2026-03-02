@@ -94,7 +94,8 @@ export class Parser {
 
   private parseCondition(): BinaryExpression {
     const left = this.parseExpression()
-    const operator = this.expect(TokenType.Operator).value as any
+    const operator = this.expect(TokenType.Operator)
+      .value as BinaryExpression['operator']
     const right = this.parseExpression()
 
     return {
