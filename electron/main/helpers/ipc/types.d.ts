@@ -41,10 +41,30 @@ declare interface Modules {
   TemplateRepository: ITemplateRepository
 }
 
+/**
+ * Transforms function to Electron IPC handler signature
+ */
 type IpcHandler<F> = F extends (...args: infer P) => infer R
   ? (_: IpcMainInvokeEvent, ...args: P) => R
   : never
 
+/**
+ * Converts a function map into a map of `[channel, IPC handler]` tuples
+ *
+ * ```
+ * type ItemActions = {
+ *   addItem: (item: Item) => Promise<Item>
+ * }
+ *
+ * // Defining the handlers
+ * type ItemHandlers = IpcHandlers<ItemActions>
+ *
+ * // would result in
+ * type ItemHandlers = {
+ *   addItem: [string, (_: IpcMainInvokeEvent, item: Item) => Promise<Item>]
+ * }
+ * ```
+ */
 export type IpcHandlers<T> = {
-  [K in keyof T]: [string, IpcHandler<T[K]>]
+  [K in keyof T]: [channel: string, handler: IpcHandler<T[K]>]
 }
