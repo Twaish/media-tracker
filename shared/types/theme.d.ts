@@ -1,8 +1,8 @@
 export type ThemeMode = 'dark' | 'light' | 'system'
 export interface ThemeModeContext {
-  toggle: () => Promise<boolean>
-  dark: () => Promise<void>
-  light: () => Promise<void>
-  system: () => Promise<boolean>
-  current: () => Promise<ThemeMode>
+  toggle(): Promise<boolean>
+  dark(): Promise<void>
+  light(): Promise<void>
+  system(): Promise<boolean>
+  current(): Promise<ThemeMode>
 }

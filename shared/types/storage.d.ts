@@ -16,8 +16,8 @@ export type StoredImageResult = {
 }
 
 export interface StorageContext {
-  storeImage: (
+  storeImage(
     imagePath: string,
     options: StoreImageOptions,
-  ) => Promise<StoredImageResult>
+  ): Promise<StoredImageResult>
 }

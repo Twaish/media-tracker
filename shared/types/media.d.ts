@@ -19,23 +19,23 @@ export interface MediaPaginationOptions {
 }
 
 export interface MediaContext {
-  get: (options: MediaPaginationOptions) => Promise<PersistedMedia[]>
-  add: (media: AddMediaDTO) => Promise<PersistedMedia>
-  remove: (mediaIds: number[]) => Promise<void>
-  update: (media: UpdateMediaDTO) => Promise<PersistedMedia>
-  setNextMedia: (mediaId: number, nextMediaId: number) => Promise<void>
-  resolveExternalLink: (mediaId: number) => Promise<string | null>
-  search: (query: string) => Promise<SearchQuery>
-  getById: (mediaId: number) => Promise<PersistedMedia>
-  bulkUpdate: (mediaUpdates: BulkUpdateMediaDTO) => Promise<{ affected: 0 }>
-  findDuplicates: (media: Partial<AddMediaDTO>) => Promise<PersistedMedia[]>
-  createEmbedding: (
+  get(options: MediaPaginationOptions): Promise<PersistedMedia[]>
+  add(media: AddMediaDTO): Promise<PersistedMedia>
+  remove(mediaIds: number[]): Promise<void>
+  update(media: UpdateMediaDTO): Promise<PersistedMedia>
+  setNextMedia(mediaId: number, nextMediaId: number): Promise<void>
+  resolveExternalLink(mediaId: number): Promise<string | null>
+  search(query: string): Promise<SearchQuery>
+  getById(mediaId: number): Promise<PersistedMedia>
+  bulkUpdate(mediaUpdates: BulkUpdateMediaDTO): Promise<{ affected: 0 }>
+  findDuplicates(media: Partial<AddMediaDTO>): Promise<PersistedMedia[]>
+  createEmbedding(
     mediaId: number,
     model: string,
-  ) => Promise<PersistedMediaEmbedding>
-  searchEmbeddings: (
+  ): Promise<PersistedMediaEmbedding>
+  searchEmbeddings(
     query: string,
     model: string,
-  ) => Promise<{ item: number; score: number }[]>
-  getMediaMissingEmbeddings: (model: string) => Promise<number[]>
+  ): Promise<{ item: number; score: number }[]>
+  getMediaMissingEmbeddings(model: string): Promise<number[]>
 }

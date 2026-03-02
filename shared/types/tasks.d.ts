@@ -20,7 +20,7 @@ export type TaskEventHandler = (callback: TaskCallback) => () => void
 export interface TasksContext {
   onTaskAdded: TaskEventHandler
   onTaskProgress: TaskEventHandler
-  addTask: (details: TaskDetails) => Task
-  getTasks: () => Record<string, Task>
-  progressTask: (id: string, progress: TaskProgress) => Task
+  addTask(details: TaskDetails): Task
+  getTasks(): Record<string, Task>
+  progressTask(id: string, progress: TaskProgress): Task
 }

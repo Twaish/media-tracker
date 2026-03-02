@@ -18,15 +18,13 @@ export type UpdateTemplateDTO = Partial<AddTemplateDTO> & {
 }
 
 export interface AutomationContext {
-  addRule: (rule: AddRuleDTO) => Promise<PersistedRule>
-  updateRule: (rule: UpdateRuleDTO) => Promise<PersistedRule>
-  removeRules: (ids: number[]) => Promise<{ deleted: number; ids: number[] }>
-  getEnabledRules: () => Promise<PersistedRule[]>
+  addRule(rule: AddRuleDTO): Promise<PersistedRule>
+  updateRule(rule: UpdateRuleDTO): Promise<PersistedRule>
+  removeRules(ids: number[]): Promise<{ deleted: number; ids: number[] }>
+  getEnabledRules(): Promise<PersistedRule[]>
 
-  addTemplate: (template: AddTemplateDTO) => Promise<PersistedTemplate>
-  updateTemplate: (template: UpdateTemplateDTO) => Promise<PersistedTemplate>
-  removeTemplates: (
-    ids: number[],
-  ) => Promise<{ deleted: number; ids: number[] }>
-  getAllTemplates: () => Promise<PersistedTemplate[]>
+  addTemplate(template: AddTemplateDTO): Promise<PersistedTemplate>
+  updateTemplate(template: UpdateTemplateDTO): Promise<PersistedTemplate>
+  removeTemplates(ids: number[]): Promise<{ deleted: number; ids: number[] }>
+  getAllTemplates(): Promise<PersistedTemplate[]>
 }

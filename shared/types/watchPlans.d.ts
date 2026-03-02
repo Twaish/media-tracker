@@ -7,8 +7,8 @@ export type UpdateWatchPlanDTO = Partial<AddWatchPlanDTO> & {
 }
 
 export interface WatchPlansContext {
-  get: () => Promise<PersistedWatchPlan[]>
-  add: (watchPlan: AddWatchPlanDTO) => Promise<PersistedWatchPlan>
-  remove: (ids: number[]) => Promise<void>
-  update: (media: UpdateWatchPlanDTO) => Promise<PersistedWatchPlan>
+  get(): Promise<PersistedWatchPlan[]>
+  add(watchPlan: AddWatchPlanDTO): Promise<PersistedWatchPlan>
+  remove(ids: number[]): Promise<void>
+  update(media: UpdateWatchPlanDTO): Promise<PersistedWatchPlan>
 }
