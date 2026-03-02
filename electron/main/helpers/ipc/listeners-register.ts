@@ -1,7 +1,7 @@
+import { Modules } from './types'
 import { addThemeEventListeners } from './theme/theme-listeners'
 import { addWindowEventListeners } from './window/window-listeners'
 import { addGenresEventListeners } from './genres/genres-listeners'
-import { Modules } from './types'
 import { addMediaEventListeners } from './media/media-listeners'
 import { addStorageEventListeners } from './storage/storage-listeners'
 import { addAiEventListeners } from './ai/ai-listeners'
