@@ -1,11 +1,9 @@
 import { genresTable, mediaGenresTable, mediaTable } from '../schema'
-import {
-  BulkUpdateMediaDTO,
-  IMediaRepository,
-} from '@/application/db/repositories/IMediaRepository'
+import { IMediaRepository } from '@/application/db/repositories/IMediaRepository'
 import { Media, PersistedMedia } from '@/domain/entities/media'
 import {
   AddMediaDTO,
+  BulkUpdateMediaDTO,
   MediaPaginationOptions,
   UpdateMediaDTO,
 } from '@shared/types'

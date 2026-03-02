@@ -1,7 +1,5 @@
-import {
-  BulkUpdateMediaDTO,
-  IMediaRepository,
-} from '@/application/db/repositories/IMediaRepository'
+import { IMediaRepository } from '@/application/db/repositories/IMediaRepository'
+import { BulkUpdateMediaDTO } from '@shared/types'
 
 export default class BulkUpdateMedia {
   constructor(private readonly repo: IMediaRepository) {}

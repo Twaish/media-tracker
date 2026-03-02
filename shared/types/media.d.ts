@@ -1,7 +1,5 @@
-import { BulkUpdateMediaDTO } from '@/application/db/repositories/IMediaRepository'
 import { MediaProps, PersistedMedia } from '@/domain/entities/media'
 import { PersistedMediaEmbedding } from '@/domain/entities/mediaEmbedding'
-import { SearchQuery } from '@/domain/services/QueryResolver'
 
 export type AddMediaDTO = Omit<
   MediaProps,
@@ -13,9 +11,33 @@ export type UpdateMediaDTO = Partial<AddMediaDTO> & {
   id: number
 }
 
+export type BulkUpdateMediaDTO = {
+  ids: number[]
+
+  update?: Partial<Omit<UpdateMediaDTO, 'id' | 'genres'>>
+
+  add?: {
+    genres?: number[]
+  }
+
+  remove?: {
+    genres?: number[]
+  }
+}
+
 export interface MediaPaginationOptions {
   page: number
   limit: number
+}
+
+export type MediaPaginationResult = {
+  data: PersistedMedia[]
+  pagination: {
+    page: number
+    limit: number
+    totalPages: number
+    totalItems: number
+  }
 }
 
 export interface MediaContext {
@@ -25,7 +47,7 @@ export interface MediaContext {
   update(media: UpdateMediaDTO): Promise<PersistedMedia>
   setNextMedia(mediaId: number, nextMediaId: number): Promise<void>
   resolveExternalLink(mediaId: number): Promise<string | null>
-  search(query: string): Promise<SearchQuery>
+  search(query: string): Promise<MediaPaginationResult>
   getById(mediaId: number): Promise<PersistedMedia>
   bulkUpdate(mediaUpdates: BulkUpdateMediaDTO): Promise<{ affected: 0 }>
   findDuplicates(media: Partial<AddMediaDTO>): Promise<PersistedMedia[]>
