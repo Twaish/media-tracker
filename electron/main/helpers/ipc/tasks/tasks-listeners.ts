@@ -1,4 +1,3 @@
-import { ipcMain } from 'electron'
 import { Modules } from '../types'
 import {
   TASKS_ADD_TASK,
@@ -7,21 +6,21 @@ import {
   TASKS_ON_TASK_PROGRESS,
   TASKS_PROGRESS_TASK,
 } from './tasks-channels'
-import { Task, TaskDetails, TaskProgress } from '@shared/types/tasks'
+import { Task, TasksContext } from '@shared/types/tasks'
+import { registerIpcHandlers } from '../register-ipc-handlers'
 
 export function addTasksEventListeners({ window, TaskService }: Modules) {
-  ipcMain.handle(TASKS_ADD_TASK, (_, taskDetails: TaskDetails) => {
-    return TaskService.addTask(taskDetails)
+  registerIpcHandlers<Omit<TasksContext, 'onTaskAdded' | 'onTaskProgress'>>({
+    addTask: [
+      TASKS_ADD_TASK,
+      (_, taskDetails) => TaskService.addTask(taskDetails),
+    ],
+    getTasks: [TASKS_GET_TASKS, () => TaskService.getTasks()],
+    progressTask: [
+      TASKS_PROGRESS_TASK,
+      (_, id, progress) => TaskService.updateTaskProgress(id, progress),
+    ],
   })
-  ipcMain.handle(TASKS_GET_TASKS, () => {
-    return TaskService.getTasks()
-  })
-  ipcMain.handle(
-    TASKS_PROGRESS_TASK,
-    (_, id: string, progress: TaskProgress) => {
-      return TaskService.updateTaskProgress(id, progress)
-    },
-  )
   TaskService.on('taskAdded', (task: Task) => {
     window.webContents.send(TASKS_ON_TASK_ADDED, task)
   })

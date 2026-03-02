@@ -1,8 +1,4 @@
-import {
-  AddWatchPlanDTO,
-  UpdateWatchPlanDTO,
-  WatchPlansContext,
-} from '@shared/types/watchPlans'
+import { WatchPlansContext } from '@shared/types/watchPlans'
 import {
   WATCH_PLAN_ADD,
   WATCH_PLAN_GET,
@@ -12,19 +8,10 @@ import {
 
 export function exposeWatchPlansContext() {
   const { contextBridge, ipcRenderer } = window.require('electron')
-  const context: WatchPlansContext = {
-    get() {
-      return ipcRenderer.invoke(WATCH_PLAN_GET)
-    },
-    add(watchPlan: AddWatchPlanDTO) {
-      return ipcRenderer.invoke(WATCH_PLAN_ADD, watchPlan)
-    },
-    remove(ids: number[]) {
-      return ipcRenderer.invoke(WATCH_PLAN_REMOVE, ids)
-    },
-    update(watchPlan: UpdateWatchPlanDTO) {
-      return ipcRenderer.invoke(WATCH_PLAN_UPDATE, watchPlan)
-    },
-  }
-  contextBridge.exposeInMainWorld('watchPlans', context)
+  contextBridge.exposeInMainWorld('watchPlans', {
+    get: () => ipcRenderer.invoke(WATCH_PLAN_GET),
+    add: (watchPlan) => ipcRenderer.invoke(WATCH_PLAN_ADD, watchPlan),
+    remove: (ids) => ipcRenderer.invoke(WATCH_PLAN_REMOVE, ids),
+    update: (watchPlan) => ipcRenderer.invoke(WATCH_PLAN_UPDATE, watchPlan),
+  } satisfies WatchPlansContext)
 }

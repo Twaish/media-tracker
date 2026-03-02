@@ -9,22 +9,12 @@ import {
 
 export function exposeAiContext() {
   const { contextBridge, ipcRenderer } = window.require('electron')
-  const context: AiContext = {
-    checkCompatibility() {
-      return ipcRenderer.invoke(AI_CHECK_COMPATIBILITY)
-    },
-    updateHost(host: string) {
-      return ipcRenderer.invoke(AI_UPDATE_HOST, host)
-    },
-    getSettings() {
-      return ipcRenderer.invoke(AI_GET_SETTINGS)
-    },
-    createEmbedding(text: string, model?: string) {
-      return ipcRenderer.invoke(AI_CREATE_EMBEDDING, text, model)
-    },
-    getCapabilities(model: string) {
-      return ipcRenderer.invoke(AI_GET_CAPABILITIES, model)
-    },
-  }
-  contextBridge.exposeInMainWorld('ai', context)
+  contextBridge.exposeInMainWorld('ai', {
+    checkCompatibility: () => ipcRenderer.invoke(AI_CHECK_COMPATIBILITY),
+    updateHost: (host) => ipcRenderer.invoke(AI_UPDATE_HOST, host),
+    getSettings: () => ipcRenderer.invoke(AI_GET_SETTINGS),
+    createEmbedding: (text, model?) =>
+      ipcRenderer.invoke(AI_CREATE_EMBEDDING, text, model),
+    getCapabilities: (model) => ipcRenderer.invoke(AI_GET_CAPABILITIES, model),
+  } satisfies AiContext)
 }

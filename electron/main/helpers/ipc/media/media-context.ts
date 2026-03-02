@@ -1,4 +1,3 @@
-import { BulkUpdateMediaDTO } from '@/application/db/repositories/IMediaRepository'
 import {
   MEDIA_ADD,
   MEDIA_BULK_UPDATE,
@@ -14,55 +13,29 @@ import {
   MEDIA_SET_NEXT_MEDIA,
   MEDIA_UPDATE,
 } from './media-channels'
-import {
-  MediaPaginationOptions,
-  MediaContext,
-  AddMediaDTO,
-  UpdateMediaDTO,
-} from '@shared/types'
+import { MediaContext } from '@shared/types'
 
 export function exposeMediaContext() {
   const { contextBridge, ipcRenderer } = window.require('electron')
-  const context: MediaContext = {
-    get(options: MediaPaginationOptions) {
-      return ipcRenderer.invoke(MEDIA_GET, options)
-    },
-    add(media: AddMediaDTO) {
-      return ipcRenderer.invoke(MEDIA_ADD, media)
-    },
-    remove(mediaIds: number[]) {
-      return ipcRenderer.invoke(MEDIA_REMOVE, mediaIds)
-    },
-    update(media: UpdateMediaDTO) {
-      return ipcRenderer.invoke(MEDIA_UPDATE, media)
-    },
-    setNextMedia(mediaId: number, nextMediaId: number) {
-      return ipcRenderer.invoke(MEDIA_SET_NEXT_MEDIA, mediaId, nextMediaId)
-    },
-    resolveExternalLink(mediaId: number) {
-      return ipcRenderer.invoke(MEDIA_RESOLVE_EXTERNAL_LINK, mediaId)
-    },
-    search(query: string) {
-      return ipcRenderer.invoke(MEDIA_SEARCH, query)
-    },
-    getById(mediaId: number) {
-      return ipcRenderer.invoke(MEDIA_GET_BY_ID, mediaId)
-    },
-    bulkUpdate(mediaUpdates: BulkUpdateMediaDTO) {
-      return ipcRenderer.invoke(MEDIA_BULK_UPDATE, mediaUpdates)
-    },
-    findDuplicates(media: Partial<AddMediaDTO>) {
-      return ipcRenderer.invoke(MEDIA_FIND_DUPLICATES, media)
-    },
-    createEmbedding(mediaId: number, model: string) {
-      return ipcRenderer.invoke(MEDIA_CREATE_EMBEDDING, mediaId, model)
-    },
-    searchEmbeddings(query: string, model: string) {
-      return ipcRenderer.invoke(MEDIA_SEARCH_EMBEDDINGS, query, model)
-    },
-    getMediaMissingEmbeddings(model: string) {
-      return ipcRenderer.invoke(MEDIA_GET_MISSING_EMBEDDINGS, model)
-    },
-  }
-  contextBridge.exposeInMainWorld('media', context)
+  contextBridge.exposeInMainWorld('media', {
+    get: (options) => ipcRenderer.invoke(MEDIA_GET, options),
+    add: (media) => ipcRenderer.invoke(MEDIA_ADD, media),
+    remove: (mediaIds) => ipcRenderer.invoke(MEDIA_REMOVE, mediaIds),
+    update: (media) => ipcRenderer.invoke(MEDIA_UPDATE, media),
+    setNextMedia: (mediaId, nextMediaId) =>
+      ipcRenderer.invoke(MEDIA_SET_NEXT_MEDIA, mediaId, nextMediaId),
+    resolveExternalLink: (mediaId) =>
+      ipcRenderer.invoke(MEDIA_RESOLVE_EXTERNAL_LINK, mediaId),
+    search: (query) => ipcRenderer.invoke(MEDIA_SEARCH, query),
+    getById: (mediaId) => ipcRenderer.invoke(MEDIA_GET_BY_ID, mediaId),
+    bulkUpdate: (mediaUpdates) =>
+      ipcRenderer.invoke(MEDIA_BULK_UPDATE, mediaUpdates),
+    findDuplicates: (media) => ipcRenderer.invoke(MEDIA_FIND_DUPLICATES, media),
+    createEmbedding: (mediaId, model) =>
+      ipcRenderer.invoke(MEDIA_CREATE_EMBEDDING, mediaId, model),
+    searchEmbeddings: (query, model) =>
+      ipcRenderer.invoke(MEDIA_SEARCH_EMBEDDINGS, query, model),
+    getMediaMissingEmbeddings: (model) =>
+      ipcRenderer.invoke(MEDIA_GET_MISSING_EMBEDDINGS, model),
+  } satisfies MediaContext)
 }

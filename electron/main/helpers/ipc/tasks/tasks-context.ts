@@ -1,10 +1,4 @@
-import {
-  Task,
-  TaskCallback,
-  TaskDetails,
-  TaskProgress,
-  TasksContext,
-} from '@shared/types/tasks'
+import { Task, TaskCallback, TasksContext } from '@shared/types/tasks'
 import {
   TASKS_ADD_TASK,
   TASKS_GET_TASKS,
@@ -31,22 +25,14 @@ export function exposeTasksContext() {
     }
   }
 
-  const context: TasksContext = {
-    onTaskAdded(callback: TaskCallback) {
-      return createSubscriptionWithCleanup(TASKS_ON_TASK_ADDED, callback)
-    },
-    onTaskProgress(callback: TaskCallback) {
-      return createSubscriptionWithCleanup(TASKS_ON_TASK_PROGRESS, callback)
-    },
-    getTasks() {
-      return ipcRenderer.invoke(TASKS_GET_TASKS)
-    },
-    addTask(details: TaskDetails) {
-      return ipcRenderer.invoke(TASKS_ADD_TASK, details)
-    },
-    progressTask(id: string, progress: TaskProgress) {
-      return ipcRenderer.invoke(TASKS_PROGRESS_TASK, id, progress)
-    },
-  }
-  contextBridge.exposeInMainWorld('tasks', context)
+  contextBridge.exposeInMainWorld('tasks', {
+    onTaskAdded: (callback) =>
+      createSubscriptionWithCleanup(TASKS_ON_TASK_ADDED, callback),
+    onTaskProgress: (callback) =>
+      createSubscriptionWithCleanup(TASKS_ON_TASK_PROGRESS, callback),
+    getTasks: () => ipcRenderer.invoke(TASKS_GET_TASKS),
+    addTask: (details) => ipcRenderer.invoke(TASKS_ADD_TASK, details),
+    progressTask: (id, progress) =>
+      ipcRenderer.invoke(TASKS_PROGRESS_TASK, id, progress),
+  } satisfies TasksContext)
 }

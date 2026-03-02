@@ -1,4 +1,3 @@
-import { ipcMain } from 'electron'
 import {
   WIN_CLOSE_CHANNEL,
   WIN_MAXIMIZE_CHANNEL,
@@ -6,22 +5,23 @@ import {
   WIN_READY,
 } from './window-channels'
 import { Modules } from '../types'
+import { registerIpcHandlers } from '../register-ipc-handlers'
+import { WindowContext } from '@shared/types'
 
 export function addWindowEventListeners({ ElectronWindow, window }: Modules) {
-  ipcMain.handle(WIN_MINIMIZE_CHANNEL, () => {
-    window.minimize()
-  })
-  ipcMain.handle(WIN_MAXIMIZE_CHANNEL, () => {
-    if (window.isMaximized()) {
-      window.unmaximize()
-    } else {
-      window.maximize()
-    }
-  })
-  ipcMain.handle(WIN_CLOSE_CHANNEL, () => {
-    window.close()
-  })
-  ipcMain.handle(WIN_READY, () => {
-    ElectronWindow.ready()
+  registerIpcHandlers<WindowContext>({
+    minimize: [WIN_MINIMIZE_CHANNEL, () => window.minimize()],
+    maximize: [
+      WIN_MAXIMIZE_CHANNEL,
+      () => {
+        if (window.isMaximized()) {
+          window.unmaximize()
+        } else {
+          window.maximize()
+        }
+      },
+    ],
+    close: [WIN_CLOSE_CHANNEL, () => window.close()],
+    ready: [WIN_READY, () => ElectronWindow.ready()],
   })
 }

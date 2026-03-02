@@ -9,12 +9,11 @@ import {
 
 export function exposeThemeContext() {
   const { contextBridge, ipcRenderer } = window.require('electron')
-  const context: ThemeModeContext = {
+  contextBridge.exposeInMainWorld('themeMode', {
     current: () => ipcRenderer.invoke(THEME_MODE_CURRENT_CHANNEL),
     toggle: () => ipcRenderer.invoke(THEME_MODE_TOGGLE_CHANNEL),
     dark: () => ipcRenderer.invoke(THEME_MODE_DARK_CHANNEL),
     light: () => ipcRenderer.invoke(THEME_MODE_LIGHT_CHANNEL),
     system: () => ipcRenderer.invoke(THEME_MODE_SYSTEM_CHANNEL),
-  }
-  contextBridge.exposeInMainWorld('themeMode', context)
+  } satisfies ThemeModeContext)
 }

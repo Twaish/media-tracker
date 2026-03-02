@@ -1,4 +1,3 @@
-import { ipcMain } from 'electron'
 import { Modules } from '../types'
 import {
   MEDIA_ADD,
@@ -15,60 +14,48 @@ import {
   MEDIA_SET_NEXT_MEDIA,
   MEDIA_UPDATE,
 } from './media-channels'
-import {
-  AddMediaDTO,
-  MediaPaginationOptions,
-  UpdateMediaDTO,
-} from '@shared/types'
+import { MediaContext } from '@shared/types'
 import { createMediaUseCases } from '@/usecases/media'
-import { BulkUpdateMediaDTO } from '@/application/db/repositories/IMediaRepository'
+import { registerIpcHandlers } from '../register-ipc-handlers'
 
 export function addMediaEventListeners(modules: Modules) {
   const useCases = createMediaUseCases(modules)
 
-  ipcMain.handle(MEDIA_GET, (_, options: MediaPaginationOptions) => {
-    return useCases.getMedia.execute(options)
-  })
-  ipcMain.handle(MEDIA_ADD, (_, input: AddMediaDTO) => {
-    return useCases.addMedia.execute(input)
-  })
-  ipcMain.handle(MEDIA_REMOVE, (_, mediaIds: number[]) => {
-    return useCases.removeMedia.execute(mediaIds)
-  })
-  ipcMain.handle(MEDIA_UPDATE, (_, update: UpdateMediaDTO) => {
-    return useCases.updateMedia.execute(update)
-  })
-  ipcMain.handle(
-    MEDIA_SET_NEXT_MEDIA,
-    (_, mediaId: number, nextMediaId: number) => {
-      return useCases.setMediaToWatchNext.execute(mediaId, nextMediaId)
-    },
-  )
-  ipcMain.handle(MEDIA_RESOLVE_EXTERNAL_LINK, (_, mediaId: number) => {
-    return useCases.resolveExternalMediaLink.execute(mediaId)
-  })
-  ipcMain.handle(MEDIA_SEARCH, (_, query: string) => {
-    return useCases.searchMedia.execute(query)
-  })
-  ipcMain.handle(MEDIA_GET_BY_ID, (_, mediaId: number) => {
-    return useCases.getMediaById.execute(mediaId)
-  })
-  ipcMain.handle(MEDIA_BULK_UPDATE, (_, mediaUpdates: BulkUpdateMediaDTO) => {
-    return useCases.bulkUpdateMedia.execute(mediaUpdates)
-  })
-  ipcMain.handle(MEDIA_FIND_DUPLICATES, (_, media: Partial<AddMediaDTO>) => {
-    return useCases.findMediaDuplicates.execute(media)
-  })
-  ipcMain.handle(
-    MEDIA_CREATE_EMBEDDING,
-    (_, mediaId: number, model: string) => {
-      return useCases.createMediaEmbedding.execute(mediaId, model)
-    },
-  )
-  ipcMain.handle(MEDIA_SEARCH_EMBEDDINGS, (_, query: string, model: string) => {
-    return useCases.searchMediaEmbeddings.execute(query, model)
-  })
-  ipcMain.handle(MEDIA_GET_MISSING_EMBEDDINGS, (_, model: string) => {
-    return useCases.getMediaMissingEmbeddings.execute(model)
+  registerIpcHandlers<MediaContext>({
+    get: [MEDIA_GET, (_, options) => useCases.getMedia.execute(options)],
+    add: [MEDIA_ADD, (_, media) => useCases.addMedia.execute(media)],
+    remove: [MEDIA_REMOVE, (_, ids) => useCases.removeMedia.execute(ids)],
+    update: [MEDIA_UPDATE, (_, media) => useCases.updateMedia.execute(media)],
+    setNextMedia: [
+      MEDIA_SET_NEXT_MEDIA,
+      (_, mediaId, nextMediaId) =>
+        useCases.setMediaToWatchNext.execute(mediaId, nextMediaId),
+    ],
+    resolveExternalLink: [
+      MEDIA_RESOLVE_EXTERNAL_LINK,
+      (_, id) => useCases.resolveExternalMediaLink.execute(id),
+    ],
+    search: [MEDIA_SEARCH, (_, query) => useCases.searchMedia.execute(query)],
+    getById: [MEDIA_GET_BY_ID, (_, id) => useCases.getMediaById.execute(id)],
+    bulkUpdate: [
+      MEDIA_BULK_UPDATE,
+      (_, updates) => useCases.bulkUpdateMedia.execute(updates),
+    ],
+    findDuplicates: [
+      MEDIA_FIND_DUPLICATES,
+      (_, media) => useCases.findMediaDuplicates.execute(media),
+    ],
+    createEmbedding: [
+      MEDIA_CREATE_EMBEDDING,
+      (_, id, model) => useCases.createMediaEmbedding.execute(id, model),
+    ],
+    searchEmbeddings: [
+      MEDIA_SEARCH_EMBEDDINGS,
+      (_, query, model) => useCases.searchMediaEmbeddings.execute(query, model),
+    ],
+    getMediaMissingEmbeddings: [
+      MEDIA_GET_MISSING_EMBEDDINGS,
+      (_, model) => useCases.getMediaMissingEmbeddings.execute(model),
+    ],
   })
 }

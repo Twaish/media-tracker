@@ -1,4 +1,3 @@
-import { ipcMain } from 'electron'
 import { createAiUseCases } from '@/usecases/ai'
 import {
   AI_CHECK_COMPATIBILITY,
@@ -8,23 +7,29 @@ import {
   AI_UPDATE_HOST,
 } from './ai-channels'
 import { Modules } from '../types'
+import { registerIpcHandlers } from '../register-ipc-handlers'
+import { AiContext } from '@shared/types'
 
 export function addAiEventListeners(modules: Modules) {
   const useCases = createAiUseCases(modules)
 
-  ipcMain.handle(AI_CHECK_COMPATIBILITY, () => {
-    return useCases.checkAiCompatibility.execute()
-  })
-  ipcMain.handle(AI_UPDATE_HOST, (_, host: string) => {
-    return useCases.updateAiHost.execute(host)
-  })
-  ipcMain.handle(AI_GET_SETTINGS, () => {
-    return useCases.getAiSettings.execute()
-  })
-  ipcMain.handle(AI_CREATE_EMBEDDING, (_, text: string, model?: string) => {
-    return useCases.createAiTextEmbedding.execute(text, model)
-  })
-  ipcMain.handle(AI_GET_CAPABILITIES, (_, model: string) => {
-    return useCases.getAiModelCapabilities.execute(model)
+  registerIpcHandlers<AiContext>({
+    checkCompatibility: [
+      AI_CHECK_COMPATIBILITY,
+      () => useCases.checkAiCompatibility.execute(),
+    ],
+    updateHost: [
+      AI_UPDATE_HOST,
+      (_, host) => useCases.updateAiHost.execute(host),
+    ],
+    getSettings: [AI_GET_SETTINGS, () => useCases.getAiSettings.execute()],
+    createEmbedding: [
+      AI_CREATE_EMBEDDING,
+      (_, text, model?) => useCases.createAiTextEmbedding.execute(text, model),
+    ],
+    getCapabilities: [
+      AI_GET_CAPABILITIES,
+      (_, model) => useCases.getAiModelCapabilities.execute(model),
+    ],
   })
 }

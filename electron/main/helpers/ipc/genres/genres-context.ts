@@ -3,8 +3,7 @@ import { GENRES_GET } from './genres-channels'
 
 export function exposeGenresContext() {
   const { contextBridge, ipcRenderer } = window.require('electron')
-  const context: GenresContext = {
+  contextBridge.exposeInMainWorld('genres', {
     get: () => ipcRenderer.invoke(GENRES_GET),
-  }
-  contextBridge.exposeInMainWorld('genres', context)
+  } satisfies GenresContext)
 }
