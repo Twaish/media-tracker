@@ -10,15 +10,16 @@ import GetAllTemplates from './getAllTemplates'
 
 export function createAutomationUseCases({
   RuleRepository,
+  RuleEngineCompiler,
   TemplateRepository,
 }: Modules) {
   return {
-    addRule: new AddRule(RuleRepository),
+    addRule: new AddRule(RuleRepository, RuleEngineCompiler),
     updateRule: new UpdateRule(RuleRepository),
     removeRules: new RemoveRules(RuleRepository),
     getEnabledRules: new GetEnabledRules(RuleRepository),
 
-    addTemplate: new AddTemplate(TemplateRepository),
+    addTemplate: new AddTemplate(TemplateRepository, RuleEngineCompiler),
     updateTemplate: new UpdateTemplate(TemplateRepository),
     removeTemplates: new RemoveTemplates(TemplateRepository),
     getAllTemplates: new GetAllTemplates(TemplateRepository),

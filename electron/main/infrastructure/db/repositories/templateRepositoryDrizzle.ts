@@ -1,5 +1,8 @@
 import { ITemplateRepository } from '@/application/db/repositories/ITemplateRepository'
-import { AddTemplateDTO, UpdateTemplateDTO } from '@shared/types/automation'
+import {
+  AddTemplateRepoDTO,
+  UpdateTemplateRepoDTO,
+} from '@shared/types/automation'
 import { DrizzleDb, Executor } from '../types'
 import { templatesTable } from '../schema'
 import { eq, inArray } from 'drizzle-orm'
@@ -26,7 +29,7 @@ export class TemplateRepositoryDrizzle implements ITemplateRepository {
     return rows.map(this.toDomain)
   }
 
-  async add(template: AddTemplateDTO): Promise<PersistedTemplate> {
+  async add(template: AddTemplateRepoDTO): Promise<PersistedTemplate> {
     return this.db.transaction(async (tx) => {
       const ast = JSON.stringify(template.ast)
       const [inserted] = await tx
@@ -50,7 +53,7 @@ export class TemplateRepositoryDrizzle implements ITemplateRepository {
       ids: rows.map((r) => r.id),
     }
   }
-  async update(template: UpdateTemplateDTO): Promise<PersistedTemplate> {
+  async update(template: UpdateTemplateRepoDTO): Promise<PersistedTemplate> {
     return this.db.transaction(async (tx) => {
       const { id, ast, ...templateUpdates } = template
 

@@ -1,6 +1,6 @@
 import { IRuleRepository } from '@/application/db/repositories/IRuleRepository'
 import { PersistedRule, Rule } from '@/domain/entities/rule'
-import { AddRuleDTO, UpdateRuleDTO } from '@shared/types/automation'
+import { AddRuleRepoDTO, UpdateRuleRepoDTO } from '@shared/types/automation'
 import { rulesTable } from '../tables/automation.table'
 import { DrizzleDb, Executor } from '../types'
 import { eq, inArray } from 'drizzle-orm'
@@ -20,7 +20,7 @@ export class RuleRepositoryDrizzle implements IRuleRepository {
 
     return this.toDomain(row)
   }
-  async add(rule: AddRuleDTO): Promise<PersistedRule> {
+  async add(rule: AddRuleRepoDTO): Promise<PersistedRule> {
     return this.db.transaction(async (tx) => {
       const ast = JSON.stringify(rule.ast)
       const [inserted] = await tx
@@ -47,7 +47,7 @@ export class RuleRepositoryDrizzle implements IRuleRepository {
       ids: rows.map((r) => r.id),
     }
   }
-  async update(rule: UpdateRuleDTO): Promise<PersistedRule> {
+  async update(rule: UpdateRuleRepoDTO): Promise<PersistedRule> {
     return this.db.transaction(async (tx) => {
       const { id, ast, ...ruleUpdates } = rule
 

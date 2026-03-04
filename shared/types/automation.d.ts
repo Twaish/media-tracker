@@ -2,18 +2,34 @@ import {
   PersistedRule,
   PersistedTemplate,
   RuleProps,
+  TemplateProps,
 } from '@/domain/entities/rule'
-import { TemplateProps } from '@/domain/entities/rule'
 
-export type AddRuleDTO = Omit<RuleProps, 'createdAt' | 'lastUpdated'>
-
+export type AddRuleDTO = {
+  source: string
+  enabled?: boolean
+}
 export type UpdateRuleDTO = Partial<AddRuleDTO> & {
   id: number
 }
 
-export type AddTemplateDTO = Omit<TemplateProps, 'createdAt' | 'lastUpdated'>
+export type AddRuleRepoDTO = Omit<RuleProps, 'createdAt' | 'lastUpdated'>
+export type UpdateRuleRepoDTO = Partial<AddRuleRepoDTO> & {
+  id: number
+}
 
+export type AddTemplateDTO = {
+  source: string
+}
 export type UpdateTemplateDTO = Partial<AddTemplateDTO> & {
+  id: number
+}
+
+export type AddTemplateRepoDTO = Omit<
+  TemplateProps,
+  'createdAt' | 'lastUpdated'
+>
+export type UpdateTemplateRepoDTO = Partial<AddTemplateRepoDTO> & {
   id: number
 }
 
