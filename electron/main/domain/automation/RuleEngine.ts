@@ -20,6 +20,8 @@ export class RuleEngine {
     const index = this.rules.findIndex((r) => r.name === rule.name)
     if (index === -1) {
       this.rules.push(rule)
+    } else {
+      this.rules[index] = rule
     }
   }
 
