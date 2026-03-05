@@ -35,6 +35,7 @@ import { ActionExecutor } from './domain/automation/ActionExecutor'
 import { ExpressionEvaluator } from './domain/automation/ExpressionEvaluator'
 import { RuleRepositoryDrizzle } from './infrastructure/db/repositories/ruleRepositoryDrizzle'
 import { TemplateRepositoryDrizzle } from './infrastructure/db/repositories/templateRepositoryDrizzle'
+import SyncRuleEngine from './usecases/automation/syncRuleEngine'
 
 app.whenReady().then(async () => {
   const { DB_PATH, LOG_PATH, APP_URL } = config
@@ -115,6 +116,12 @@ app.whenReady().then(async () => {
       TemplateRepository: templateRepository,
     }
 
+    const syncRuleEngine = new SyncRuleEngine(
+      ruleRepository,
+      templateRepository,
+      ruleEngine,
+    )
+
     logger.header('IPC / Protocols')
     logger.info('Registering IPC listeners')
     registerListeners(modules)
@@ -130,6 +137,8 @@ app.whenReady().then(async () => {
 
     logger.info('Seeding')
     await seedDatabase(database)
+
+    await syncRuleEngine.execute()
 
     logger.header('Startup')
     logger.info('Showing main window')
