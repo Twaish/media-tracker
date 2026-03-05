@@ -15,12 +15,12 @@ export function createAutomationUseCases({
 }: Modules) {
   return {
     addRule: new AddRule(RuleRepository, RuleEngineCompiler),
-    updateRule: new UpdateRule(RuleRepository),
+    updateRule: new UpdateRule(RuleRepository, RuleEngineCompiler),
     removeRules: new RemoveRules(RuleRepository),
     getEnabledRules: new GetEnabledRules(RuleRepository),
 
     addTemplate: new AddTemplate(TemplateRepository, RuleEngineCompiler),
-    updateTemplate: new UpdateTemplate(TemplateRepository),
+    updateTemplate: new UpdateTemplate(TemplateRepository, RuleEngineCompiler),
     removeTemplates: new RemoveTemplates(TemplateRepository),
     getAllTemplates: new GetAllTemplates(TemplateRepository),
   }
