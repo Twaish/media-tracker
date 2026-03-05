@@ -1,3 +1,5 @@
+import { RuleNode, TemplateNode } from '../automation/types'
+
 export type RuleProps = {
   name: string
   target: string
@@ -5,7 +7,7 @@ export type RuleProps = {
   priority: number
   enabled: boolean
   source: string
-  ast: object
+  ast: RuleNode
   createdAt: Date | null
   lastUpdated: Date | null
 }
@@ -87,7 +89,7 @@ export class Rule {
 export type TemplateProps = {
   name: string
   source: string
-  ast: object
+  ast: TemplateNode
   createdAt: Date | null
   lastUpdated: Date | null
 }
