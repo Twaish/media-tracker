@@ -36,6 +36,7 @@ import { ExpressionEvaluator } from './domain/automation/ExpressionEvaluator'
 import { RuleRepositoryDrizzle } from './infrastructure/db/repositories/ruleRepositoryDrizzle'
 import { TemplateRepositoryDrizzle } from './infrastructure/db/repositories/templateRepositoryDrizzle'
 import SyncRuleEngine from './usecases/automation/syncRuleEngine'
+import { InMemoryEventBus } from './core/EventBus'
 
 app.whenReady().then(async () => {
   const { DB_PATH, LOG_PATH, APP_URL } = config
@@ -52,6 +53,7 @@ app.whenReady().then(async () => {
   const actionExecutor = new ActionExecutor(expressionEvaluator)
 
   const ruleEngine = new RuleEngine(expressionEvaluator, actionExecutor)
+  const eventBus = new InMemoryEventBus()
 
   try {
     logger.header('Infrastructure')
@@ -100,6 +102,7 @@ app.whenReady().then(async () => {
       RuleEngine: ruleEngine,
       RuleEngineCompiler: ruleEngineCompiler,
       RuleEnginePrinter: ruleEnginePrinter,
+      EventBus: eventBus,
       window: mainWindow.window,
       logger: logger,
 

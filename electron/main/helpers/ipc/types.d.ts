@@ -17,6 +17,7 @@ import { RuleEngineCompiler } from '@/domain/automation/RuleEngineCompiler'
 import { RuleEnginePrinter } from '@/domain/automation/RuleEnginePrinter'
 import { IRuleRepository } from '@/application/db/repositories/IRuleRepository'
 import { ITemplateRepository } from '@/application/db/repositories/ITemplateRepository'
+import { EventBus } from '@/core/EventBus'
 
 declare interface Modules {
   ElectronWindow: ElectronWindow
@@ -25,6 +26,7 @@ declare interface Modules {
   RuleEngine: RuleEngine
   RuleEngineCompiler: RuleEngineCompiler
   RuleEnginePrinter: RuleEnginePrinter
+  EventBus: EventBus
   window: BrowserWindow
   logger: ILogger
 
