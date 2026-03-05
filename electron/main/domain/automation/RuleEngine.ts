@@ -31,7 +31,7 @@ export class RuleEngine {
    * @param template The template to register
    */
   registerTemplate(template: TemplateNode) {
-    this.templates[template.name] ??= template
+    this.templates[template.name] = template
   }
 
   /**
