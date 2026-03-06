@@ -47,14 +47,6 @@ app.whenReady().then(async () => {
 
   logger.debug(`Config:\n${JSON.stringify(config, null, 2)}`)
 
-  const ruleEngineCompiler = new RuleEngineCompiler()
-  const ruleEnginePrinter = new RuleEnginePrinter()
-  const expressionEvaluator = new ExpressionEvaluator()
-  const actionExecutor = new ActionExecutor(expressionEvaluator)
-
-  const ruleEngine = new RuleEngine(expressionEvaluator, actionExecutor)
-  const eventBus = new InMemoryEventBus()
-
   try {
     logger.header('Infrastructure')
     logger.info('Initializing database client & repositories')
@@ -88,6 +80,19 @@ app.whenReady().then(async () => {
       ollamaService,
       mediaEmbeddingRepository,
     )
+
+    logger.info('Initializing rule engine')
+    const ruleEngineCompiler = new RuleEngineCompiler()
+    const ruleEnginePrinter = new RuleEnginePrinter()
+    const expressionEvaluator = new ExpressionEvaluator()
+    const actionExecutor = new ActionExecutor(expressionEvaluator)
+
+    const ruleEngine = new RuleEngine(expressionEvaluator, actionExecutor, {
+      now: () => new Date(),
+      callPlugin: async (name, args) => console.log(name, args),
+      callTemplate: async (name, args) => console.log(name, args),
+    })
+    const eventBus = new InMemoryEventBus()
 
     logger.info('Creating window')
     const mainWindow = new ElectronWindow()
