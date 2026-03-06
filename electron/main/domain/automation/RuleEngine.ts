@@ -1,6 +1,12 @@
 import { ActionExecutor } from './ActionExecutor'
 import { ExpressionEvaluator } from './ExpressionEvaluator'
-import { RuleNode, RuleContext, TemplateNode } from './types'
+import {
+  RuleNode,
+  RuleContext,
+  TemplateNode,
+  RuleExecutionServices,
+  EntityEvent,
+} from './types'
 
 export class RuleEngine {
   private rules: RuleNode[] = []
@@ -9,6 +15,7 @@ export class RuleEngine {
   constructor(
     private readonly evaluator: ExpressionEvaluator,
     private readonly executor: ActionExecutor,
+    private readonly services: RuleExecutionServices,
   ) {}
 
   /**
@@ -47,8 +54,14 @@ export class RuleEngine {
    */
   async handle<T extends Record<string, unknown>>(
     target: string,
-    context: RuleContext<T>,
+    event: EntityEvent<T>,
   ): Promise<void> {
+    const context: RuleContext<T> = {
+      ...event,
+      services: this.services,
+      activeRules: new Set<string>(),
+    }
+
     const byPriority = (a: RuleNode, b: RuleNode) => a.priority - b.priority
     const onlyEnabledAndTargetted = (r: RuleNode) =>
       r.enabled && r.target === target
