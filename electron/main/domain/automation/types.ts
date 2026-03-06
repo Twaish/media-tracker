@@ -148,10 +148,13 @@ export const KEYWORDS = new Set([
   'add',
 ])
 
-export type RuleContext<T> = {
+export type EntityEvent<T> = {
   current: T
   previous?: T
-  event?: unknown
+  event?: unknown // Optional event metadata
+}
+
+export type RuleContext<T> = EntityEvent<T> & {
   services: RuleExecutionServices
   activeRules: Set<string>
 }
