@@ -56,11 +56,7 @@ export class RuleEngine {
     target: string,
     event: EntityEvent<T>,
   ): Promise<void> {
-    const context: RuleContext<T> = {
-      ...event,
-      services: this.services,
-      activeRules: new Set<string>(),
-    }
+    const context = this.createContext(event)
 
     const byPriority = (a: RuleNode, b: RuleNode) => a.priority - b.priority
     const onlyEnabledAndTargetted = (r: RuleNode) =>
@@ -112,5 +108,19 @@ export class RuleEngine {
     }
 
     return false
+  }
+
+  /**
+   * Creates a rule context for an entity event
+   *
+   * @param event The entity event
+   * @returns The rule context
+   */
+  private createContext<T>(event: EntityEvent<T>): RuleContext<T> {
+    return {
+      ...event,
+      services: this.services,
+      activeRules: new Set<string>(),
+    }
   }
 }
