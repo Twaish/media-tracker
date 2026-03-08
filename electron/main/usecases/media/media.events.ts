@@ -27,5 +27,5 @@ export function subscribeToMediaEvents({ EventBus, RuleEngine }: Modules) {
 }
 
 export function registerMediaEvents({ EventRegistry }: Modules) {
-  mediaEventDefinitions.map(EventRegistry.register)
+  mediaEventDefinitions.map((definition) => EventRegistry.register(definition))
 }
