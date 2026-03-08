@@ -38,6 +38,7 @@ import { TemplateRepositoryDrizzle } from './infrastructure/db/repositories/temp
 import SyncRuleEngine from './usecases/automation/syncRuleEngine'
 import { InMemoryEventBus } from './core/EventBus'
 import { InMemoryEventRegistry } from './core/EventRegistry'
+import { registerDomainEvents } from './helpers/events/register-domain-events'
 
 app.whenReady().then(async () => {
   const { DB_PATH, LOG_PATH, APP_URL } = config
@@ -133,12 +134,15 @@ app.whenReady().then(async () => {
       ruleEngine,
     )
 
-    logger.header('IPC / Protocols')
+    logger.header('IPC / Protocols / Events')
     logger.info('Registering IPC listeners')
     registerListeners(modules)
 
     logger.info('Registering custom protocols')
     registerProtocols(modules)
+
+    logger.info('Registering domain events')
+    registerDomainEvents(modules)
 
     mainWindow.loadUrl(APP_URL)
 
