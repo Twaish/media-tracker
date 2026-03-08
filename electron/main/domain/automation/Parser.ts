@@ -61,8 +61,16 @@ export class Parser {
   private parseRule(): RuleNode {
     this.expectKeyword('RULE')
     const name = this.expect(TokenType.Identifier).value
-    const trigger = this.expect(TokenType.Keyword).value
 
+    this.expectKeyword('FOR')
+    const events: string[] = []
+
+    do {
+      const event = this.expect(TokenType.Identifier).value
+      events.push(event)
+    } while (this.check(TokenType.Comma) && this.consume())
+
+    const trigger = this.expect(TokenType.Keyword).value
     const entity = this.expect(TokenType.Identifier).value
     this.currentRuleEntity = entity
 
@@ -83,6 +91,7 @@ export class Parser {
       type: 'rule',
       name,
       trigger,
+      events,
       target: entity,
       priority,
       enabled: true,
@@ -234,7 +243,20 @@ export class Parser {
   }
 
   private parseExpression(): Expression {
-    return this.parsePrimary()
+    let expr = this.parsePrimary()
+
+    while (this.check(TokenType.Dot)) {
+      this.consume()
+      const property = this.expect(TokenType.Identifier).value
+
+      expr = {
+        type: 'member',
+        object: expr,
+        property,
+      }
+    }
+
+    return expr
   }
 
   private parsePrimary(): Expression {

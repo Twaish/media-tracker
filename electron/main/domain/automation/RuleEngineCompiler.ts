@@ -10,6 +10,7 @@ export class RuleEngineCompiler {
    * How to define a rule:
    * ```
    * RULE <name>
+   * FOR <event> [<event>, ...]
    * (ON | ONCE) <target> <field/expression> <operator> <field/expression>
    * [PRIORITY <number>]
    * DO { <actions> }

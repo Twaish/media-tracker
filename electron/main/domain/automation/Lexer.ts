@@ -94,7 +94,7 @@ export class Lexer {
 
   private readIdentifier(): Token {
     let value = ''
-    while (/[a-zA-Z0-9_.]/.test(this.peek())) {
+    while (/[a-zA-Z0-9_]/.test(this.peek())) {
       value += this.advance()
     }
 

@@ -5,6 +5,7 @@ export type Expression =
   | ObjectExpression
   | SelfExpression
   | BinaryExpression
+  | MemberExpression
 
 export type LiteralExpression = {
   type: 'literal'
@@ -14,6 +15,12 @@ export type LiteralExpression = {
 export type FieldExpression = {
   type: 'field'
   name: string
+}
+
+export type MemberExpression = {
+  type: 'member'
+  property: string
+  object: Expression
 }
 
 export type FunctionExpression = {
@@ -96,7 +103,7 @@ export enum TokenType {
   LBrace = 'lbrace',
   RBrace = 'rbrace',
   Comma = 'comma',
-  Dot = '.',
+  Dot = 'dot',
   Keyword = 'keyword',
   EOF = 'eof',
 }
@@ -116,6 +123,7 @@ export type RuleNode = {
   type: 'rule'
   name: string
   trigger: string
+  events: string[]
   target: string
   priority: number
   enabled: boolean
@@ -136,6 +144,7 @@ export const KEYWORDS = new Set([
   'RULE',
   'ON',
   'ONCE',
+  'FOR',
   'PRIORITY',
   'METHOD',
   'BODY',

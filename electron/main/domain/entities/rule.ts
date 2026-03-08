@@ -4,6 +4,7 @@ export type RuleProps = {
   name: string
   target: string
   trigger: string
+  events: string[]
   priority: number
   enabled: boolean
   source: string
@@ -59,6 +60,10 @@ export class Rule {
 
   get trigger() {
     return this.props.trigger
+  }
+
+  get events() {
+    return this.props.events
   }
 
   get priority() {

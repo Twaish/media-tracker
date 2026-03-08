@@ -3,6 +3,7 @@ import {
   BinaryExpression,
   Expression,
   HttpAction,
+  MemberExpression,
   ObjectExpression,
   RuleNode,
   TemplateNode,
@@ -42,7 +43,9 @@ export class RuleEnginePrinter {
   private printRule(rule: RuleNode): string {
     let output = `RULE ${rule.name}\n`
 
-    output += `ON media ${this.printCondition(rule.condition)}\n`
+    output += `FOR ${rule.events.join(', ')}\n`
+
+    output += `${rule.trigger} ${rule.target} ${this.printCondition(rule.condition)}\n`
 
     if (rule.priority !== 0) {
       output += `PRIORITY ${rule.priority}\n`
@@ -142,8 +145,14 @@ export class RuleEnginePrinter {
       case 'object':
         return this.printObject(expr, indent)
 
+      case 'member':
+        return `${this.printExpression(expr.object)}.${expr.property}`
+
+      case 'binary':
+        return this.printCondition(expr)
+
       default:
-        throw new Error(`Unsupported expression type`)
+        throw new Error(`Unsupported expression type ${expr satisfies never}`)
     }
   }
 

@@ -1,4 +1,9 @@
-import { BinaryExpression, Expression, ObjectExpression } from './types'
+import {
+  BinaryExpression,
+  Expression,
+  MemberExpression,
+  ObjectExpression,
+} from './types'
 
 export class ExpressionEvaluator {
   evaluate<T>(expression: Expression, data: T): unknown {
@@ -15,11 +20,18 @@ export class ExpressionEvaluator {
         return this.evaluateObject(expression, data)
       case 'self':
         return data
+      case 'member':
+        return this.evaluateMember(expression, data)
       default:
         throw new Error(
           `Unknown expression type: ${expression satisfies never}`,
         )
     }
+  }
+
+  private evaluateMember<T>(expression: MemberExpression, data: T): unknown {
+    const object = this.evaluate(expression.object, data)
+    return (object as Record<string, unknown>)?.[expression.property]
   }
 
   private evaluateObject<T>(expression: ObjectExpression, data: T): object {
