@@ -3,7 +3,8 @@ import { PersistedRule, Rule } from '@/domain/entities/rule'
 import { AddRuleRepoDTO, UpdateRuleRepoDTO } from '@shared/types/automation'
 import { rulesTable } from '../tables/automation.table'
 import { DrizzleDb, Executor } from '../types'
-import { eq, inArray } from 'drizzle-orm'
+import { and, eq, inArray } from 'drizzle-orm'
+import { ruleEventsTable } from '../schema'
 
 export class RuleRepositoryDrizzle implements IRuleRepository {
   constructor(private readonly db: DrizzleDb) {}
@@ -14,6 +15,9 @@ export class RuleRepositoryDrizzle implements IRuleRepository {
   ): Promise<PersistedRule> {
     const row = await executor.query.rulesTable.findFirst({
       where: eq(rulesTable.id, id),
+      with: {
+        events: true,
+      },
     })
 
     if (!row) throw new Error(`Rule with id ${id} not found`)
@@ -22,14 +26,17 @@ export class RuleRepositoryDrizzle implements IRuleRepository {
   }
   async add(rule: AddRuleRepoDTO): Promise<PersistedRule> {
     return this.db.transaction(async (tx) => {
-      const ast = JSON.stringify(rule.ast)
+      const { events, ast, ...ruleData } = rule
+      const astString = JSON.stringify(ast)
       const [inserted] = await tx
         .insert(rulesTable)
         .values({
-          ...rule,
-          ast,
+          ...ruleData,
+          ast: astString,
         })
         .returning()
+
+      await this.insertEvents(tx, inserted.id, events)
 
       return this.getById(inserted.id, tx)
     })
@@ -49,7 +56,7 @@ export class RuleRepositoryDrizzle implements IRuleRepository {
   }
   async update(rule: UpdateRuleRepoDTO): Promise<PersistedRule> {
     return this.db.transaction(async (tx) => {
-      const { id, ast, ...ruleUpdates } = rule
+      const { id, ast, events, ...ruleUpdates } = rule
 
       if (Object.keys(ruleUpdates).length > 0) {
         await tx
@@ -67,22 +74,47 @@ export class RuleRepositoryDrizzle implements IRuleRepository {
           .where(eq(rulesTable.id, id))
       }
 
+      if (events) {
+        await tx.delete(ruleEventsTable).where(eq(ruleEventsTable.ruleId, id))
+
+        await this.insertEvents(tx, id, events)
+      }
+
       return this.getById(id, tx)
     })
   }
   async getAllEnabled(): Promise<PersistedRule[]> {
-    const rows = await this.db
-      .select()
-      .from(rulesTable)
-      .where(eq(rulesTable.enabled, true))
+    const rows = await this.db.query.rulesTable.findMany({
+      where: eq(rulesTable.enabled, true),
+      with: { events: true },
+    })
 
     return rows.map(this.toDomain)
   }
 
-  private toDomain(row: typeof rulesTable.$inferSelect): PersistedRule {
+  private toDomain(
+    row: typeof rulesTable.$inferSelect & {
+      events?: (typeof ruleEventsTable.$inferSelect)[]
+    },
+  ): PersistedRule {
     const ast = JSON.parse(row.ast)
-    return Rule.create({ ...row, ast })
+    return Rule.create({
+      ...row,
+      ast,
+      events: row.events?.map((e) => e.name) ?? [],
+    })
       .withId(row.id)
       .toDTO()
+  }
+
+  private async insertEvents(tx: Executor, ruleId: number, events: string[]) {
+    if (!events.length) throw new Error(`Rule must have at least one event`)
+
+    await tx.insert(ruleEventsTable).values(
+      events.map((event) => ({
+        ruleId,
+        name: event,
+      })),
+    )
   }
 }

@@ -2,7 +2,6 @@ import { sql } from 'drizzle-orm'
 import { int } from 'drizzle-orm/sqlite-core'
 import { sqliteTable, text } from 'drizzle-orm/sqlite-core'
 
-// TODO: Add rule -> event table and relations
 export const rulesTable = sqliteTable('rules', {
   id: int().primaryKey({ autoIncrement: true }),
   name: text().notNull(),
