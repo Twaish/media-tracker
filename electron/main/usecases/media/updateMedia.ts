@@ -1,14 +1,14 @@
 import { StorageService } from '@/core/StorageService'
 import { IMediaRepository } from '@/application/db/repositories/IMediaRepository'
 import { UpdateMediaDTO } from '@shared/types'
-import { EventBus } from '@/core/EventBus'
 import { MEDIA_EVENTS, MediaUpdatedPayload } from './media.events'
+import { IEventBus } from '@/application/events/IEventBus'
 
 export default class UpdateMedia {
   constructor(
     private readonly repo: IMediaRepository,
     private readonly storage: StorageService,
-    private readonly eventBus: EventBus,
+    private readonly eventBus: IEventBus,
   ) {}
 
   async execute(media: UpdateMediaDTO) {

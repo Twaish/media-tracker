@@ -3,7 +3,7 @@ export type EventDefinition = {
   description: string
 }
 
-export interface EventRegistry {
+export interface IEventRegistry {
   /**
    * Registers an event to the event registry
    *
@@ -33,28 +33,4 @@ export interface EventRegistry {
    * @returns Whether it contains the event
    */
   has(name: string): boolean
-}
-
-export class InMemoryEventRegistry implements EventRegistry {
-  private events = new Map<string, EventDefinition>()
-
-  register(event: EventDefinition) {
-    if (this.events.has(event.name)) {
-      throw new Error(`Event "${event.name}" already registered`)
-    }
-
-    this.events.set(event.name, event)
-  }
-
-  get(name: string): EventDefinition | undefined {
-    return this.events.get(name)
-  }
-
-  getAll(): EventDefinition[] {
-    return Array.from(this.events.values())
-  }
-
-  has(name: string) {
-    return this.events.has(name)
-  }
 }

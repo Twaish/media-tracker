@@ -3,12 +3,12 @@ import { IMediaRepository } from '@/application/db/repositories/IMediaRepository
 import { StorageService } from '@/core/StorageService'
 import UpdateMedia from '@/usecases/media/updateMedia'
 import { makeMedia } from '../utils'
-import { EventBus } from '@/core/EventBus'
 import { MEDIA_EVENTS } from '@/usecases/media/media.events'
+import { IEventBus } from '@/application/events/IEventBus'
 
 describe('UpdateMedia', () => {
   let usecase: UpdateMedia
-  let mockEventBus: EventBus
+  let mockEventBus: IEventBus
   let mockRepo: IMediaRepository
   let mockStorage: StorageService
 
@@ -34,7 +34,7 @@ describe('UpdateMedia', () => {
 
     mockEventBus = {
       publish: vi.fn(),
-    } as unknown as EventBus
+    } as unknown as IEventBus
 
     usecase = new UpdateMedia(mockRepo, mockStorage, mockEventBus)
   })

@@ -36,8 +36,8 @@ import { ExpressionEvaluator } from './domain/automation/ExpressionEvaluator'
 import { RuleRepositoryDrizzle } from './infrastructure/db/repositories/ruleRepositoryDrizzle'
 import { TemplateRepositoryDrizzle } from './infrastructure/db/repositories/templateRepositoryDrizzle'
 import SyncRuleEngine from './usecases/automation/syncRuleEngine'
-import { InMemoryEventBus } from './core/EventBus'
-import { InMemoryEventRegistry } from './core/EventRegistry'
+import { InMemoryEventBus } from './infrastructure/events/InMemoryEventBus'
+import { InMemoryEventRegistry } from './infrastructure/events/InMemoryEventRegistry'
 import { registerDomainEvents } from './helpers/events/register-domain-events'
 
 app.whenReady().then(async () => {
