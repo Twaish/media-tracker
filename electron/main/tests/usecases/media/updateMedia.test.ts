@@ -3,9 +3,12 @@ import { IMediaRepository } from '@/application/db/repositories/IMediaRepository
 import { StorageService } from '@/core/StorageService'
 import UpdateMedia from '@/usecases/media/updateMedia'
 import { makeMedia } from '../utils'
+import { EventBus } from '@/core/EventBus'
+import { MEDIA_EVENTS } from '@/usecases/media/media.events'
 
 describe('UpdateMedia', () => {
   let usecase: UpdateMedia
+  let mockEventBus: EventBus
   let mockRepo: IMediaRepository
   let mockStorage: StorageService
 
@@ -22,13 +25,18 @@ describe('UpdateMedia', () => {
   beforeEach(() => {
     mockRepo = {
       update: vi.fn(),
+      getById: vi.fn(),
     } as unknown as IMediaRepository
 
     mockStorage = {
       storeImage: vi.fn(),
     } as unknown as StorageService
 
-    usecase = new UpdateMedia(mockRepo, mockStorage)
+    mockEventBus = {
+      publish: vi.fn(),
+    } as unknown as EventBus
+
+    usecase = new UpdateMedia(mockRepo, mockStorage, mockEventBus)
   })
 
   it('stores thumbnail and updates media with stored path', async () => {
@@ -39,9 +47,14 @@ describe('UpdateMedia', () => {
       genres: [],
     }
 
-    const updatedMedia = makeMedia({ ...input, thumbnail: '/images/thumb.jpg' })
+    const previousMedia = makeMedia({ ...input })
+    const updatedMedia = makeMedia({
+      ...input,
+      thumbnail: 'fullpath/images/thumb.jpg',
+    })
 
     vi.mocked(mockStorage.storeImage).mockResolvedValue(imageResult)
+    vi.mocked(mockRepo.getById).mockResolvedValue(previousMedia)
     vi.mocked(mockRepo.update).mockResolvedValue(updatedMedia)
 
     const result = await usecase.execute(input)
@@ -52,6 +65,14 @@ describe('UpdateMedia', () => {
       ...input,
       thumbnail: '/images/thumb.jpg',
     })
+
+    expect(mockEventBus.publish).toHaveBeenCalledWith(
+      MEDIA_EVENTS.MEDIA_UPDATED,
+      {
+        previous: previousMedia,
+        current: updatedMedia,
+      },
+    )
 
     expect(result).toEqual(updatedMedia)
   })
