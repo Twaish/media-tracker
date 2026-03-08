@@ -21,6 +21,7 @@ export function createMediaUseCases({
   MediaSimilarityService,
   AiService,
   StorageService,
+  EventBus,
 }: Modules) {
   const externalLinkResolver = new ExternalLinkResolver()
   const queryResolver = new QueryResolver()
@@ -29,7 +30,7 @@ export function createMediaUseCases({
     removeMedia: new RemoveMedia(MediaRepository),
     addMedia: new AddMedia(MediaRepository, StorageService),
     getMedia: new GetMedia(MediaRepository),
-    updateMedia: new UpdateMedia(MediaRepository, StorageService),
+    updateMedia: new UpdateMedia(MediaRepository, StorageService, EventBus),
     setMediaToWatchNext: new SetMediaToWatchNext(MediaRepository),
     resolveExternalMediaLink: new ResolveExternalMediaLink(
       MediaRepository,
