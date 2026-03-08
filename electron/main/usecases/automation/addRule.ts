@@ -15,6 +15,7 @@ export default class AddRule {
       name: compiled.name,
       target: compiled.target,
       trigger: compiled.trigger,
+      events: compiled.events,
       priority: compiled.priority,
       enabled: rule.enabled ?? true,
       source: rule.source,
