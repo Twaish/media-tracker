@@ -21,7 +21,9 @@ export interface IMediaRepository {
     filters?: Filter[]
     pagination?: MediaPaginationOptions
   }): Promise<MediaPaginationResult>
-  bulkUpdate(mediaUpdates: BulkUpdateMediaDTO): Promise<{ affected: number }>
+  bulkUpdate(
+    mediaUpdates: BulkUpdateMediaDTO,
+  ): Promise<{ affected: number; ids: number[] }>
   findDuplicateCandidates(
     media: Partial<AddMediaDTO>,
   ): Promise<PersistedMedia[]>

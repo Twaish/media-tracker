@@ -116,13 +116,11 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
     })
   }
 
-  async bulkUpdate(
-    mediaUpdates: BulkUpdateMediaDTO,
-  ): Promise<{ affected: number }> {
+  async bulkUpdate(mediaUpdates: BulkUpdateMediaDTO) {
     const { ids, update, add, remove } = mediaUpdates
 
     if (!ids.length) {
-      return { affected: 0 }
+      return { affected: 0, ids: [] }
     }
 
     return this.db.transaction(async (tx) => {
@@ -155,7 +153,7 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
           )
       }
 
-      return { affected: ids.length }
+      return { affected: ids.length, ids }
     })
   }
 
