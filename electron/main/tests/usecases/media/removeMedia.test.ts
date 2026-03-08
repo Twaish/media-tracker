@@ -14,8 +14,8 @@ describe('RemoveMedia', () => {
     usecase = new RemoveMedia(mockRepo)
   })
 
-  it('returns zero deletions when mediaIds is empty', () => {
-    const result = usecase.execute([])
+  it('returns zero deletions when mediaIds is empty', async () => {
+    const result = await usecase.execute([])
 
     expect(result).toEqual({ deleted: 0, ids: [] })
     expect(mockRepo.remove).not.toHaveBeenCalled()
