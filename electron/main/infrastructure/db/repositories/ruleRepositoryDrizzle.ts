@@ -3,7 +3,7 @@ import { PersistedRule, Rule } from '@/domain/entities/rule'
 import { AddRuleRepoDTO, UpdateRuleRepoDTO } from '@shared/types/automation'
 import { rulesTable } from '../tables/automation.table'
 import { DrizzleDb, Executor } from '../types'
-import { and, eq, inArray } from 'drizzle-orm'
+import { eq, inArray } from 'drizzle-orm'
 import { ruleEventsTable } from '../schema'
 
 export class RuleRepositoryDrizzle implements IRuleRepository {
@@ -35,6 +35,10 @@ export class RuleRepositoryDrizzle implements IRuleRepository {
           ast: astString,
         })
         .returning()
+
+      if (!events) {
+        throw new Error(`Rule must have at least one event`)
+      }
 
       await this.insertEvents(tx, inserted.id, events)
 

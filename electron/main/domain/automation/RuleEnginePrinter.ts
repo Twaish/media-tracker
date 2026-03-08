@@ -3,7 +3,6 @@ import {
   BinaryExpression,
   Expression,
   HttpAction,
-  MemberExpression,
   ObjectExpression,
   RuleNode,
   TemplateNode,
