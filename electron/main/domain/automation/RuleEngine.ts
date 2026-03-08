@@ -42,25 +42,25 @@ export class RuleEngine {
   }
 
   /**
-   * Evaluates and execute all applicable rules for a given target
+   * Evaluates and execute all applicable rules for a given event
    *
    * Rules are:
    * - Filtered by `enabled === true`
-   * - Matched against the provided = `target`
+   * - Matched against the provided = `event`
    * - Sorted by ascending priority
    *
-   * @param target Target identifier used to match rules
-   * @param context Execution context containing current and previous state
+   * @param event Event name used to match rules
+   * @param data Entity event data containing current and previous state
    */
   async handle<T extends Record<string, unknown>>(
-    target: string,
-    event: EntityEvent<T>,
+    event: string,
+    data: EntityEvent<T>,
   ): Promise<void> {
-    const context = this.createContext(event)
+    const context = this.createContext(data)
 
     const byPriority = (a: RuleNode, b: RuleNode) => a.priority - b.priority
     const onlyEnabledAndTargetted = (r: RuleNode) =>
-      r.enabled && r.target === target
+      r.enabled && r.events.includes(event)
 
     const applicable = this.rules
       .filter(onlyEnabledAndTargetted)
