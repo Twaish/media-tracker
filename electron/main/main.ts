@@ -37,6 +37,7 @@ import { RuleRepositoryDrizzle } from './infrastructure/db/repositories/ruleRepo
 import { TemplateRepositoryDrizzle } from './infrastructure/db/repositories/templateRepositoryDrizzle'
 import SyncRuleEngine from './usecases/automation/syncRuleEngine'
 import { InMemoryEventBus } from './core/EventBus'
+import { InMemoryEventRegistry } from './core/EventRegistry'
 
 app.whenReady().then(async () => {
   const { DB_PATH, LOG_PATH, APP_URL } = config
@@ -93,6 +94,7 @@ app.whenReady().then(async () => {
       callTemplate: async (name, args) => console.log(name, args),
     })
     const eventBus = new InMemoryEventBus()
+    const eventRegistry = new InMemoryEventRegistry()
 
     logger.info('Creating window')
     const mainWindow = new ElectronWindow()
@@ -108,6 +110,7 @@ app.whenReady().then(async () => {
       RuleEngineCompiler: ruleEngineCompiler,
       RuleEnginePrinter: ruleEnginePrinter,
       EventBus: eventBus,
+      EventRegistry: eventRegistry,
       window: mainWindow.window,
       logger: logger,
 
