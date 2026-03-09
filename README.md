@@ -101,8 +101,22 @@ DO {
       body: {
         type: "object",
         value: {
-          title: { type: "field", path: "media.title" },
-          status: { type: "field", path: "media.status" },
+          title: { 
+            type: "member", 
+            object: {
+              type: "field",
+              name: "media"
+            },
+            property: "title"
+          },
+          status: { 
+            type: "member", 
+            object: {
+              type: "field",
+              name: "media"
+            },
+            property: "status"
+          }
           completedAt: { type: "function", name: "now", args: [] }
         }
       },
@@ -135,8 +149,9 @@ DO {
 }
 
 RULE AutoCompleteOnFinish
+FOR mediaUpdated, mediaAdded
 ONCE media currentEpisode >= maxEpisodes
-PRIORITY 1 // Run before others
+PRIORITY 10 // Run before others
 DO {
   set completedAt = now()
   set status = "Completed"
@@ -148,9 +163,10 @@ DO {
 {
   name: "AutoCompleteOnFinish",
   type: "rule",
-  priority: 1,
+  priority: 10,
   enabled: true,
   trigger: "ONCE",
+  events: ["mediaUpdated", "mediaAdded"]
   target: "media",
   condition: {
     type: "binary",
