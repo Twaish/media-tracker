@@ -4,7 +4,7 @@ import {
   MediaEmbedding,
   PersistedMediaEmbedding,
 } from '@/domain/entities/mediaEmbedding'
-import { and, eq, isNull } from 'drizzle-orm'
+import { and, eq, gt, isNull } from 'drizzle-orm'
 import { mediaEmbeddingsTable, mediaTable } from '../schema'
 import { AddMediaEmbeddingDTO } from '@shared/types/mediaEmbedding'
 
@@ -41,6 +41,28 @@ export class MediaEmbeddingRepositoryDrizzle implements IMediaEmbeddingRepositor
 
       return this.getByMediaId(mediaEmbedding.mediaId, mediaEmbedding.model, tx)
     })
+  }
+
+  async *streamAll(
+    batchSize: number = 500,
+  ): AsyncIterable<PersistedMediaEmbedding> {
+    let lastId: number | undefined
+
+    while (true) {
+      const rows = await this.db
+        .select()
+        .from(mediaEmbeddingsTable)
+        .where(lastId ? gt(mediaEmbeddingsTable.id, lastId) : undefined)
+        .orderBy(mediaEmbeddingsTable.id)
+        .limit(batchSize)
+
+      if (rows.length === 0) return
+
+      for (const row of rows) {
+        yield this.toDomain(row)
+        lastId = row.id
+      }
+    }
   }
 
   async *streamEmbeddingsByModel(

@@ -9,4 +9,5 @@ export interface IMediaEmbeddingRepository {
     embedding: number[]
   }>
   getMediaMissingEmbeddings(model: string): Promise<number[]>
+  streamAll(batchSize?: number): AsyncIterable<PersistedMediaEmbedding>
 }
