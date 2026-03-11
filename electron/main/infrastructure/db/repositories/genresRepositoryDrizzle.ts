@@ -12,7 +12,7 @@ export class GenresRepositoryDrizzle implements IGenresRepository {
     return rows.map(this.toDomain)
   }
 
-  async *streamAll(batchSize = 500) {
+  async *streamAll(batchSize: number = 500): AsyncIterable<PersistedGenre> {
     let lastId: number | undefined
 
     while (true) {
