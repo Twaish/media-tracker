@@ -1,5 +1,6 @@
 import { exposeAiContext } from './ai/ai-context'
 import { exposeAutomationContext } from './automation/automation-context'
+import { exposeExportContext } from './export/export-context'
 import { exposeGenresContext } from './genres/genres-context'
 import { exposeMediaContext } from './media/media-context'
 import { exposeStorageContext } from './storage/storage-context'
@@ -18,4 +19,5 @@ export default function exposeContexts() {
   exposeTasksContext()
   exposeWatchPlansContext()
   exposeAutomationContext()
+  exposeExportContext()
 }

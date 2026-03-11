@@ -8,6 +8,7 @@ import { addAiEventListeners } from './ai/ai-listeners'
 import { addTasksEventListeners } from './tasks/tasks-listeners'
 import { addWatchPlansEventListeners } from './watchPlans/watch-plans-listeners'
 import { addAutomationEventListeners } from './automation/automation-listeners'
+import { addExportEventListeners } from './export/export-listeners'
 
 export default function registerListeners(modules: Modules) {
   addWindowEventListeners(modules)
@@ -19,4 +20,5 @@ export default function registerListeners(modules: Modules) {
   addTasksEventListeners(modules)
   addWatchPlansEventListeners(modules)
   addAutomationEventListeners(modules)
+  addExportEventListeners(modules)
 }
