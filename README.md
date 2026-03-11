@@ -31,7 +31,6 @@ npm run build:release
 - Full keyboard navigable
 - Cloud sync
 - User defined fields with type system
-- Rule engine. Run automation on conditions.
 - Settings
 - Plugin system
 - CLI
@@ -184,3 +183,4 @@ DO {
   ]
 }
 ```
+- Rule engine. Run automation on conditions.
