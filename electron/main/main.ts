@@ -39,6 +39,7 @@ import SyncRuleEngine from './usecases/automation/syncRuleEngine'
 import { InMemoryEventBus } from './infrastructure/events/InMemoryEventBus'
 import { InMemoryEventRegistry } from './infrastructure/events/InMemoryEventRegistry'
 import { registerDomainEvents } from './helpers/events/register-domain-events'
+import { FileExportWriter } from './domain/services/FileExportWriter'
 
 app.whenReady().then(async () => {
   const { DB_PATH, LOG_PATH, APP_URL } = config
@@ -64,6 +65,9 @@ app.whenReady().then(async () => {
 
     logger.info('Initializing task service')
     const taskService = new TaskService()
+
+    logger.info('Initializing export services')
+    const exportWriter = new FileExportWriter()
 
     logger.info('Initializing storage')
     const settingsStore = new JsonStore('./Settings')
@@ -107,6 +111,7 @@ app.whenReady().then(async () => {
       ElectronWindow: mainWindow,
       StorageService: storageService,
       TaskService: taskService,
+      ExportWriter: exportWriter,
       RuleEngine: ruleEngine,
       RuleEngineCompiler: ruleEngineCompiler,
       RuleEnginePrinter: ruleEnginePrinter,
