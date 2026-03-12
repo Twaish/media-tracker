@@ -23,7 +23,7 @@ npm run build:release
 - Create splash screen (Fixes FOUC)
 - Automatically fill information of media by link using AI
 - Add summary to current episode using AI (Continue without missing context)
-- Export/Import to json/csv
+- Export/Import data as packages containing manifest file and resource files
 - Viewing statistics
 - System tray icon UI for quickly updating progress or adding new media
 - Backup/Restore using versioning system (delta-based)
