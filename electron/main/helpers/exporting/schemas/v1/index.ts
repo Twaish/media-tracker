@@ -42,7 +42,7 @@ export const exportSchemaV1 = ({
         templates: TemplateRepository.getAll(),
       }),
       jsonStream('media_embeddings.json', {
-        media_embeddings: MediaEmbeddingRepository.streamAll(),
+        media_embeddings: () => MediaEmbeddingRepository.streamAll(),
       }),
     ]),
   ].flat()

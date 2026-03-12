@@ -50,7 +50,8 @@ export const jsonStream =
     const entries = Object.entries(content)
 
     for (let i = 0; i < entries.length; i++) {
-      const [key, value] = entries[i]
+      const [key, rawValue] = entries[i]
+      const value = typeof rawValue === 'function' ? rawValue() : rawValue
 
       await file.write(`  "${key}": `)
 
