@@ -35,12 +35,13 @@ import { ActionExecutor } from './domain/automation/ActionExecutor'
 import { ExpressionEvaluator } from './domain/automation/ExpressionEvaluator'
 import { RuleRepositoryDrizzle } from './infrastructure/db/repositories/ruleRepositoryDrizzle'
 import { TemplateRepositoryDrizzle } from './infrastructure/db/repositories/templateRepositoryDrizzle'
-import SyncRuleEngine from './usecases/automation/syncRuleEngine'
 import { InMemoryEventBus } from './infrastructure/events/InMemoryEventBus'
 import { InMemoryEventRegistry } from './infrastructure/events/InMemoryEventRegistry'
 import { registerDomainEvents } from './helpers/events/register-domain-events'
 import { FileExportWriter } from './domain/services/FileExportWriter'
 import { ExportManager } from './infrastructure/exporting/ExportManager'
+import { registerExportSchemas } from './helpers/exporting/register-export-schemas'
+import { registerAutomationSchemas } from './helpers/automation/register-automation-schemas'
 
 app.whenReady().then(async () => {
   const { DB_PATH, LOG_PATH, APP_URL } = config
@@ -87,12 +88,7 @@ app.whenReady().then(async () => {
 
     logger.info('Initializing export services')
     const exportWriter = new FileExportWriter()
-    const exportManager = new ExportManager([
-      {
-        path: 'assets/thumbnails',
-        callback: (dest: string) => storageService.exportImages(dest),
-      },
-    ])
+    const exportManager = new ExportManager()
 
     logger.info('Initializing rule engine')
     const ruleEngineCompiler = new RuleEngineCompiler()
@@ -141,12 +137,6 @@ app.whenReady().then(async () => {
       TemplateRepository: templateRepository,
     }
 
-    const syncRuleEngine = new SyncRuleEngine(
-      ruleRepository,
-      templateRepository,
-      ruleEngine,
-    )
-
     logger.header('IPC / Protocols / Events')
     logger.info('Registering IPC listeners')
     registerListeners(modules)
@@ -157,6 +147,12 @@ app.whenReady().then(async () => {
     logger.info('Registering domain events')
     registerDomainEvents(modules)
 
+    logger.info('Registering exporting schemas')
+    registerExportSchemas(modules)
+
+    logger.info('Registering rules & templates')
+    await registerAutomationSchemas(modules)
+
     mainWindow.loadUrl(APP_URL)
 
     logger.header('Database')
@@ -165,8 +161,6 @@ app.whenReady().then(async () => {
 
     logger.info('Seeding')
     await seedDatabase(database)
-
-    await syncRuleEngine.execute()
 
     logger.header('Startup')
     logger.info('Showing main window')
