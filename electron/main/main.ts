@@ -140,6 +140,13 @@ app.whenReady().then(async () => {
       TemplateRepository: templateRepository,
     }
 
+    logger.header('Database')
+    logger.info('Running migrations')
+    await runMigrations(database)
+
+    logger.info('Seeding')
+    await seedDatabase(database)
+
     logger.header('IPC / Protocols / Events')
     logger.info('Registering IPC listeners')
     registerListeners(modules)
@@ -157,13 +164,6 @@ app.whenReady().then(async () => {
     await registerAutomationSchemas(modules)
 
     mainWindow.loadUrl(APP_URL)
-
-    logger.header('Database')
-    logger.info('Running migrations')
-    await runMigrations(database)
-
-    logger.info('Seeding')
-    await seedDatabase(database)
 
     logger.header('Startup')
     logger.info('Showing main window')
