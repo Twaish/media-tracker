@@ -20,4 +20,5 @@ export interface StorageContext {
     imagePath: string,
     options: StoreImageOptions,
   ): Promise<StoredImageResult>
+  exportImages(destinationPath: string): Promise<void>
 }
