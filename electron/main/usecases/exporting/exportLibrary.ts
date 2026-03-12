@@ -1,10 +1,3 @@
-import { IGenresRepository } from '@/application/db/repositories/IGenresRepository'
-import { IMediaEmbeddingRepository } from '@/application/db/repositories/IMediaEmbeddingRepository'
-import { IMediaRepository } from '@/application/db/repositories/IMediaRepository'
-import { IRuleRepository } from '@/application/db/repositories/IRuleRepository'
-import { ITemplateRepository } from '@/application/db/repositories/ITemplateRepository'
-import { IWatchPlanRepository } from '@/application/db/repositories/IWatchPlanRepository'
-import { FileExportWriter } from '@/domain/services/FileExportWriter'
 import { ExportManager } from '@/infrastructure/exporting/ExportManager'
 
 /*
@@ -25,39 +18,9 @@ Manifest contains:
 */
 
 export default class ExportLibrary {
-  constructor(
-    private readonly exportWriter: FileExportWriter,
-    private readonly exportManager: ExportManager,
-    private readonly ruleRepository: IRuleRepository,
-    private readonly templateRepository: ITemplateRepository,
-    private readonly genresRepository: IGenresRepository,
-    private readonly mediaRepository: IMediaRepository,
-    private readonly mediaEmbeddingRepository: IMediaEmbeddingRepository,
-    private readonly watchPlanRepository: IWatchPlanRepository,
-  ) {}
+  constructor(private readonly exportManager: ExportManager) {}
 
   async execute(path: string) {
-    const { exportWriter: writer } = this
-    await writer.open(path)
-
-    await writer.beginObject()
-
-    // TODO: Implement the rest of the streams
-    // await this.exportArray("rules", this.ruleRepository.streamRules())
-    // await this.exportArray("ruleEvents", this.ruleRepository.streamEvents())
-    // await this.exportArray("templates", this.templateRepository.streamAll())
-    // await this.exportArray("media", this.mediaRepository.streamAll())
-    // await this.exportArray("mediaGenres", this.mediaRepository.streamGenres())
-    await writer.exportArray(
-      'mediaEmbeddings',
-      this.mediaEmbeddingRepository.streamAll(),
-    )
-    // await this.exportArray("watchPlans", this.watchPlanRepository.streamAll())
-    // await this.exportArray("watchPlanSegments", this.watchPlanRepository.streamSegments())
-    await writer.exportArray('genres', this.genresRepository.streamAll())
-
-    await writer.endObject()
-
-    await writer.close()
+    return this.exportManager.export(path)
   }
 }

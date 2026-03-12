@@ -1,26 +1,8 @@
 import { Modules } from '@/helpers/ipc/types'
 import ExportLibrary from './exportLibrary'
 
-export function createExportingUseCases({
-  ExportWriter,
-  ExportManager,
-  RuleRepository,
-  TemplateRepository,
-  GenresRepository,
-  MediaRepository,
-  MediaEmbeddingRepository,
-  WatchPlanRepository,
-}: Modules) {
+export function createExportingUseCases({ ExportManager }: Modules) {
   return {
-    exportLibrary: new ExportLibrary(
-      ExportWriter,
-      ExportManager,
-      RuleRepository,
-      TemplateRepository,
-      GenresRepository,
-      MediaRepository,
-      MediaEmbeddingRepository,
-      WatchPlanRepository,
-    ),
+    exportLibrary: new ExportLibrary(ExportManager),
   }
 }
