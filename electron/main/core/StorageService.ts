@@ -68,4 +68,18 @@ export class StorageService extends EventEmitter {
       size: resizedBuffer.length,
     }
   }
+
+  async exportImages(destinationPath: string) {
+    fs.mkdirSync(destinationPath, { recursive: true })
+
+    const files = fs.readdirSync(this.fullPath)
+    files.forEach((file) => {
+      const src = path.join(this.fullPath, file)
+      const dest = path.join(destinationPath, file)
+
+      if (!fs.existsSync(dest)) {
+        fs.copyFileSync(src, dest)
+      }
+    })
+  }
 }
