@@ -5,6 +5,7 @@ import { IRuleRepository } from '@/application/db/repositories/IRuleRepository'
 import { ITemplateRepository } from '@/application/db/repositories/ITemplateRepository'
 import { IWatchPlanRepository } from '@/application/db/repositories/IWatchPlanRepository'
 import { FileExportWriter } from '@/domain/services/FileExportWriter'
+import { ExportManager } from '@/infrastructure/export/ExportManager'
 
 /*
 TODO: SWITCH TO DIFFERENT EXPORTING SCHEMA
@@ -26,6 +27,7 @@ Manifest contains:
 export default class ExportLibrary {
   constructor(
     private readonly exportWriter: FileExportWriter,
+    private readonly exportManager: ExportManager,
     private readonly ruleRepository: IRuleRepository,
     private readonly templateRepository: ITemplateRepository,
     private readonly genresRepository: IGenresRepository,

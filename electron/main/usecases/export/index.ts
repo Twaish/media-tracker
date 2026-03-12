@@ -3,6 +3,7 @@ import ExportLibrary from './exportLibrary'
 
 export function createExportUseCases({
   ExportWriter,
+  ExportManager,
   RuleRepository,
   TemplateRepository,
   GenresRepository,
@@ -13,6 +14,7 @@ export function createExportUseCases({
   return {
     exportLibrary: new ExportLibrary(
       ExportWriter,
+      ExportManager,
       RuleRepository,
       TemplateRepository,
       GenresRepository,
