@@ -1,4 +1,3 @@
-import { app } from 'electron'
 import path from 'path'
 import fs from 'fs/promises'
 import { existsSync, mkdirSync } from 'fs'
@@ -7,10 +6,10 @@ import EventEmitter from 'events'
 export class JsonStore extends EventEmitter {
   basePath: string
   fullPath: string
-  constructor(basePath: string = '') {
+  constructor(options: { basePath?: string; root: string }) {
     super()
-    this.basePath = basePath
-    this.fullPath = path.join(app.getPath('userData'), this.basePath)
+    this.basePath = options.basePath ?? ''
+    this.fullPath = path.join(options.root, this.basePath)
     if (!existsSync(this.fullPath)) {
       mkdirSync(this.fullPath, { recursive: true })
     }

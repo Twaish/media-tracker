@@ -69,7 +69,10 @@ app.whenReady().then(async () => {
     const taskService = new TaskService()
 
     logger.info('Initializing storage')
-    const settingsStore = new JsonStore('./Settings')
+    const settingsStore = new JsonStore({
+      basePath: './Settings',
+      root: app.getPath('userData'),
+    })
     const storageService = new StorageService('./Media Images')
     storageService.on('image-stored', (imagePath) => {
       logger.info(`Stored image ${imagePath}`)
