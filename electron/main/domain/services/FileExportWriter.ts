@@ -20,6 +20,21 @@ export class FileExportWriter {
     this.stream.write('}')
   }
 
+  async exportArray<T>(name: string, array: T[]): Promise<void>
+  async exportArray<T>(name: string, stream: AsyncIterable<T>): Promise<void>
+  async exportArray<T>(
+    name: string,
+    source: T[] | AsyncIterable<T>,
+  ): Promise<void> {
+    await this.beginArray(name)
+
+    for await (const item of source) {
+      await this.writeItem(item)
+    }
+
+    this.endArray()
+  }
+
   async beginArray(name: string) {
     if (!this.firstArray) this.stream.write(',')
     this.firstArray = false
