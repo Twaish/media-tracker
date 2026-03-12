@@ -44,7 +44,7 @@ import { registerExportSchemas } from './helpers/exporting/register-export-schem
 import { registerAutomationSchemas } from './helpers/automation/register-automation-schemas'
 
 app.whenReady().then(async () => {
-  const { DB_PATH, LOG_PATH, APP_URL } = config
+  const { DB_PATH, LOG_PATH, APP_URL, SETTINGS_DIR, MEDIA_DIR } = config
 
   const consoleTransport = createConsoleTransport(consoleFormat)
   const fileTransport = createFileTransport(LOG_PATH, fileFormat)
@@ -70,10 +70,10 @@ app.whenReady().then(async () => {
 
     logger.info('Initializing storage')
     const settingsStore = new JsonStore({
-      basePath: './Settings',
+      basePath: SETTINGS_DIR,
       root: app.getPath('userData'),
     })
-    const storageService = new StorageService('./Media Images')
+    const storageService = new StorageService(MEDIA_DIR)
     storageService.on('image-stored', (imagePath) => {
       logger.info(`Stored image ${imagePath}`)
     })
