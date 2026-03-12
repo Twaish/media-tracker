@@ -2,19 +2,17 @@ import { Modules } from '../ipc/types'
 import fs from 'fs/promises'
 import path from 'path'
 
-export function registerExportSchemas(modules: Modules) {
-  const { ExportManager, StorageService } = modules
+const at = <T, K>(path: T, callbacks: K[]) =>
+  callbacks.map((callback) => ({ path, callback }))
 
-  const at = <T, K>(path: T, callbacks: K[]) =>
-    callbacks.map((callback) => ({ path, callback }))
-
-  ExportManager.addExportSchemas(
+const exporting = {
+  v1: ({ StorageService }: Modules) =>
     [
       at('/', [
         async (dest: string) => {
           fs.writeFile(
             path.join(dest, 'manifest.json'),
-            JSON.stringify({ exportedAt: new Date() }, null, 2),
+            JSON.stringify({ exportedAt: new Date(), version: 1 }, null, 2),
           )
         },
       ]),
@@ -22,5 +20,14 @@ export function registerExportSchemas(modules: Modules) {
         (dest: string) => StorageService.exportImages(dest),
       ]),
     ].flat(),
-  )
+}
+
+export function registerExportSchemas(
+  modules: Modules,
+  version: keyof typeof exporting = 'v1',
+) {
+  const { ExportManager } = modules
+  const schemas = exporting[version](modules)
+
+  ExportManager.addExportSchemas(schemas)
 }
