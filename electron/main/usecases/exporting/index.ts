@@ -1,7 +1,7 @@
 import { Modules } from '@/helpers/ipc/types'
 import ExportLibrary from './exportLibrary'
 
-export function createExportUseCases({
+export function createExportingUseCases({
   ExportWriter,
   ExportManager,
   RuleRepository,

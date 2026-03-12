@@ -1,7 +1,7 @@
 import {
   ExportSchema,
   IExportManager,
-} from '@/application/export/IExportManager'
+} from '@/application/exporting/IExportManager'
 import path from 'path'
 
 export class ExportManager implements IExportManager {

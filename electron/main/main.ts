@@ -40,7 +40,7 @@ import { InMemoryEventBus } from './infrastructure/events/InMemoryEventBus'
 import { InMemoryEventRegistry } from './infrastructure/events/InMemoryEventRegistry'
 import { registerDomainEvents } from './helpers/events/register-domain-events'
 import { FileExportWriter } from './domain/services/FileExportWriter'
-import { ExportManager } from './infrastructure/export/ExportManager'
+import { ExportManager } from './infrastructure/exporting/ExportManager'
 
 app.whenReady().then(async () => {
   const { DB_PATH, LOG_PATH, APP_URL } = config

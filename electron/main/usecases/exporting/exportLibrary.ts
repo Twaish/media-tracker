@@ -5,7 +5,7 @@ import { IRuleRepository } from '@/application/db/repositories/IRuleRepository'
 import { ITemplateRepository } from '@/application/db/repositories/ITemplateRepository'
 import { IWatchPlanRepository } from '@/application/db/repositories/IWatchPlanRepository'
 import { FileExportWriter } from '@/domain/services/FileExportWriter'
-import { ExportManager } from '@/infrastructure/export/ExportManager'
+import { ExportManager } from '@/infrastructure/exporting/ExportManager'
 
 /*
 TODO: SWITCH TO DIFFERENT EXPORTING SCHEMA

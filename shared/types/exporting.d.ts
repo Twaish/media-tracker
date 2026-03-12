@@ -1,3 +1,3 @@
-export interface ExportContext {
+export interface ExportingContext {
   exportLibrary(path: string): Promise<void>
 }
