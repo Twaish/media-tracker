@@ -40,6 +40,7 @@ import { InMemoryEventBus } from './infrastructure/events/InMemoryEventBus'
 import { InMemoryEventRegistry } from './infrastructure/events/InMemoryEventRegistry'
 import { registerDomainEvents } from './helpers/events/register-domain-events'
 import { FileExportWriter } from './domain/services/FileExportWriter'
+import { ExportManager } from './infrastructure/export/ExportManager'
 
 app.whenReady().then(async () => {
   const { DB_PATH, LOG_PATH, APP_URL } = config
@@ -66,9 +67,6 @@ app.whenReady().then(async () => {
     logger.info('Initializing task service')
     const taskService = new TaskService()
 
-    logger.info('Initializing export services')
-    const exportWriter = new FileExportWriter()
-
     logger.info('Initializing storage')
     const settingsStore = new JsonStore('./Settings')
     const storageService = new StorageService('./Media Images')
@@ -86,6 +84,15 @@ app.whenReady().then(async () => {
       ollamaService,
       mediaEmbeddingRepository,
     )
+
+    logger.info('Initializing export services')
+    const exportWriter = new FileExportWriter()
+    const exportManager = new ExportManager([
+      {
+        path: 'assets/thumbnails',
+        callback: (dest: string) => storageService.exportImages(dest),
+      },
+    ])
 
     logger.info('Initializing rule engine')
     const ruleEngineCompiler = new RuleEngineCompiler()
@@ -112,6 +119,7 @@ app.whenReady().then(async () => {
       StorageService: storageService,
       TaskService: taskService,
       ExportWriter: exportWriter,
+      ExportManager: exportManager,
       RuleEngine: ruleEngine,
       RuleEngineCompiler: ruleEngineCompiler,
       RuleEnginePrinter: ruleEnginePrinter,
