@@ -6,6 +6,23 @@ import { ITemplateRepository } from '@/application/db/repositories/ITemplateRepo
 import { IWatchPlanRepository } from '@/application/db/repositories/IWatchPlanRepository'
 import { FileExportWriter } from '@/domain/services/FileExportWriter'
 
+/*
+TODO: SWITCH TO DIFFERENT EXPORTING SCHEMA
+Use a folder instead as images also need to be included.
+Folder name format: export-{unixtime}
+Files:
+- manifest.json
+- data/{rules.ndjson, ruleEvents.ndjson, ...}
+- assets/{thumbnails/{media1.webp, media2.webp, ...}, ...}
+
+Manifest contains:
+{
+  "version": 1,
+  "exportedAt": "2026-03-11T12:00:00Z",
+  "appVersion": "1.4.0"
+}
+*/
+
 export default class ExportLibrary {
   constructor(
     private readonly exportWriter: FileExportWriter,
@@ -29,28 +46,16 @@ export default class ExportLibrary {
     // await this.exportArray("templates", this.templateRepository.streamAll())
     // await this.exportArray("media", this.mediaRepository.streamAll())
     // await this.exportArray("mediaGenres", this.mediaRepository.streamGenres())
-    await this.exportArray(
+    await writer.exportArray(
       'mediaEmbeddings',
       this.mediaEmbeddingRepository.streamAll(),
     )
     // await this.exportArray("watchPlans", this.watchPlanRepository.streamAll())
     // await this.exportArray("watchPlanSegments", this.watchPlanRepository.streamSegments())
-    await this.exportArray('genres', this.genresRepository.streamAll())
+    await writer.exportArray('genres', this.genresRepository.streamAll())
 
     await writer.endObject()
 
     await writer.close()
-  }
-
-  private async exportArray<T>(name: string, stream: AsyncIterable<T>) {
-    const { exportWriter } = this
-
-    await exportWriter.beginArray(name)
-
-    for await (const item of stream) {
-      await exportWriter.writeItem(item)
-    }
-
-    await exportWriter.endArray()
   }
 }
