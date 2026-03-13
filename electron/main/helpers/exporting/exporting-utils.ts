@@ -14,6 +14,10 @@ export const resolveDeep = async <T>(obj: T): Promise<T | T[]> => {
     return Promise.all(obj.map(resolveDeep))
   }
 
+  if (typeof obj === 'function') {
+    return await obj()
+  }
+
   if (obj && typeof obj === 'object' && obj.constructor === Object) {
     const entries = await Promise.all(
       Object.entries(obj).map(async ([k, v]) => [k, await resolveDeep(v)]),
