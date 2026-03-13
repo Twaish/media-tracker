@@ -49,6 +49,8 @@ export const jsonStream =
   async (dest: string) => {
     const file = await fs.open(path.join(dest, filename), 'w')
 
+    const indent = (n: number) => ' '.repeat(n)
+
     await file.write('{\n')
 
     const entries = Object.entries(content)
@@ -57,22 +59,32 @@ export const jsonStream =
       const [key, rawValue] = entries[i]
       const value = typeof rawValue === 'function' ? rawValue() : rawValue
 
-      await file.write(`  "${key}": `)
+      await file.write(`${indent(2)}"${key}": `)
 
       if (isAsyncIterable(value)) {
-        await file.write('[')
+        await file.write('[\n')
         let first = true
 
         for await (const item of value) {
-          if (!first) await file.write(',')
+          if (!first) await file.write(',\n')
           first = false
-          await file.write(JSON.stringify(item))
+          await file.write(
+            JSON.stringify(item, null, 2)
+              .split('\n')
+              .map((line) => indent(4) + line)
+              .join('\n'),
+          )
         }
 
-        await file.write(']')
+        await file.write(`\n${indent(2)}]`)
       } else {
         const resolved = await value
-        await file.write(JSON.stringify(resolved))
+        await file.write(
+          JSON.stringify(resolved, null, 2)
+            .split('\n')
+            .map((line, idx) => (idx === 0 ? line : indent(2) + line))
+            .join('\n'),
+        )
       }
 
       if (i < entries.length - 1) {
