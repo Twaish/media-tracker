@@ -32,8 +32,8 @@ export const exportSchemaV1 = ({
       (dest: string) => StorageService.exportImages(dest),
     ]),
     at('data', [
-      json('genres.json', {
-        genres: () => GenresRepository.get(),
+      jsonStream('genres.json', {
+        genres: () => GenresRepository.streamAll(),
       }),
       json('rules.json', {
         rules: () => RuleRepository.getAllEnabled(),
