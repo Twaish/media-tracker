@@ -33,13 +33,13 @@ export const exportSchemaV1 = ({
     ]),
     at('data', [
       json('genres.json', {
-        genres: GenresRepository.get(),
+        genres: () => GenresRepository.get(),
       }),
       json('rules.json', {
-        rules: RuleRepository.getAllEnabled(),
+        rules: () => RuleRepository.getAllEnabled(),
       }),
       json('templates.json', {
-        templates: TemplateRepository.getAll(),
+        templates: () => TemplateRepository.getAll(),
       }),
       jsonStream('media_embeddings.json', {
         media_embeddings: () => MediaEmbeddingRepository.streamAll(),
