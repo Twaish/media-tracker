@@ -18,6 +18,7 @@ export const exportSchemaV1 = ({
   StorageService,
   GenresRepository,
   RuleRepository,
+  MediaRepository,
   TemplateRepository,
   MediaEmbeddingRepository,
 }: Modules) =>
@@ -37,6 +38,9 @@ export const exportSchemaV1 = ({
       }),
       json('rules.json', {
         rules: () => RuleRepository.getAllEnabled(),
+      }),
+      jsonStream('media.json', {
+        media: () => MediaRepository.streamAll(),
       }),
       json('templates.json', {
         templates: () => TemplateRepository.getAll(),
