@@ -7,4 +7,5 @@ export interface IWatchPlanRepository {
   add(plan: AddWatchPlanDTO): Promise<PersistedWatchPlan>
   update(plan: UpdateWatchPlanDTO): Promise<PersistedWatchPlan>
   remove(ids: number[]): Promise<{ deleted: number; ids: number[] }>
+  streamAll(batchSize?: number): AsyncIterable<PersistedWatchPlan>
 }

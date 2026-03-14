@@ -1,5 +1,5 @@
 import { watchPlanSegmentsTable, watchPlansTable } from '../schema'
-import { inArray, eq } from 'drizzle-orm'
+import { inArray, eq, gt } from 'drizzle-orm'
 import { DrizzleDb, Executor } from '../types'
 import { IWatchPlanRepository } from '@/application/db/repositories/IWatchPlanRepository'
 import {
@@ -106,6 +106,30 @@ export class WatchPlanRepositoryDrizzle implements IWatchPlanRepository {
     return {
       deleted: rows.length,
       ids: rows.map((r) => r.id),
+    }
+  }
+
+  async *streamAll(batchSize: number = 10): AsyncIterable<PersistedWatchPlan> {
+    let lastId: number | undefined
+
+    while (true) {
+      const rows = await this.db.query.watchPlansTable.findMany({
+        where: lastId ? gt(watchPlansTable.id, lastId) : undefined,
+        limit: batchSize,
+        orderBy: watchPlansTable.id,
+        with: {
+          segments: {
+            orderBy: (s, { asc }) => [asc(s.order)],
+          },
+        },
+      })
+
+      if (rows.length === 0) return
+
+      for (const row of rows) {
+        yield this.toDomain(row)
+        lastId = row.id
+      }
     }
   }
 
