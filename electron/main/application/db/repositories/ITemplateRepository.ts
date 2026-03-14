@@ -10,4 +10,5 @@ export interface ITemplateRepository {
   remove(ids: number[]): Promise<{ deleted: number; ids: number[] }>
   update(template: UpdateTemplateRepoDTO): Promise<PersistedTemplate>
   getAll(): Promise<PersistedTemplate[]>
+  streamAll(batchSize?: number): AsyncIterable<PersistedTemplate>
 }

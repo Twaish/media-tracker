@@ -5,7 +5,7 @@ import {
 } from '@shared/types/automation'
 import { DrizzleDb, Executor } from '../types'
 import { templatesTable } from '../schema'
-import { eq, inArray } from 'drizzle-orm'
+import { eq, gt, inArray } from 'drizzle-orm'
 import { PersistedTemplate, Template } from '@/domain/entities/rule'
 
 export class TemplateRepositoryDrizzle implements ITemplateRepository {
@@ -75,6 +75,25 @@ export class TemplateRepositoryDrizzle implements ITemplateRepository {
 
       return this.getById(id, tx)
     })
+  }
+
+  async *streamAll(batchSize: number = 10): AsyncIterable<PersistedTemplate> {
+    let lastId: number | undefined
+
+    while (true) {
+      const rows = await this.db.query.templatesTable.findMany({
+        where: lastId ? gt(templatesTable.id, lastId) : undefined,
+        limit: batchSize,
+        orderBy: templatesTable.id,
+      })
+
+      if (rows.length === 0) return
+
+      for (const row of rows) {
+        yield this.toDomain(row)
+        lastId = row.id
+      }
+    }
   }
 
   private toDomain(row: typeof templatesTable.$inferSelect): PersistedTemplate {
