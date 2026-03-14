@@ -38,7 +38,6 @@ import { TemplateRepositoryDrizzle } from './infrastructure/db/repositories/temp
 import { InMemoryEventBus } from './infrastructure/events/InMemoryEventBus'
 import { InMemoryEventRegistry } from './infrastructure/events/InMemoryEventRegistry'
 import { registerDomainEvents } from './helpers/events/register-domain-events'
-import { FileExportWriter } from './domain/services/FileExportWriter'
 import { ExportManager } from './infrastructure/exporting/ExportManager'
 import { registerExportSchemas } from './helpers/exporting/register-export-schemas'
 import { registerAutomationSchemas } from './helpers/automation/register-automation-schemas'
@@ -90,7 +89,6 @@ app.whenReady().then(async () => {
     )
 
     logger.info('Initializing export services')
-    const exportWriter = new FileExportWriter()
     const exportManager = new ExportManager()
 
     logger.info('Initializing rule engine')
@@ -117,7 +115,6 @@ app.whenReady().then(async () => {
       ElectronWindow: mainWindow,
       StorageService: storageService,
       TaskService: taskService,
-      ExportWriter: exportWriter,
       ExportManager: exportManager,
       RuleEngine: ruleEngine,
       RuleEngineCompiler: ruleEngineCompiler,
