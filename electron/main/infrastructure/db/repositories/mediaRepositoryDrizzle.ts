@@ -234,6 +234,30 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
     }
   }
 
+  async *streamAll(batchSize: number = 10): AsyncIterable<PersistedMedia> {
+    let lastId: number | undefined
+
+    while (true) {
+      const rows = await this.db.query.mediaTable.findMany({
+        where: lastId ? gt(mediaTable.id, lastId) : undefined,
+        limit: batchSize,
+        orderBy: mediaTable.id,
+        with: {
+          mediaGenres: {
+            with: { genre: true },
+          },
+        },
+      })
+
+      if (rows.length === 0) return
+
+      for (const row of rows) {
+        yield this.toDomain(row)
+        lastId = row.id
+      }
+    }
+  }
+
   async findDuplicateCandidates(
     media: Partial<AddMediaDTO>,
   ): Promise<PersistedMedia[]> {

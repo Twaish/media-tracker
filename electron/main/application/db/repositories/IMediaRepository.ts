@@ -27,4 +27,5 @@ export interface IMediaRepository {
   findDuplicateCandidates(
     media: Partial<AddMediaDTO>,
   ): Promise<PersistedMedia[]>
+  streamAll(batchSize?: number): AsyncIterable<PersistedMedia>
 }
