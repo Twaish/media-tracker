@@ -7,4 +7,5 @@ export interface IRuleRepository {
   remove(ids: number[]): Promise<{ deleted: number; ids: number[] }>
   update(rule: UpdateRuleRepoDTO): Promise<PersistedRule>
   getAllEnabled(): Promise<PersistedRule[]>
+  streamAll(batchSize?: number): AsyncIterable<PersistedRule>
 }

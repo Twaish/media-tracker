@@ -3,7 +3,7 @@ import { PersistedRule, Rule } from '@/domain/entities/rule'
 import { AddRuleRepoDTO, UpdateRuleRepoDTO } from '@shared/types/automation'
 import { rulesTable } from '../tables/automation.table'
 import { DrizzleDb, Executor } from '../types'
-import { eq, inArray } from 'drizzle-orm'
+import { eq, gt, inArray } from 'drizzle-orm'
 import { ruleEventsTable } from '../schema'
 
 export class RuleRepositoryDrizzle implements IRuleRepository {
@@ -94,6 +94,28 @@ export class RuleRepositoryDrizzle implements IRuleRepository {
     })
 
     return rows.map(this.toDomain)
+  }
+
+  async *streamAll(batchSize: number = 10): AsyncIterable<PersistedRule> {
+    let lastId: number | undefined
+
+    while (true) {
+      const rows = await this.db.query.rulesTable.findMany({
+        where: lastId ? gt(rulesTable.id, lastId) : undefined,
+        limit: batchSize,
+        orderBy: rulesTable.id,
+        with: {
+          events: true,
+        },
+      })
+
+      if (rows.length === 0) return
+
+      for (const row of rows) {
+        yield this.toDomain(row)
+        lastId = row.id
+      }
+    }
   }
 
   private toDomain(
