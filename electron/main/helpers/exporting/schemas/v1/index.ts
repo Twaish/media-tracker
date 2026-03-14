@@ -21,6 +21,7 @@ export const exportSchemaV1 = ({
   MediaRepository,
   TemplateRepository,
   MediaEmbeddingRepository,
+  WatchPlanRepository,
 }: Modules) =>
   [
     at('/', [
@@ -47,6 +48,9 @@ export const exportSchemaV1 = ({
       }),
       jsonStream('media_embeddings.json', {
         media_embeddings: () => MediaEmbeddingRepository.streamAll(),
+      }),
+      jsonStream('watch_plans.json', {
+        watch_plans: () => WatchPlanRepository.streamAll(),
       }),
     ]),
   ].flat()
