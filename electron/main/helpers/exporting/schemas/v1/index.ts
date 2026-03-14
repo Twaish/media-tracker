@@ -36,8 +36,8 @@ export const exportSchemaV1 = ({
       jsonStream('genres.json', {
         genres: () => GenresRepository.streamAll(),
       }),
-      json('rules.json', {
-        rules: () => RuleRepository.getAllEnabled(),
+      jsonStream('rules.json', {
+        rules: () => RuleRepository.streamAll(),
       }),
       jsonStream('media.json', {
         media: () => MediaRepository.streamAll(),
