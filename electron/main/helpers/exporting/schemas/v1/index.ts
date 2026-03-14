@@ -42,8 +42,8 @@ export const exportSchemaV1 = ({
       jsonStream('media.json', {
         media: () => MediaRepository.streamAll(),
       }),
-      json('templates.json', {
-        templates: () => TemplateRepository.getAll(),
+      jsonStream('templates.json', {
+        templates: () => TemplateRepository.streamAll(),
       }),
       jsonStream('media_embeddings.json', {
         media_embeddings: () => MediaEmbeddingRepository.streamAll(),
