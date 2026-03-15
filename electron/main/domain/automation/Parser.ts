@@ -31,7 +31,10 @@ export class Parser {
     this.expectKeyword('TEMPLATE')
     const name = this.expect(TokenType.Identifier).value
 
-    const parameters = this.parseParameters()
+    let parameters: string[] = []
+    if (this.match('PARAMETERS')) {
+      parameters = this.parseParameters()
+    }
 
     this.expectKeyword('DO')
     const actions = this.parseBlock()
