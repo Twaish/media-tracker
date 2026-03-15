@@ -2,6 +2,7 @@ import 'dotenv/config'
 import { app, BrowserWindow } from 'electron'
 
 import config from './core/config'
+import { AppInfo } from './core/types'
 import { StorageService } from './core/StorageService'
 import { ElectronWindow } from './core/ElectronWindow'
 
@@ -52,6 +53,10 @@ app.whenReady().then(async () => {
     SETTINGS_DIR,
     MEDIA_DIR,
   } = config
+
+  const appInfo: AppInfo = {
+    version: app.getVersion(),
+  }
 
   const consoleTransport = createConsoleTransport(consoleFormat)
   const fileTransport = createFileTransport(LOG_PATH, fileFormat)
@@ -133,6 +138,7 @@ app.whenReady().then(async () => {
       EventRegistry: eventRegistry,
       window: mainWindow.window,
       logger: logger,
+      appInfo: appInfo,
 
       AiSettingsProvider: ollamaSettings,
       AiService: ollamaService,

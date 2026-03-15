@@ -21,6 +21,7 @@ import { IEventBus } from '@/application/events/IEventBus'
 import { IEventRegistry } from '@/application/events/IEventRegistry'
 import { FileExportWriter } from '@/domain/services/FileExportWriter'
 import { ExportManager } from '@/infrastructure/exporting/ExportManager'
+import { AppInfo } from '@/core/types'
 
 declare interface Modules {
   ElectronWindow: ElectronWindow
@@ -35,6 +36,7 @@ declare interface Modules {
   EventRegistry: IEventRegistry
   window: BrowserWindow
   logger: ILogger
+  appInfo: AppInfo
 
   AiSettingsProvider: IAiSettingsProvider
   AiService: IAiService
