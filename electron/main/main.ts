@@ -44,7 +44,14 @@ import { registerExportSchemas } from './helpers/exporting/register-export-schem
 import { registerAutomationSchemas } from './helpers/automation/register-automation-schemas'
 
 app.whenReady().then(async () => {
-  const { DB_PATH, LOG_PATH, APP_URL, SETTINGS_DIR, MEDIA_DIR } = config
+  const {
+    DB_PATH,
+    MIGRATIONS_PATH,
+    LOG_PATH,
+    APP_URL,
+    SETTINGS_DIR,
+    MEDIA_DIR,
+  } = config
 
   const consoleTransport = createConsoleTransport(consoleFormat)
   const fileTransport = createFileTransport(LOG_PATH, fileFormat)
@@ -142,7 +149,7 @@ app.whenReady().then(async () => {
 
     logger.header('Database')
     logger.info('Running migrations')
-    await runMigrations(database)
+    await runMigrations(database, MIGRATIONS_PATH)
 
     logger.info('Seeding')
     await seedDatabase(database)
