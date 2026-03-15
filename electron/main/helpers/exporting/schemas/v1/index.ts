@@ -1,8 +1,8 @@
-import { app } from 'electron'
 import { Modules } from '@/helpers/ipc/types'
 import { at, json, jsonStream } from '../../exporting-utils'
 
 export const exportSchemaV1 = ({
+  appInfo,
   StorageService,
   GenresRepository,
   RuleRepository,
@@ -16,7 +16,7 @@ export const exportSchemaV1 = ({
       json('manifest.json', {
         exportedAt: new Date(),
         version: 1,
-        appVersion: app.getVersion(),
+        appVersion: appInfo.version,
       }),
     ]),
     at('assets/thumbnails', [
