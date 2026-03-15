@@ -43,6 +43,8 @@ import { FileExportWriter } from './domain/services/FileExportWriter'
 import { ExportManager } from './infrastructure/exporting/ExportManager'
 import { registerExportSchemas } from './helpers/exporting/register-export-schemas'
 import { registerAutomationSchemas } from './helpers/automation/register-automation-schemas'
+import { createExpressionServices } from './helpers/automation/create-expression-services'
+import { createActionServices } from './helpers/automation/create-action-services'
 
 app.whenReady().then(async () => {
   const userData = app.getPath('userData')
@@ -111,12 +113,11 @@ app.whenReady().then(async () => {
     const ruleEnginePrinter = new RuleEnginePrinter()
     const expressionEvaluator = new ExpressionEvaluator()
     const actionExecutor = new ActionExecutor(expressionEvaluator)
+    const ruleEngine = new RuleEngine(expressionEvaluator, actionExecutor)
 
-    const ruleEngine = new RuleEngine(expressionEvaluator, actionExecutor, {
-      now: () => new Date(),
-      callPlugin: async (name, args) => console.log(name, args),
-      callTemplate: async (name, args) => console.log(name, args),
-    })
+    expressionEvaluator.setServices(createExpressionServices())
+    actionExecutor.setServices(createActionServices(ruleEngine))
+
     const eventBus = new InMemoryEventBus()
     const eventRegistry = new InMemoryEventRegistry()
 
