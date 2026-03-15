@@ -61,6 +61,7 @@ export class Parser {
     return params
   }
 
+  // TODO: Allow for no binary conditions and making it execute for every event it listens to
   private parseRule(): RuleNode {
     this.expectKeyword('RULE')
     const name = this.expect(TokenType.Identifier).value
