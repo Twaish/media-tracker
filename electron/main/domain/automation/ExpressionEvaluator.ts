@@ -1,19 +1,27 @@
 import {
   BinaryExpression,
   Expression,
+  ExpressionServices,
+  FunctionExpression,
   MemberExpression,
   ObjectExpression,
 } from './types'
 
 export class ExpressionEvaluator {
-  evaluate<T>(expression: Expression, data: T): unknown {
+  private services?: ExpressionServices
+
+  setServices(services: ExpressionServices) {
+    this.services = services
+  }
+
+  async evaluate<T>(expression: Expression, data: T): Promise<unknown> {
     switch (expression.type) {
       case 'literal':
         return expression.value
       case 'field':
         return data?.[expression.name as keyof typeof data]
       case 'function':
-        return this.executeFunction(expression.name)
+        return this.executeFunction(expression, data)
       case 'binary':
         return this.evaluateBinary(expression, data)
       case 'object':
@@ -29,16 +37,22 @@ export class ExpressionEvaluator {
     }
   }
 
-  private evaluateMember<T>(expression: MemberExpression, data: T): unknown {
-    const object = this.evaluate(expression.object, data)
+  private async evaluateMember<T>(
+    expression: MemberExpression,
+    data: T,
+  ): Promise<unknown> {
+    const object = await this.evaluate(expression.object, data)
     return (object as Record<string, unknown>)?.[expression.property]
   }
 
-  private evaluateObject<T>(expression: ObjectExpression, data: T): object {
+  private async evaluateObject<T>(
+    expression: ObjectExpression,
+    data: T,
+  ): Promise<object> {
     const result: Record<string, unknown> = {}
 
     for (const key in expression.value) {
-      const value = this.evaluate(expression.value[key], data)
+      const value = await this.evaluate(expression.value[key], data)
 
       result[key] = value
     }
@@ -46,9 +60,12 @@ export class ExpressionEvaluator {
     return result
   }
 
-  private evaluateBinary<T>(expression: BinaryExpression, data: T): boolean {
-    const left = this.evaluate(expression.left, data) as number
-    const right = this.evaluate(expression.right, data) as number
+  private async evaluateBinary<T>(
+    expression: BinaryExpression,
+    data: T,
+  ): Promise<boolean> {
+    const left = (await this.evaluate(expression.left, data)) as number
+    const right = (await this.evaluate(expression.right, data)) as number
 
     switch (expression.operator) {
       case '>':
@@ -66,8 +83,31 @@ export class ExpressionEvaluator {
     }
   }
 
-  private executeFunction(name: string): unknown {
-    if (name === 'now') return new Date()
-    throw new Error(`unknown function: ${name}`)
+  private async executeFunction<T>(
+    expression: FunctionExpression,
+    data: T,
+  ): Promise<unknown> {
+    if (!this.services) {
+      throw new Error(`Expression services not set`)
+    }
+    const args = await Promise.all(
+      expression.args.map((arg) => this.evaluate(arg, data)),
+    )
+
+    const expressionName = expression.name as keyof ExpressionServices
+
+    switch (expressionName) {
+      case 'now':
+        return this.services.now()
+      case 'config':
+        return this.services.config(args[0] as string)
+      case 'secret':
+        return this.services.secret(args[0] as string)
+      case 'concat':
+        return this.services.concat(...(args as string[]))
+      default: {
+        throw new Error(`Unhandled function: ${expressionName satisfies never}`)
+      }
+    }
   }
 }
