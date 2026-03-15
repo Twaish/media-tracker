@@ -60,6 +60,24 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
     return this.toDomain(media)
   }
 
+  async getByIds(ids: number[]): Promise<PersistedMedia[]> {
+    if (ids.length === 0) return []
+    const mediaList = await this.db.query.mediaTable.findMany({
+      where: (m) => and(inArray(m.id, ids), isNull(m.deletedAt)),
+      with: {
+        mediaGenres: {
+          with: {
+            genre: true,
+          },
+        },
+      },
+    })
+
+    if (!mediaList || !mediaList.length) return []
+
+    return mediaList.map(this.toDomain)
+  }
+
   async getWithPagination(options: MediaPaginationOptions) {
     return this.search({ pagination: options })
   }
