@@ -3,9 +3,12 @@ import { IMediaRepository } from '@/application/db/repositories/IMediaRepository
 import { StorageService } from '@/core/StorageService'
 import AddMedia from '@/usecases/media/addMedia'
 import { makeMedia } from '../utils'
+import { IEventBus } from '@/application/events/IEventBus'
+import { MEDIA_EVENTS } from '@/usecases/media/media.events'
 
 describe('AddMedia', () => {
   let usecase: AddMedia
+  let mockEventBus: IEventBus
   let mockRepo: IMediaRepository
   let mockStorage: StorageService
 
@@ -29,7 +32,11 @@ describe('AddMedia', () => {
       storeImage: vi.fn(),
     } as unknown as StorageService
 
-    usecase = new AddMedia(mockRepo, mockStorage)
+    mockEventBus = {
+      publish: vi.fn(),
+    } as unknown as IEventBus
+
+    usecase = new AddMedia(mockRepo, mockStorage, mockEventBus)
   })
 
   it('stores thumbnail and adds media with stored path', async () => {
@@ -53,6 +60,13 @@ describe('AddMedia', () => {
       ...input,
       thumbnail: '/images/thumb.jpg',
     })
+
+    expect(mockEventBus.publish).toHaveBeenCalledWith(
+      MEDIA_EVENTS.MEDIA_ADDED,
+      {
+        current: media,
+      },
+    )
 
     expect(result).toEqual(media)
   })
