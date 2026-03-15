@@ -21,9 +21,7 @@
   "references": [
     { "path": "./tsconfig.main.json" },
     { "path": "./tsconfig.preload.json" },
-    { "path": "./tsconfig.renderer.json" },
-    { "path": "./tsconfig.main.test.json" },
-    { "path": "./tsconfig.dom.test.json" }
+    { "path": "./tsconfig.renderer.json" }
   ],
   "exclude": ["node_modules", "dist", "out"]
 }
