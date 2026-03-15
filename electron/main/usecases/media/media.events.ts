@@ -32,10 +32,7 @@ export type MediaAddedPayload = {
 }
 
 export type MediaRemovedPayload = {
-  current: {
-    deleted: number
-    ids: number[]
-  }
+  current: PersistedMedia
 }
 
 export function subscribeToMediaEvents({ EventBus, RuleEngine }: Modules) {
