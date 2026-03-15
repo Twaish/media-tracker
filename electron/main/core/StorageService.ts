@@ -1,4 +1,3 @@
-import { app } from 'electron'
 import path from 'path'
 import fs from 'fs'
 import sharp from 'sharp'
@@ -10,9 +9,9 @@ export class StorageService extends EventEmitter {
   dataPath: string
   fullPath: string
   basePath: string
-  constructor(basePath: string) {
+  constructor(basePath: string, userDataPath: string) {
     super()
-    this.dataPath = app.getPath('userData')
+    this.dataPath = userDataPath
     this.fullPath = path.join(this.dataPath, basePath)
     this.basePath = basePath
     fs.mkdirSync(this.fullPath, { recursive: true })
