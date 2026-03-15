@@ -27,8 +27,8 @@ export function createMediaUseCases({
   const queryResolver = new QueryResolver()
 
   return {
-    removeMedia: new RemoveMedia(MediaRepository),
-    addMedia: new AddMedia(MediaRepository, StorageService),
+    removeMedia: new RemoveMedia(MediaRepository, EventBus),
+    addMedia: new AddMedia(MediaRepository, StorageService, EventBus),
     getMedia: new GetMedia(MediaRepository),
     updateMedia: new UpdateMedia(MediaRepository, StorageService, EventBus),
     setMediaToWatchNext: new SetMediaToWatchNext(MediaRepository),
@@ -38,7 +38,7 @@ export function createMediaUseCases({
     ),
     searchMedia: new SearchMedia(MediaRepository, queryResolver),
     getMediaById: new GetMediaById(MediaRepository),
-    bulkUpdateMedia: new BulkUpdateMedia(MediaRepository),
+    bulkUpdateMedia: new BulkUpdateMedia(MediaRepository, EventBus),
     findMediaDuplicates: new FindMediaDuplicates(
       MediaRepository,
       StorageService,
