@@ -147,6 +147,13 @@ DO {
   ]
 }
 
+RULE SyncOnMediaUpdated
+FOR mediaUpdated
+ON media
+DO {
+  call plugin("obsidian.sync")
+}
+
 RULE AutoCompleteOnFinish
 FOR mediaUpdated, mediaAdded
 ONCE media currentEpisode >= maxEpisodes

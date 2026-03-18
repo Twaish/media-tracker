@@ -61,7 +61,6 @@ export class Parser {
     return params
   }
 
-  // TODO: Allow for no binary conditions and making it execute for every event it listens to
   private parseRule(): RuleNode {
     this.expectKeyword('RULE')
     const name = this.expect(TokenType.Identifier).value
@@ -78,7 +77,15 @@ export class Parser {
     const entity = this.expect(TokenType.Identifier).value
     this.currentRuleEntity = entity
 
-    const condition = this.parseCondition()
+    const hasCondition = !this.match('DO')
+    const condition: BinaryExpression = hasCondition
+      ? this.parseCondition()
+      : {
+          type: 'binary',
+          operator: '==',
+          left: { type: 'literal', value: true },
+          right: { type: 'literal', value: true },
+        }
 
     let priority = 0
     if (this.match('PRIORITY')) {
