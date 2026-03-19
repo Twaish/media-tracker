@@ -24,47 +24,53 @@ export class StorageService extends EventEmitter {
     sourcePath: string,
     options: StoreImageOptions = {},
   ): Promise<StoredImageResult> {
-    const {
-      // maxWidth = 512,
-      maxHeight = 512,
-      format = 'webp',
-      quality = 80,
-    } = options
+    const { maxWidth = 512, maxHeight = 512, format = 'png' } = options
 
-    const image = sharp(sourcePath).rotate()
-
-    const resizedBuffer = await image
+    const { data, info } = await sharp(sourcePath)
+      .rotate()
       .resize({
-        // width: maxWidth,
+        width: maxWidth,
         height: maxHeight,
         fit: 'inside',
         withoutEnlargement: true,
       })
-      .toFormat(format, { quality })
-      .toBuffer()
+      .raw()
+      .toBuffer({ resolveWithObject: true })
 
-    const hash = crypto.createHash('sha256').update(resizedBuffer).digest('hex')
+    const hash = crypto
+      .createHash('sha256')
+      .update(data)
+      .update(`${info.width}x${info.height}x${info.channels}`)
+      .digest('hex')
+
+    const imageBuffer = await sharp(data, {
+      raw: {
+        width: info.width,
+        height: info.height,
+        channels: info.channels,
+      },
+    })
+      .toFormat(format, { compressionLevel: 9, adaptiveFiltering: true })
+      .toBuffer()
 
     const filename = `${hash}.${format}`
     const fullPath = this.resolve(filename)
 
     if (!fs.existsSync(fullPath)) {
-      fs.writeFile(fullPath, resizedBuffer, (err) => {
-        if (err) throw err
-        this.emit('image-stored', fullPath)
-      })
+      await fs.promises.writeFile(fullPath, imageBuffer)
+      this.emit('image-stored', fullPath)
     }
 
-    const metadata = await sharp(resizedBuffer).metadata()
+    const metadata = await sharp(imageBuffer).metadata()
 
     return {
       hash,
       filename,
       fullPath,
       relativePath: path.join(this.basePath, filename),
-      width: metadata.width!,
-      height: metadata.height!,
-      size: resizedBuffer.length,
+      width: info.width!,
+      height: info.height!,
+      size: imageBuffer.length,
     }
   }
 
