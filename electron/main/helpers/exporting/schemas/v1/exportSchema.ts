@@ -1,5 +1,6 @@
 import { Modules } from '@/helpers/ipc/types'
-import { at, json, jsonStream } from '../../exporting-utils'
+import { json, jsonStream } from '../../exporting-utils'
+import { at } from '../../schema-utils'
 
 export const exportSchemaV1 = ({
   appInfo,
