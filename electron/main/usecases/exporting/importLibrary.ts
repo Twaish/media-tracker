@@ -1,7 +1,7 @@
-import { ImportManager } from '@/infrastructure/exporting/ImportManager'
+import { IImportManager } from '@/application/exporting/IImportManager'
 
 export default class ImportLibrary {
-  constructor(private readonly importManager: ImportManager) {}
+  constructor(private readonly importManager: IImportManager) {}
 
   async execute(path: string) {
     return this.importManager.import(path)

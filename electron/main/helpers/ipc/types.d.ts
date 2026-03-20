@@ -20,17 +20,17 @@ import { ITemplateRepository } from '@/application/db/repositories/ITemplateRepo
 import { IEventBus } from '@/application/events/IEventBus'
 import { IEventRegistry } from '@/application/events/IEventRegistry'
 import { FileExportWriter } from '@/domain/services/FileExportWriter'
-import { ExportManager } from '@/infrastructure/exporting/ExportManager'
 import { AppInfo } from '@/core/types'
-import { ImportManager } from '@/infrastructure/exporting/ImportManager'
+import { IExportManager } from '@/application/exporting/IExportManager'
+import { IImportManager } from '@/application/exporting/IImportManager'
 
 declare interface Modules {
   ElectronWindow: ElectronWindow
   StorageService: StorageService
   TaskService: TaskService
   ExportWriter: FileExportWriter
-  ExportManager: ExportManager
-  ImportManager: ImportManager
+  ExportManager: IExportManager
+  ImportManager: IImportManager
   RuleEngine: RuleEngine
   RuleEngineCompiler: RuleEngineCompiler
   RuleEnginePrinter: RuleEnginePrinter
