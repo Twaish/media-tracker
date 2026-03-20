@@ -5,7 +5,7 @@ import {
 import path from 'path'
 
 export class ImportManager implements IImportManager {
-  private schemas: ImportSchema[] = []
+  constructor(private schemas: ImportSchema[] = []) {}
 
   addImportSchema(schema: ImportSchema) {
     this.schemas.push(schema)
