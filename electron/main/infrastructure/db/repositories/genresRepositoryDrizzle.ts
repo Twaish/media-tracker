@@ -3,9 +3,18 @@ import { Genre, PersistedGenre } from '@/domain/entities/genre'
 import { DrizzleDb } from '../types'
 import { genresTable } from '../schema'
 import { gt } from 'drizzle-orm'
+import { AddGenreDTO } from '@shared/types'
 
 export class GenresRepositoryDrizzle implements IGenresRepository {
   constructor(private readonly db: DrizzleDb) {}
+
+  async add(genre: AddGenreDTO) {
+    return this.db.transaction(async (tx) => {
+      const [inserted] = await tx.insert(genresTable).values(genre).returning()
+
+      return inserted
+    })
+  }
 
   async get() {
     const rows = await this.db.query.genresTable.findMany()
