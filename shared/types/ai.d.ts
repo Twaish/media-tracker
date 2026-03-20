@@ -16,6 +16,7 @@ export type AiStatus = AiStatusFailure | AiStatusSuccess
 export interface AiContext {
   checkCompatibility(): Promise<AiStatus>
   updateHost(host: string): Promise<void>
+  updateApiKey(key: string): Promise<void>
   getSettings(): Promise<AiSettings>
   createEmbedding(text: string, model?: string): Promise<number[]>
   getCapabilities(model: string): Promise<string[]>
