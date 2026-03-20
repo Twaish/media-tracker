@@ -22,6 +22,7 @@ import { IEventRegistry } from '@/application/events/IEventRegistry'
 import { FileExportWriter } from '@/domain/services/FileExportWriter'
 import { ExportManager } from '@/infrastructure/exporting/ExportManager'
 import { AppInfo } from '@/core/types'
+import { ImportManager } from '@/infrastructure/exporting/ImportManager'
 
 declare interface Modules {
   ElectronWindow: ElectronWindow
@@ -29,6 +30,7 @@ declare interface Modules {
   TaskService: TaskService
   ExportWriter: FileExportWriter
   ExportManager: ExportManager
+  ImportManager: ImportManager
   RuleEngine: RuleEngine
   RuleEngineCompiler: RuleEngineCompiler
   RuleEnginePrinter: RuleEnginePrinter
