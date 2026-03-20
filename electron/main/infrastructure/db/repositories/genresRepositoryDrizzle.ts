@@ -12,7 +12,7 @@ export class GenresRepositoryDrizzle implements IGenresRepository {
     return this.db.transaction(async (tx) => {
       const [inserted] = await tx.insert(genresTable).values(genre).returning()
 
-      return inserted
+      return this.getById(inserted.id, tx)
     })
   }
 
