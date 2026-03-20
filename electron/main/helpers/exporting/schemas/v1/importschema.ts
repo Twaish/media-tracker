@@ -10,7 +10,7 @@ export const importSchemaV1 = (modules: Modules): ImportSchema[] => {
 
   return [
     at('/', [
-      json('manifest.json', async (manifest: any) => {
+      json('manifest.json', async (manifest: { version: number }) => {
         if (manifest.version !== 1) {
           throw new Error(`Unsupported version: ${manifest.version}`)
         }
@@ -31,17 +31,17 @@ export const importSchemaV1 = (modules: Modules): ImportSchema[] => {
       jsonStream('genres.json', {
         genres: useCases.importGenres,
       }),
-      jsonStream('rules.json', {
-        rules: useCases.importRules,
-      }),
       jsonStream('media.json', {
         media: useCases.importMedia,
       }),
-      jsonStream('templates.json', {
-        templates: useCases.importTemplates,
-      }),
       jsonStream('media_embeddings.json', {
         media_embeddings: useCases.importMediaEmbeddings,
+      }),
+      jsonStream('rules.json', {
+        rules: useCases.importRules,
+      }),
+      jsonStream('templates.json', {
+        templates: useCases.importTemplates,
       }),
       jsonStream('watch_plans.json', {
         watch_plans: useCases.importWatchPlans,
