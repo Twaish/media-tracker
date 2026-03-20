@@ -45,6 +45,8 @@ import { registerExportSchemas } from './helpers/exporting/register-export-schem
 import { registerAutomationSchemas } from './helpers/automation/register-automation-schemas'
 import { createExpressionServices } from './helpers/automation/create-expression-services'
 import { createActionServices } from './helpers/automation/create-action-services'
+import { registerImportSchemas } from './helpers/exporting/register-import-schemas'
+import { ImportManager } from './infrastructure/exporting/ImportManager'
 
 app.whenReady().then(async () => {
   const userData = app.getPath('userData')
@@ -104,9 +106,10 @@ app.whenReady().then(async () => {
       mediaEmbeddingRepository,
     )
 
-    logger.info('Initializing export services')
+    logger.info('Initializing export and import services')
     const exportWriter = new FileExportWriter()
     const exportManager = new ExportManager()
+    const importManager = new ImportManager()
 
     logger.info('Initializing rule engine')
     const ruleEngineCompiler = new RuleEngineCompiler()
@@ -133,6 +136,7 @@ app.whenReady().then(async () => {
       TaskService: taskService,
       ExportWriter: exportWriter,
       ExportManager: exportManager,
+      ImportManager: importManager,
       RuleEngine: ruleEngine,
       RuleEngineCompiler: ruleEngineCompiler,
       RuleEnginePrinter: ruleEnginePrinter,
@@ -172,8 +176,9 @@ app.whenReady().then(async () => {
     logger.info('Registering domain events')
     registerDomainEvents(modules)
 
-    logger.info('Registering exporting schemas')
+    logger.info('Registering exporting & importing schemas')
     registerExportSchemas(modules)
+    registerImportSchemas(modules)
 
     logger.info('Registering rules & templates')
     await registerAutomationSchemas(modules)
