@@ -1,11 +1,14 @@
 import { StorageService } from '@/core/StorageService'
 import { IMediaRepository } from '@/application/db/repositories/IMediaRepository'
 import { AddMediaDTO } from '@shared/types'
+import { MEDIA_EVENTS, MediaAddedPayload } from './media.events'
+import { IEventBus } from '@/application/events/IEventBus'
 
 export default class AddMedia {
   constructor(
     private readonly repo: IMediaRepository,
     private readonly storage: StorageService,
+    private readonly eventBus: IEventBus,
   ) {}
 
   async execute(media: AddMediaDTO) {
@@ -20,6 +23,13 @@ export default class AddMedia {
       ...media,
       thumbnail,
     }
-    return this.repo.add(mediaToAdd)
+
+    const addedMedia = await this.repo.add(mediaToAdd)
+
+    this.eventBus.publish<MediaAddedPayload>(MEDIA_EVENTS.MEDIA_ADDED, {
+      current: addedMedia,
+    })
+
+    return addedMedia
   }
 }

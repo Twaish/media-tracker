@@ -8,6 +8,5 @@
       "@shared/*": ["./shared/*"]
     }
   },
-  "include": ["./electron/main/**/*", "./shared/**/*"],
-  "exclude": ["./electron/main/tests/**/*"]
+  "include": ["./electron/main/**/*", "./shared/**/*"]
 }

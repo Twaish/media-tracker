@@ -13,6 +13,7 @@ import {
   MEDIA_SEARCH_EMBEDDINGS,
   MEDIA_SET_NEXT_MEDIA,
   MEDIA_UPDATE,
+  MEDIA_FETCH_FROM_URL,
 } from './media-channels'
 import { MediaContext } from '@shared/types'
 import { createMediaUseCases } from '@/usecases/media'
@@ -56,6 +57,10 @@ export function addMediaEventListeners(modules: Modules) {
     getMediaMissingEmbeddings: [
       MEDIA_GET_MISSING_EMBEDDINGS,
       (_, model) => useCases.getMediaMissingEmbeddings.execute(model),
+    ],
+    fetchFromUrl: [
+      MEDIA_FETCH_FROM_URL,
+      (_, url, model) => useCases.fetchMediaFromUrl.execute(url, model),
     ],
   })
 }

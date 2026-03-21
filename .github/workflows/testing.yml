@@ -12,6 +12,18 @@ on:
       - 'electron/**'
 
 jobs:
+  test-dom:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - name: Install dependencies
+        run: npm ci
+      - name: Run DOM tests
+        run: npm run test:dom
+
   test-unit:
     runs-on: ubuntu-latest
     steps:
@@ -23,18 +35,6 @@ jobs:
         run: npm ci
       - name: Run unit tests
         run: npm run test:unit
-
-  test-usecase:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 24
-      - name: Install dependencies
-        run: npm ci
-      - name: Run usecase tests
-        run: npm run test:usecase
 
   test-e2e:
     timeout-minutes: 13

@@ -2,6 +2,7 @@ import EventEmitter from 'events'
 import { JsonStore } from '@/core/JsonStore'
 import { IAiSettingsProvider } from '@/application/ai/IAiSettingsProvider'
 import { AiSettings } from '@/application/ai/AiSettings'
+import { safeStorage } from 'electron'
 
 export class OllamaSettingsProvider
   extends EventEmitter
@@ -26,6 +27,14 @@ export class OllamaSettingsProvider
     const saved = await this.store.get<AiSettings>(this.filename)
 
     if (saved) {
+      if (saved.apiKey && safeStorage.isEncryptionAvailable()) {
+        try {
+          const buffer = Buffer.from(saved.apiKey, 'base64')
+          saved.apiKey = safeStorage.decryptString(buffer)
+        } catch {
+          // Failed to decrypt, could be unencrypted or key changed
+        }
+      }
       this._settings = saved
     } else {
       await this.store.set(this.filename, this._settings)
@@ -51,8 +60,31 @@ export class OllamaSettingsProvider
     const normalizedHost = this.normalizeHost(newHost)
     this._settings.host = normalizedHost
 
-    await this.store.set(this.filename, this._settings)
+    const settingsToSave = { ...this._settings }
+    if (settingsToSave.apiKey && safeStorage.isEncryptionAvailable()) {
+      settingsToSave.apiKey = safeStorage
+        .encryptString(settingsToSave.apiKey)
+        .toString('base64')
+    }
+
+    await this.store.set(this.filename, settingsToSave)
 
     this.emit('hostChanged', normalizedHost)
+  }
+
+  async updateApiKey(apiKey: string) {
+    if (this._settings.apiKey === apiKey) return
+
+    this._settings.apiKey = apiKey
+
+    const settingsToSave = { ...this._settings }
+    if (apiKey && safeStorage.isEncryptionAvailable()) {
+      settingsToSave.apiKey = safeStorage
+        .encryptString(apiKey)
+        .toString('base64')
+    }
+
+    await this.store.set(this.filename, settingsToSave)
+    this.emit('apiKeyChanged', apiKey)
   }
 }

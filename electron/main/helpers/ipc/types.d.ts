@@ -19,13 +19,16 @@ import { IRuleRepository } from '@/application/db/repositories/IRuleRepository'
 import { ITemplateRepository } from '@/application/db/repositories/ITemplateRepository'
 import { IEventBus } from '@/application/events/IEventBus'
 import { IEventRegistry } from '@/application/events/IEventRegistry'
-import { ExportManager } from '@/infrastructure/exporting/ExportManager'
+import { AppInfo } from '@/core/types'
+import { IExportManager } from '@/application/exporting/IExportManager'
+import { IImportManager } from '@/application/exporting/IImportManager'
 
 declare interface Modules {
   ElectronWindow: ElectronWindow
   StorageService: StorageService
   TaskService: TaskService
-  ExportManager: ExportManager
+  ExportManager: IExportManager
+  ImportManager: IImportManager
   RuleEngine: RuleEngine
   RuleEngineCompiler: RuleEngineCompiler
   RuleEnginePrinter: RuleEnginePrinter
@@ -33,6 +36,7 @@ declare interface Modules {
   EventRegistry: IEventRegistry
   window: BrowserWindow
   logger: ILogger
+  appInfo: AppInfo
 
   AiSettingsProvider: IAiSettingsProvider
   AiService: IAiService

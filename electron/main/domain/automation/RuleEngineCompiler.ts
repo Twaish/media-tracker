@@ -11,7 +11,7 @@ export class RuleEngineCompiler {
    * ```
    * RULE <name>
    * FOR <event> [<event>, ...]
-   * (ON | ONCE) <target> <field/expression> <operator> <field/expression>
+   * (ON | ONCE) <target> [<field/expression> <operator> <field/expression>]
    * [PRIORITY <number>]
    * DO { <actions> }
    * ```

@@ -164,12 +164,17 @@ export type EntityEvent<T> = {
 }
 
 export type RuleContext<T> = EntityEvent<T> & {
-  services: RuleExecutionServices
   activeRules: Set<string>
 }
 
-export type RuleExecutionServices = {
+export type ExpressionServices = {
   now(): Date
+  concat(...args: string[]): string
+  config(key: string): Promise<string>
+  secret(key: string): Promise<string>
+}
+
+export type ActionServices = {
   callTemplate(name: string, ...args: unknown[]): Promise<void>
   callPlugin(name: string, ...args: unknown[]): Promise<void>
 }

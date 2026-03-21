@@ -1,3 +1,5 @@
+export const RULE_ENGINE_SYNC = 'rule-engine:sync'
+
 export const RULE_ADD = 'rule:add'
 export const RULE_UPDATE = 'rule:update'
 export const RULE_REMOVE = 'rule:remove'

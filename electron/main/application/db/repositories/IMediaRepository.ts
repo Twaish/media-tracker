@@ -10,6 +10,7 @@ import { Filter } from '@/domain/services/QueryResolver'
 
 export interface IMediaRepository {
   getById(id: number): Promise<PersistedMedia>
+  getByIds(ids: number[]): Promise<PersistedMedia[]>
   getWithPagination(
     options: MediaPaginationOptions,
   ): Promise<MediaPaginationResult>

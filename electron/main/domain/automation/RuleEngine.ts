@@ -1,12 +1,6 @@
 import { ActionExecutor } from './ActionExecutor'
 import { ExpressionEvaluator } from './ExpressionEvaluator'
-import {
-  RuleNode,
-  RuleContext,
-  TemplateNode,
-  RuleExecutionServices,
-  EntityEvent,
-} from './types'
+import { RuleNode, RuleContext, TemplateNode, EntityEvent } from './types'
 
 export class RuleEngine {
   private rules: RuleNode[] = []
@@ -15,7 +9,6 @@ export class RuleEngine {
   constructor(
     private readonly evaluator: ExpressionEvaluator,
     private readonly executor: ActionExecutor,
-    private readonly services: RuleExecutionServices,
   ) {}
 
   /**
@@ -67,12 +60,48 @@ export class RuleEngine {
       .sort(byPriority)
 
     for (const rule of applicable) {
-      const shouldFire = this.shouldFire(rule, context)
+      const shouldFire = await this.shouldFire(rule, context)
 
       if (!shouldFire) continue
 
       await this.executor.execute(rule.actions, context)
     }
+  }
+
+  /**
+   * Executes a registered template by name
+   *
+   * @param name The template name
+   * @param parameters Parameters exposed to the template as `current`
+   * @param context Optional existing rule execution context
+   */
+  async executeTemplate<T extends Record<string, unknown>>(
+    name: string,
+    parameters: T,
+    context?: RuleContext<T>,
+  ): Promise<void> {
+    const template = this.templates[name]
+
+    if (!template) {
+      throw new Error(`Template not found: ${name}`)
+    }
+
+    context ??= this.createContext({ current: parameters })
+
+    if (context.activeRules.has(name)) {
+      throw new Error(`Recursive template execution detected: ${name}`)
+    }
+
+    context.activeRules.add(name)
+
+    const templateContext: RuleContext<Record<string, unknown>> = {
+      ...context,
+      current: parameters,
+    }
+
+    await this.executor.execute(template.actions, templateContext)
+
+    context.activeRules.delete(name)
   }
 
   /**
@@ -86,11 +115,14 @@ export class RuleEngine {
    * @param context Execution context containing current and previous state
    * @returns
    */
-  private shouldFire<T>(rule: RuleNode, context: RuleContext<T>): boolean {
-    const current = this.evaluator.evaluate(
+  private async shouldFire<T>(
+    rule: RuleNode,
+    context: RuleContext<T>,
+  ): Promise<boolean> {
+    const current = (await this.evaluator.evaluate(
       rule.condition,
       context.current,
-    ) as boolean
+    )) as boolean
 
     if (rule.trigger === 'ON') {
       return current
@@ -99,10 +131,10 @@ export class RuleEngine {
     if (rule.trigger === 'ONCE') {
       if (!context.previous) return false
 
-      const previous = this.evaluator.evaluate(
+      const previous = (await this.evaluator.evaluate(
         rule.condition,
         context.previous,
-      ) as boolean
+      )) as boolean
 
       return !previous && !!current
     }
@@ -119,7 +151,6 @@ export class RuleEngine {
   private createContext<T>(event: EntityEvent<T>): RuleContext<T> {
     return {
       ...event,
-      services: this.services,
       activeRules: new Set<string>(),
     }
   }

@@ -5,6 +5,7 @@ import {
   AI_GET_CAPABILITIES,
   AI_GET_SETTINGS,
   AI_UPDATE_HOST,
+  AI_UPDATE_API_KEY,
 } from './ai-channels'
 import { Modules } from '../types'
 import { registerIpcHandlers } from '../register-ipc-handlers'
@@ -21,6 +22,10 @@ export function addAiEventListeners(modules: Modules) {
     updateHost: [
       AI_UPDATE_HOST,
       (_, host) => useCases.updateAiHost.execute(host),
+    ],
+    updateApiKey: [
+      AI_UPDATE_API_KEY,
+      (_, key) => useCases.updateAiApiKey.execute(key),
     ],
     getSettings: [AI_GET_SETTINGS, () => useCases.getAiSettings.execute()],
     createEmbedding: [

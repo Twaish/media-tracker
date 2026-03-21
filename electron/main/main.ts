@@ -2,6 +2,7 @@ import 'dotenv/config'
 import { app, BrowserWindow } from 'electron'
 
 import config from './core/config'
+import { AppInfo } from './core/types'
 import { StorageService } from './core/StorageService'
 import { ElectronWindow } from './core/ElectronWindow'
 
@@ -41,9 +42,25 @@ import { registerDomainEvents } from './helpers/events/register-domain-events'
 import { ExportManager } from './infrastructure/exporting/ExportManager'
 import { registerExportSchemas } from './helpers/exporting/register-export-schemas'
 import { registerAutomationSchemas } from './helpers/automation/register-automation-schemas'
+import { createExpressionServices } from './helpers/automation/create-expression-services'
+import { createActionServices } from './helpers/automation/create-action-services'
+import { registerImportSchemas } from './helpers/exporting/register-import-schemas'
+import { ImportManager } from './infrastructure/exporting/ImportManager'
 
 app.whenReady().then(async () => {
-  const { DB_PATH, LOG_PATH, APP_URL, SETTINGS_DIR, MEDIA_DIR } = config
+  const userData = app.getPath('userData')
+  const {
+    DB_PATH,
+    MIGRATIONS_PATH,
+    LOG_PATH,
+    APP_URL,
+    SETTINGS_DIR,
+    MEDIA_DIR,
+  } = config
+
+  const appInfo: AppInfo = {
+    version: app.getVersion(),
+  }
 
   const consoleTransport = createConsoleTransport(consoleFormat)
   const fileTransport = createFileTransport(LOG_PATH, fileFormat)
@@ -70,9 +87,9 @@ app.whenReady().then(async () => {
     logger.info('Initializing storage')
     const settingsStore = new JsonStore({
       basePath: SETTINGS_DIR,
-      root: app.getPath('userData'),
+      root: userData,
     })
-    const storageService = new StorageService(MEDIA_DIR)
+    const storageService = new StorageService(MEDIA_DIR, userData)
     storageService.on('image-stored', (imagePath) => {
       logger.info(`Stored image ${imagePath}`)
     })
@@ -88,20 +105,20 @@ app.whenReady().then(async () => {
       mediaEmbeddingRepository,
     )
 
-    logger.info('Initializing export services')
+    logger.info('Initializing export and import services')
     const exportManager = new ExportManager()
+    const importManager = new ImportManager()
 
     logger.info('Initializing rule engine')
     const ruleEngineCompiler = new RuleEngineCompiler()
     const ruleEnginePrinter = new RuleEnginePrinter()
     const expressionEvaluator = new ExpressionEvaluator()
     const actionExecutor = new ActionExecutor(expressionEvaluator)
+    const ruleEngine = new RuleEngine(expressionEvaluator, actionExecutor)
 
-    const ruleEngine = new RuleEngine(expressionEvaluator, actionExecutor, {
-      now: () => new Date(),
-      callPlugin: async (name, args) => console.log(name, args),
-      callTemplate: async (name, args) => console.log(name, args),
-    })
+    expressionEvaluator.setServices(createExpressionServices())
+    actionExecutor.setServices(createActionServices(ruleEngine))
+
     const eventBus = new InMemoryEventBus()
     const eventRegistry = new InMemoryEventRegistry()
 
@@ -116,6 +133,7 @@ app.whenReady().then(async () => {
       StorageService: storageService,
       TaskService: taskService,
       ExportManager: exportManager,
+      ImportManager: importManager,
       RuleEngine: ruleEngine,
       RuleEngineCompiler: ruleEngineCompiler,
       RuleEnginePrinter: ruleEnginePrinter,
@@ -123,6 +141,7 @@ app.whenReady().then(async () => {
       EventRegistry: eventRegistry,
       window: mainWindow.window,
       logger: logger,
+      appInfo: appInfo,
 
       AiSettingsProvider: ollamaSettings,
       AiService: ollamaService,
@@ -139,7 +158,7 @@ app.whenReady().then(async () => {
 
     logger.header('Database')
     logger.info('Running migrations')
-    await runMigrations(database)
+    await runMigrations(database, MIGRATIONS_PATH)
 
     logger.info('Seeding')
     await seedDatabase(database)
@@ -154,8 +173,9 @@ app.whenReady().then(async () => {
     logger.info('Registering domain events')
     registerDomainEvents(modules)
 
-    logger.info('Registering exporting schemas')
+    logger.info('Registering exporting & importing schemas')
     registerExportSchemas(modules)
+    registerImportSchemas(modules)
 
     logger.info('Registering rules & templates')
     await registerAutomationSchemas(modules)

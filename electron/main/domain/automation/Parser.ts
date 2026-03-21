@@ -31,7 +31,10 @@ export class Parser {
     this.expectKeyword('TEMPLATE')
     const name = this.expect(TokenType.Identifier).value
 
-    const parameters = this.parseParameters()
+    let parameters: string[] = []
+    if (this.match('PARAMETERS')) {
+      parameters = this.parseParameters()
+    }
 
     this.expectKeyword('DO')
     const actions = this.parseBlock()
@@ -74,7 +77,15 @@ export class Parser {
     const entity = this.expect(TokenType.Identifier).value
     this.currentRuleEntity = entity
 
-    const condition = this.parseCondition()
+    const hasCondition = !this.match('DO')
+    const condition: BinaryExpression = hasCondition
+      ? this.parseCondition()
+      : {
+          type: 'binary',
+          operator: '==',
+          left: { type: 'literal', value: true },
+          right: { type: 'literal', value: true },
+        }
 
     let priority = 0
     if (this.match('PRIORITY')) {

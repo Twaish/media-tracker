@@ -12,6 +12,7 @@ import {
   MEDIA_SEARCH_EMBEDDINGS,
   MEDIA_SET_NEXT_MEDIA,
   MEDIA_UPDATE,
+  MEDIA_FETCH_FROM_URL,
 } from './media-channels'
 import { MediaContext } from '@shared/types'
 
@@ -37,5 +38,7 @@ export function exposeMediaContext() {
       ipcRenderer.invoke(MEDIA_SEARCH_EMBEDDINGS, query, model),
     getMediaMissingEmbeddings: (model) =>
       ipcRenderer.invoke(MEDIA_GET_MISSING_EMBEDDINGS, model),
+    fetchFromUrl: (url, model) =>
+      ipcRenderer.invoke(MEDIA_FETCH_FROM_URL, url, model),
   } satisfies MediaContext)
 }

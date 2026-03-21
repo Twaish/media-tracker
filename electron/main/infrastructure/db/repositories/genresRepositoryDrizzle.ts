@@ -1,15 +1,37 @@
 import { IGenresRepository } from '@/application/db/repositories/IGenresRepository'
 import { Genre, PersistedGenre } from '@/domain/entities/genre'
-import { DrizzleDb } from '../types'
+import { DrizzleDb, Executor } from '../types'
 import { genresTable } from '../schema'
-import { gt } from 'drizzle-orm'
+import { eq, gt } from 'drizzle-orm'
+import { AddGenreDTO } from '@shared/types'
 
 export class GenresRepositoryDrizzle implements IGenresRepository {
   constructor(private readonly db: DrizzleDb) {}
 
+  async add(genre: AddGenreDTO) {
+    return this.db.transaction(async (tx) => {
+      const [inserted] = await tx.insert(genresTable).values(genre).returning()
+
+      return this.getById(inserted.id, tx)
+    })
+  }
+
   async get() {
     const rows = await this.db.query.genresTable.findMany()
     return rows.map(this.toDomain)
+  }
+
+  async getById(
+    id: number,
+    executor: Executor = this.db,
+  ): Promise<PersistedGenre> {
+    const genre = await executor.query.genresTable.findFirst({
+      where: (g) => eq(g.id, id),
+    })
+
+    if (!genre) throw new Error(`Genre with id ${id} not found`)
+
+    return this.toDomain(genre)
   }
 
   async *streamAll(batchSize: number = 500): AsyncIterable<PersistedGenre> {

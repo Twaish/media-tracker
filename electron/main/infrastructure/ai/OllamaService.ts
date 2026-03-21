@@ -7,7 +7,10 @@ export class OllamaService implements IAiService {
   private currentHost: string
   private busy: boolean = false
 
+  private readonly settingsProvider: IAiSettingsProvider
+
   constructor(settingsProvider: IAiSettingsProvider) {
+    this.settingsProvider = settingsProvider
     const settings = settingsProvider.settings
     this.currentHost = settings.host
     this.ollama = this.createClient(this.currentHost)
@@ -32,6 +35,10 @@ export class OllamaService implements IAiService {
     host: string,
     options: Partial<Omit<Config, 'host'>> = {},
   ): Ollama {
+    const apiKey = this.settingsProvider?.settings?.apiKey
+    if (apiKey) {
+      process.env.OLLAMA_API_KEY = apiKey
+    }
     return new Ollama({ host, ...options })
   }
   private reconnect = (host: string) => {
@@ -76,6 +83,30 @@ export class OllamaService implements IAiService {
       })
 
       return response.embedding
+    })
+  }
+  async generateJson<T>(prompt: string, model: string): Promise<T> {
+    return this.runExclusive(async () => {
+      const response = await this.ollama.generate({
+        model,
+        prompt,
+        format: 'json',
+        stream: false,
+      })
+
+      const parsed = JSON.parse(response.response)
+      return parsed as T
+    })
+  }
+  // TODO: Currently bad, try filtering data manually using fetch()
+  async webFetch(url: string): Promise<string> {
+    return this.runExclusive(async () => {
+      const apiKey = this.settingsProvider.settings.apiKey
+      if (apiKey) {
+        process.env.OLLAMA_API_KEY = apiKey
+      }
+      const response = await this.ollama.webFetch({ url })
+      return response.content
     })
   }
 }

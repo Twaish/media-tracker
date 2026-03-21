@@ -34,6 +34,8 @@ export type UpdateTemplateRepoDTO = Partial<AddTemplateRepoDTO> & {
 }
 
 export interface AutomationContext {
+  syncEngine(): Promise<void>
+
   addRule(rule: AddRuleDTO): Promise<PersistedRule>
   updateRule(rule: UpdateRuleDTO): Promise<PersistedRule>
   removeRules(ids: number[]): Promise<{ deleted: number; ids: number[] }>

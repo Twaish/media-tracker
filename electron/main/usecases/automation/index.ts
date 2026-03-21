@@ -7,13 +7,21 @@ import AddTemplate from './addTemplate'
 import UpdateTemplate from './updateTemplate'
 import RemoveTemplates from './removeTemplates'
 import GetAllTemplates from './getAllTemplates'
+import SyncRuleEngine from './syncRuleEngine'
 
 export function createAutomationUseCases({
+  RuleEngine,
   RuleRepository,
   RuleEngineCompiler,
   TemplateRepository,
 }: Modules) {
   return {
+    syncRuleEngine: new SyncRuleEngine(
+      RuleRepository,
+      TemplateRepository,
+      RuleEngine,
+    ),
+
     addRule: new AddRule(RuleRepository, RuleEngineCompiler),
     updateRule: new UpdateRule(RuleRepository, RuleEngineCompiler),
     removeRules: new RemoveRules(RuleRepository),

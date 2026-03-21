@@ -1,6 +1,7 @@
 import { ExpressionEvaluator } from './ExpressionEvaluator'
 import {
   Action,
+  ActionServices,
   Expression,
   HttpAction,
   PluginAction,
@@ -9,12 +10,22 @@ import {
 } from './types'
 
 export class ActionExecutor {
+  private services?: ActionServices
+
   constructor(private readonly evaluator: ExpressionEvaluator) {}
+
+  setServices(services: ActionServices) {
+    this.services = services
+  }
 
   async execute<T extends Record<string, unknown>>(
     actions: Action[],
     context: RuleContext<T>,
   ): Promise<void> {
+    if (!this.services) {
+      throw new Error('Action services not set')
+    }
+
     for (const action of actions) {
       await this.executeAction(action, context)
     }
@@ -40,15 +51,15 @@ export class ActionExecutor {
         break
       }
       case 'template': {
-        this.executeTemplate(action, context)
+        await this.executeTemplate(action, context)
         break
       }
       case 'plugin': {
-        this.executePlugin(action, context)
+        await this.executePlugin(action, context)
         break
       }
       case 'http': {
-        this.executeHttp(action, context)
+        await this.executeHttp(action, context)
         break
       }
       default:
@@ -60,35 +71,38 @@ export class ActionExecutor {
     action: TemplateAction,
     context: RuleContext<T>,
   ) {
-    const resolved = this.resolveArgs(action.args, context)
-    await context.services.callTemplate(action.name, resolved)
+    const resolved = await this.resolveArgs(action.args, context)
+    await this.services!.callTemplate(action.name, resolved, context)
   }
 
   private async executePlugin<T>(
     action: PluginAction,
     context: RuleContext<T>,
   ) {
-    const resolved = this.resolveArgs(action.args, context)
-    await context.services.callPlugin(action.name, resolved)
+    const resolved = await this.resolveArgs(action.args, context)
+    await this.services!.callPlugin(action.name, resolved)
   }
 
   private async executeHttp<T>(action: HttpAction, context: RuleContext<T>) {
-    const url = this.evaluator.evaluate(action.url, context.current) as string
+    const url = (await this.evaluator.evaluate(
+      action.url,
+      context.current,
+    )) as string
 
     let body
     if (action.body) {
-      this.evaluator.evaluate(
+      body = (await this.evaluator.evaluate(
         action.body,
         context.current,
-      ) as HttpAction['body']
+      )) as BodyInit
     }
 
     let headers
     if (action.headers) {
-      this.evaluator.evaluate(
+      headers = (await this.evaluator.evaluate(
         action.headers,
         context.current,
-      ) as HttpAction['headers']
+      )) as HeadersInit
     }
 
     const response = await fetch(url, {
@@ -100,14 +114,14 @@ export class ActionExecutor {
     return response
   }
 
-  private resolveArgs<T>(
+  private async resolveArgs<T>(
     args: Record<string, Expression>,
     context: RuleContext<T>,
   ) {
     const result: Record<string, unknown> = {}
 
     for (const key in args) {
-      result[key] = this.evaluator.evaluate(args[key], context.current)
+      result[key] = await this.evaluator.evaluate(args[key], context.current)
     }
 
     return result
