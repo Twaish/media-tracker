@@ -14,6 +14,7 @@ import FindMediaDuplicates from './findMediaDuplicates'
 import CreateMediaEmbedding from './createMediaEmbedding'
 import SearchMediaEmbeddings from './searchMediaEmbeddings'
 import GetMediaMissingEmbeddings from './getMediaMissingEmbeddings'
+import FetchMediaFromUrl from './fetchMediaFromUrl'
 
 export function createMediaUseCases({
   MediaRepository,
@@ -56,5 +57,6 @@ export function createMediaUseCases({
     getMediaMissingEmbeddings: new GetMediaMissingEmbeddings(
       MediaEmbeddingRepository,
     ),
+    fetchMediaFromUrl: new FetchMediaFromUrl(AiService),
   }
 }
