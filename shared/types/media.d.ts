@@ -60,4 +60,5 @@ export interface MediaContext {
     model: string,
   ): Promise<{ item: number; score: number }[]>
   getMediaMissingEmbeddings(model: string): Promise<number[]>
+  fetchFromUrl(url: string, model: string): Promise<AddMediaDTO>
 }
