@@ -1,4 +1,8 @@
-import { Media, MediaProps, PersistedMedia } from '@/domain/entities/media'
+import {
+  Media,
+  MediaProps,
+  PersistedMedia,
+} from '@/features/media/domain/entities/media'
 
 export function makeMedia(
   overrides: Partial<MediaProps> & { id: number },

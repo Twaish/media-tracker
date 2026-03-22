@@ -1,4 +1,7 @@
-import { PersistedWatchPlan, WatchPlanProps } from '@/domain/entities/watchPlan'
+import {
+  PersistedWatchPlan,
+  WatchPlanProps,
+} from '@/features/watchplan/domain/entities/watchPlan'
 
 export type AddWatchPlanDTO = Omit<WatchPlanProps, 'createdAt'>
 

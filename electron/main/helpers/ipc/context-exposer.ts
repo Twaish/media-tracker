@@ -1,13 +1,13 @@
-import { exposeAiContext } from './ai/ai-context'
-import { exposeAutomationContext } from './automation/automation-context'
-import { exposeExportingContext } from './exporting/exporting-context'
-import { exposeGenresContext } from './genres/genres-context'
-import { exposeMediaContext } from './media/media-context'
-import { exposeStorageContext } from './storage/storage-context'
-import { exposeTasksContext } from './tasks/tasks-context'
-import { exposeThemeContext } from './theme/theme-context'
-import { exposeWatchPlansContext } from './watchPlans/watch-plans-context'
-import { exposeWindowContext } from './window/window-context'
+import { exposeAiContext } from '@/features/ai/ipc/ai-context'
+import { exposeAutomationContext } from '@/features/automation/ipc/automation-context'
+import { exposeExportingContext } from '@/features/exporting/ipc/exporting-context'
+import { exposeGenresContext } from '@/features/genres/ipc/genres-context'
+import { exposeMediaContext } from '@/features/media/ipc/media-context'
+import { exposeStorageContext } from '@/features/storage/ipc/storage-context'
+import { exposeTasksContext } from '@/features/tasks/ipc/tasks-context'
+import { exposeThemeContext } from '@/features/theme/ipc/theme-context'
+import { exposeWatchPlansContext } from '@/features/watchplan/ipc/watch-plans-context'
+import { exposeWindowContext } from '@/features/window/ipc/window-context'
 
 export default function exposeContexts() {
   exposeWindowContext()

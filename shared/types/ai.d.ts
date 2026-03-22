@@ -1,4 +1,4 @@
-import { AiSettings } from '@/application/ai/AiSettings'
+import { AiSettings } from '@/features/ai/domain/models/AiSettings'
 
 export type AiStatusSuccess = {
   available: true

@@ -19,34 +19,35 @@ import {
 } from './infrastructure/logging/transports'
 import { WinstonLogger } from './infrastructure/logging'
 import { Modules } from './helpers/ipc/types'
-import { OllamaService } from './infrastructure/ai/OllamaService'
+import { OllamaService } from './features/ai/infrastructure/adapters/OllamaService'
 import { createDb } from './infrastructure/db/client'
-import { MediaRepositoryDrizzle } from './infrastructure/db/repositories/mediaRepositoryDrizzle'
-import { GenresRepositoryDrizzle } from './infrastructure/db/repositories/genresRepositoryDrizzle'
+import { MediaRepositoryDrizzle } from './features/media/infrastructure/repositories/mediaRepositoryDrizzle'
+import { GenresRepositoryDrizzle } from './features/genres/infrastructure/repositories/genresRepositoryDrizzle'
 import { JsonStore } from './core/JsonStore'
-import { OllamaSettingsProvider } from './infrastructure/ai/OllamaSettingsProvider'
+import { OllamaSettingsProvider } from './features/ai/infrastructure/adapters/OllamaSettingsProvider'
 import { TaskService } from './core/TaskService'
-import { WatchPlanRepositoryDrizzle } from './infrastructure/db/repositories/watchPlanRepositoryDrizzle'
-import { MediaEmbeddingRepositoryDrizzle } from './infrastructure/db/repositories/mediaEmbeddingRepositoryDrizzle'
-import { MediaSimilarityService } from './domain/services/MediaSimilarityService'
-import { RuleEngine } from './domain/automation/RuleEngine'
-import { RuleEnginePrinter } from './domain/automation/RuleEnginePrinter'
-import { RuleEngineCompiler } from './domain/automation/RuleEngineCompiler'
-import { ActionExecutor } from './domain/automation/ActionExecutor'
-import { ExpressionEvaluator } from './domain/automation/ExpressionEvaluator'
-import { RuleRepositoryDrizzle } from './infrastructure/db/repositories/ruleRepositoryDrizzle'
-import { TemplateRepositoryDrizzle } from './infrastructure/db/repositories/templateRepositoryDrizzle'
-import { InMemoryEventBus } from './infrastructure/events/InMemoryEventBus'
-import { InMemoryEventRegistry } from './infrastructure/events/InMemoryEventRegistry'
-import { registerDomainEvents } from './helpers/events/register-domain-events'
-import { FileExportWriter } from './domain/services/FileExportWriter'
-import { ExportManager } from './infrastructure/exporting/ExportManager'
-import { registerExportSchemas } from './helpers/exporting/register-export-schemas'
-import { registerAutomationSchemas } from './helpers/automation/register-automation-schemas'
-import { createExpressionServices } from './helpers/automation/create-expression-services'
-import { createActionServices } from './helpers/automation/create-action-services'
-import { registerImportSchemas } from './helpers/exporting/register-import-schemas'
-import { ImportManager } from './infrastructure/exporting/ImportManager'
+import { WatchPlanRepositoryDrizzle } from './features/watchplan/infrastructure/repositories/watchPlanRepositoryDrizzle'
+import { MediaEmbeddingRepositoryDrizzle } from './features/media/infrastructure/repositories/mediaEmbeddingRepositoryDrizzle'
+import { MediaSimilarityService } from './features/media/application/services/MediaSimilarityService'
+import { RuleEngine } from './features/automation/application/services/RuleEngine'
+import { RuleEnginePrinter } from './features/automation/application/services/RuleEnginePrinter'
+import { RuleEngineCompiler } from './features/automation/application/services/RuleEngineCompiler'
+import { RuleRepositoryDrizzle } from './features/automation/infrastructure/repositories/ruleRepositoryDrizzle'
+import { TemplateRepositoryDrizzle } from './features/automation/infrastructure/repositories/templateRepositoryDrizzle'
+import { InMemoryEventBus } from './features/events/infrastructure/adapters/InMemoryEventBus'
+import { InMemoryEventRegistry } from './features/events/infrastructure/adapters/InMemoryEventRegistry'
+import { registerDomainEvents } from './helpers/ipc/register-domain-events'
+import { ExportManager } from './features/exporting/application/services/ExportManager'
+import { registerAutomationSchemas } from './helpers/register-automation-schemas'
+import { createExpressionServices } from './helpers/create-expression-services'
+import { createActionServices } from './helpers/create-action-services'
+import { ImportManager } from './features/exporting/application/services/ImportManager'
+import { ExternalLinkResolver } from './domain/services/ExternalLinkResolver'
+import { QueryResolver } from './domain/services/QueryResolver'
+import { ActionExecutor } from './features/automation/application/services/ActionExecutor'
+import { ExpressionEvaluator } from './features/automation/application/services/ExpressionEvaluator'
+import { registerExportSchemas } from './helpers/register-export-schemas'
+import { registerImportSchemas } from './helpers/register-import-schemas'
 
 app.whenReady().then(async () => {
   const userData = app.getPath('userData')
@@ -107,7 +108,6 @@ app.whenReady().then(async () => {
     )
 
     logger.info('Initializing export and import services')
-    const exportWriter = new FileExportWriter()
     const exportManager = new ExportManager()
     const importManager = new ImportManager()
 
@@ -124,6 +124,10 @@ app.whenReady().then(async () => {
     const eventBus = new InMemoryEventBus()
     const eventRegistry = new InMemoryEventRegistry()
 
+    logger.info('Initializing external link and query resolvers')
+    const externalLinkResolver = new ExternalLinkResolver()
+    const queryResolver = new QueryResolver()
+
     logger.info('Creating window')
     const mainWindow = new ElectronWindow()
     mainWindow.on('attempted-navigation', (_, url) => {
@@ -133,8 +137,9 @@ app.whenReady().then(async () => {
     const modules: Modules = {
       ElectronWindow: mainWindow,
       StorageService: storageService,
+      ExternalLinkResolver: externalLinkResolver,
+      QueryResolver: queryResolver,
       TaskService: taskService,
-      ExportWriter: exportWriter,
       ExportManager: exportManager,
       ImportManager: importManager,
       RuleEngine: ruleEngine,

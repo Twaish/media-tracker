@@ -1,5 +1,8 @@
-import { MediaProps, PersistedMedia } from '@/domain/entities/media'
-import { PersistedMediaEmbedding } from '@/domain/entities/mediaEmbedding'
+import {
+  MediaProps,
+  PersistedMedia,
+} from '@/features/media/domain/entities/media'
+import { PersistedMediaEmbedding } from '@/features/media/domain/entities/mediaEmbedding'
 
 export type AddMediaDTO = Omit<
   MediaProps,

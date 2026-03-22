@@ -1,4 +1,7 @@
-import { GenreProps, PersistedGenre } from '@/domain/entities/genre'
+import {
+  GenreProps,
+  PersistedGenre,
+} from '@/features/genres/domain/entities/genre'
 
 export type AddGenreDTO = Omit<GenreProps, 'isDeletable'>
 

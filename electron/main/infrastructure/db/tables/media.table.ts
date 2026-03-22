@@ -1,4 +1,4 @@
-import { MediaStatus, MediaType } from '@/domain/entities/media'
+import { MediaStatus, MediaType } from '@/features/media/entities/media'
 import { sql } from 'drizzle-orm'
 import { index } from 'drizzle-orm/sqlite-core'
 import {

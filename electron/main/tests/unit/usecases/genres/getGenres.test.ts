@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { IGenresRepository } from '@/application/db/repositories/IGenresRepository'
-import { Genre } from '@/domain/entities/genre'
-import GetGenres from '@/usecases/genres/getGenres'
+import { PersistedGenre } from '@/features/genres/domain/entities/genre'
+import GetGenres from '@/features/genres/usecases/getGenres'
+import { IGenresRepository } from '@/features/genres/domain/repositories/IGenresRepository'
 
 describe('GetGenres', () => {
   let getGenres: GetGenres
@@ -20,7 +20,7 @@ describe('GetGenres', () => {
       { id: 1, name: 'Action', isDeletable: false },
       { id: 2, name: 'Comedy', isDeletable: false },
       { id: 3, name: 'Drama', isDeletable: false },
-    ] as Genre[]
+    ] as unknown as PersistedGenre[]
 
     vi.mocked(mockRepo.get).mockResolvedValue(expectedGenres)
 

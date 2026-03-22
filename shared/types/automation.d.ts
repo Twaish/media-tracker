@@ -1,9 +1,11 @@
 import {
   PersistedRule,
-  PersistedTemplate,
   RuleProps,
+} from '@/features/automation/domain/entities/rule'
+import {
+  PersistedTemplate,
   TemplateProps,
-} from '@/domain/entities/rule'
+} from '@/features/automation/domain/entities/template'
 
 export type AddRuleDTO = {
   source: string

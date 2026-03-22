@@ -1,6 +1,6 @@
 import { describe, it, beforeEach, expect, vi } from 'vitest'
-import { IMediaRepository } from '@/application/db/repositories/IMediaRepository'
-import SetMediaToWatchNext from '@/usecases/media/setMediaToWatchNext'
+import { IMediaRepository } from '@/features/media/domain/repositories/IMediaRepository'
+import SetMediaToWatchNext from '@/features/media/usecases/setMediaToWatchNext'
 
 describe('SetMediaToWatchNext', () => {
   let usecase: SetMediaToWatchNext

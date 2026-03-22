@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { ExternalLinkResolver } from '@/domain/services/ExternalLinkResolver'
-import { IMediaRepository } from '@/application/db/repositories/IMediaRepository'
-import ResolveExternalMediaLink from '@/usecases/media/resolveExternalMediaLink'
+import { IMediaRepository } from '@/features/media/domain/repositories/IMediaRepository'
+import ResolveExternalMediaLink from '@/features/media/usecases/resolveExternalMediaLink'
 import { makeMedia } from '../utils'
 
 describe('ResolveExternalMediaLink', () => {

@@ -1,0 +1,32 @@
+import { UpdateRuleDTO, UpdateRuleRepoDTO } from '@shared/types/automation'
+
+import { RuleNode } from '../domain/ast/RuleNode'
+import { IRuleRepository } from '../domain/repositories/IRuleRepository'
+import { IRuleEngineCompiler } from '../application/interfaces/IRuleEngineCompiler'
+
+export default class UpdateRule {
+  constructor(
+    private readonly repo: IRuleRepository,
+    private readonly compiler: IRuleEngineCompiler,
+  ) {}
+
+  async execute(rule: UpdateRuleDTO) {
+    let ruleChanges: UpdateRuleRepoDTO = { id: rule.id }
+    if (rule.source) {
+      const compiled = this.compiler.compile(rule.source) as RuleNode
+      ruleChanges = {
+        ...ruleChanges,
+        name: compiled.name,
+        target: compiled.target,
+        trigger: compiled.trigger,
+        priority: compiled.priority,
+        ast: compiled,
+        source: rule.source,
+      }
+    }
+    if (rule.enabled != null) {
+      ruleChanges = { ...ruleChanges, enabled: rule.enabled }
+    }
+    return this.repo.update(ruleChanges)
+  }
+}

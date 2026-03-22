@@ -3,37 +3,40 @@ import { BrowserWindow, IpcMainInvokeEvent } from 'electron'
 import { ElectronWindow } from '@/core/ElectronWindow'
 import { StorageService } from '@/core/StorageService'
 
-import { IAiService } from '@/application/ai/IAiService'
+import { IAiService } from '@/features/ai/application/ports/IAiService'
 import { ILogger } from '@/application/logging/ILogger'
-import { IGenresRepository } from '@/application/db/repositories/IGenresRepository'
-import { IMediaRepository } from '@/application/db/repositories/IMediaRepository'
-import { IAiSettingsProvider } from '@/application/ai/IAiSettingsProvider'
+import { IMediaRepository } from '@/features/media/domain/repositories/IMediaRepository'
+import { IAiSettingsProvider } from '@/features/ai/application/ports/IAiSettingsProvider'
 import { TaskService } from '@/core/TaskService'
-import { IWatchPlanRepository } from '@/application/db/repositories/IWatchPlanRepository'
-import { IMediaEmbeddingRepository } from '@/application/db/repositories/IMediaEmbeddingRepository'
-import { MediaSimilarityService } from '@/domain/services/MediaSimilarityService'
-import { RuleEngine } from '@/domain/automation/RuleEngine'
-import { RuleEngineCompiler } from '@/domain/automation/RuleEngineCompiler'
-import { RuleEnginePrinter } from '@/domain/automation/RuleEnginePrinter'
-import { IRuleRepository } from '@/application/db/repositories/IRuleRepository'
-import { ITemplateRepository } from '@/application/db/repositories/ITemplateRepository'
-import { IEventBus } from '@/application/events/IEventBus'
-import { IEventRegistry } from '@/application/events/IEventRegistry'
-import { FileExportWriter } from '@/domain/services/FileExportWriter'
+import { IMediaEmbeddingRepository } from '@/features/media/domain/repositories/IMediaEmbeddingRepository'
+import { IRuleRepository } from '@/features/automation/domain/repositories/IRuleRepository'
+import { ITemplateRepository } from '@/features/automation/domain/repositories/ITemplateRepository'
+import { IEventBus } from '@/features/events/application/ports/IEventBus'
+import { IEventRegistry } from '@/features/events/application/ports/IEventRegistry'
 import { AppInfo } from '@/core/types'
-import { IExportManager } from '@/application/exporting/IExportManager'
-import { IImportManager } from '@/application/exporting/IImportManager'
+import { IExportManager } from '@/features/exporting/application/interfaces/IExportManager'
+import { IImportManager } from '@/features/exporting/application/interfaces/IImportManager'
+import { ExternalLinkResolver } from '@/domain/services/ExternalLinkResolver'
+import { QueryResolver } from '@/domain/services/QueryResolver'
+import { IRuleEngine } from '@/features/automation/application/interfaces/IRuleEngine'
+import { IRuleEngineCompiler } from '@/features/automation/application/interfaces/IRuleEngineCompiler'
+import { IRuleEnginePrinter } from '@/features/automation/application/interfaces/IRuleEnginePrinter'
+import { IGenresRepository } from '@/features/genres/domain/repositories/IGenresRepository'
+import { IMediaSimilarityService } from '@/features/media/application/interfaces/IMediaSimilarityService'
+import { IWatchPlanRepository } from '@/features/watchplan/domain/repositories/IWatchPlanRepository'
 
 declare interface Modules {
   ElectronWindow: ElectronWindow
   StorageService: StorageService
+  ExternalLinkResolver: ExternalLinkResolver
+  QueryResolver: QueryResolver
+
   TaskService: TaskService
-  ExportWriter: FileExportWriter
   ExportManager: IExportManager
   ImportManager: IImportManager
-  RuleEngine: RuleEngine
-  RuleEngineCompiler: RuleEngineCompiler
-  RuleEnginePrinter: RuleEnginePrinter
+  RuleEngine: IRuleEngine
+  RuleEngineCompiler: IRuleEngineCompiler
+  RuleEnginePrinter: IRuleEnginePrinter
   EventBus: IEventBus
   EventRegistry: IEventRegistry
   window: BrowserWindow
@@ -43,7 +46,7 @@ declare interface Modules {
   AiSettingsProvider: IAiSettingsProvider
   AiService: IAiService
 
-  MediaSimilarityService: MediaSimilarityService
+  MediaSimilarityService: IMediaSimilarityService
 
   MediaRepository: IMediaRepository
   GenresRepository: IGenresRepository

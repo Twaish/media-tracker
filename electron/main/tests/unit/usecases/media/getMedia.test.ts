@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { IMediaRepository } from '@/application/db/repositories/IMediaRepository'
+import { IMediaRepository } from '@/features/media/domain/repositories/IMediaRepository'
 import { makeMedia } from '../utils'
-import GetMedia from '@/usecases/media/getMedia'
+import GetMedia from '@/features/media/usecases/getMedia'
 
 describe('GetMedia', () => {
   let getMedia: GetMedia

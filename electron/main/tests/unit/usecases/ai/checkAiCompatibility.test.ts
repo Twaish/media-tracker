@@ -1,6 +1,6 @@
 import { describe, it, beforeEach, expect, vi } from 'vitest'
-import CheckAiCompatibility from '@/usecases/ai/checkAiCompatibility'
-import { IAiService } from '@/application/ai/IAiService'
+import CheckAiCompatibility from '@/features/ai/usecases/checkAiCompatibility'
+import { IAiService } from '@/features/ai/application/ports/IAiService'
 
 describe('CheckAiCompatibility', () => {
   let usecase: CheckAiCompatibility
@@ -10,7 +10,7 @@ describe('CheckAiCompatibility', () => {
     mockAiService = {
       getVersion: vi.fn(),
       listModels: vi.fn(),
-    }
+    } as unknown as IAiService
 
     usecase = new CheckAiCompatibility(mockAiService)
   })

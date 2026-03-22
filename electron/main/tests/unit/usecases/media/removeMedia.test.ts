@@ -1,9 +1,9 @@
 import { describe, it, beforeEach, expect, vi } from 'vitest'
-import { IMediaRepository } from '@/application/db/repositories/IMediaRepository'
-import RemoveMedia from '@/usecases/media/removeMedia'
-import { IEventBus } from '@/application/events/IEventBus'
+import { IMediaRepository } from '@/features/media/domain/repositories/IMediaRepository'
+import RemoveMedia from '@/features/media/usecases/removeMedia'
+import { IEventBus } from '@/features/events/application/ports/IEventBus'
 import { makeMedia } from '../utils'
-import { MEDIA_EVENTS } from '@/usecases/media/media.events'
+import { MEDIA_EVENTS } from '@/features/media/usecases/media.events'
 
 describe('RemoveMedia', () => {
   let usecase: RemoveMedia

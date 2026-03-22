@@ -1,7 +1,7 @@
 import { describe, it, beforeEach, expect, vi } from 'vitest'
 import { StorageService } from '@/core/StorageService'
 import { StoreImageOptions } from '@shared/types'
-import StoreImage from '@/usecases/storage/storeImage'
+import StoreImage from '@/features/storage/usecases/storeImage'
 
 describe('StoreImage', () => {
   let usecase: StoreImage
