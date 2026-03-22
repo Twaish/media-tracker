@@ -3,13 +3,11 @@
   "compilerOptions": {
     "outDir": "./out/preload",
     "paths": {
-      "@/*": ["./electron/preload/*"],
-      "@shared/*": ["./shared/*"]
+      "@/*": ["./electron/main/*"]
     }
   },
   "include": [
-    "./electron/preload/**/*",
     "./electron/main/helpers/ipc/context-exposer.ts",
-    "./shared/**/*"
+    "./electron/preload/preload.ts"
   ]
 }

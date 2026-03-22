@@ -32,8 +32,7 @@ export default defineConfig({
     },
     resolve: {
       alias: {
-        '@': resolve(__dirname, 'electron/preload'),
-        '@shared': resolve(__dirname, 'shared'),
+        '@': resolve(__dirname, 'electron/main'),
       },
     },
   },
