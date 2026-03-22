@@ -61,8 +61,6 @@ export class StorageService extends EventEmitter {
       this.emit('image-stored', fullPath)
     }
 
-    const metadata = await sharp(imageBuffer).metadata()
-
     return {
       hash,
       filename,
