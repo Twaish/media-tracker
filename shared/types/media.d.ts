@@ -1,47 +1,21 @@
-import {
-  MediaProps,
-  PersistedMedia,
-} from '@/features/media/domain/entities/media'
+import { PersistedMedia } from '@/features/media/domain/entities/media'
 import { PersistedMediaEmbedding } from '@/features/media/domain/entities/mediaEmbedding'
 
-export type AddMediaDTO = Omit<
-  MediaProps,
-  'genres' | 'createdAt' | 'lastUpdated' | 'deletedAt'
-> & {
-  genres: number[]
-}
-export type UpdateMediaDTO = Partial<AddMediaDTO> & {
-  id: number
-}
+export type {
+  AddMediaDTO,
+  UpdateMediaDTO,
+  BulkUpdateMediaDTO,
+  MediaPaginationOptions,
+  MediaPaginationResult,
+} from '@/features/media/application/dto/mediaDto'
 
-export type BulkUpdateMediaDTO = {
-  ids: number[]
-
-  update?: Partial<Omit<UpdateMediaDTO, 'id' | 'genres'>>
-
-  add?: {
-    genres?: number[]
-  }
-
-  remove?: {
-    genres?: number[]
-  }
-}
-
-export interface MediaPaginationOptions {
-  page: number
-  limit: number
-}
-
-export type MediaPaginationResult = {
-  data: PersistedMedia[]
-  pagination: {
-    page: number
-    limit: number
-    totalPages: number
-    totalItems: number
-  }
-}
+import type {
+  AddMediaDTO,
+  UpdateMediaDTO,
+  BulkUpdateMediaDTO,
+  MediaPaginationOptions,
+  MediaPaginationResult,
+} from '@/features/media/application/dto/mediaDto'
 
 export interface MediaContext {
   get(options: MediaPaginationOptions): Promise<MediaPaginationResult>

@@ -4,9 +4,9 @@ import {
   MediaPaginationOptions,
   MediaPaginationResult,
   UpdateMediaDTO,
-} from '@shared/types'
+} from '../../application/dto/mediaDto'
 import { PersistedMedia } from '../entities/media'
-import { Filter } from '@/domain/services/QueryResolver'
+import { Filter } from '../../application/services/QueryResolver'
 
 export interface IMediaRepository {
   getById(id: number): Promise<PersistedMedia>

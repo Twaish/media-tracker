@@ -1,4 +1,4 @@
-import { AddMediaDTO } from '@shared/types'
+import { AddMediaDTO } from '../application/dto/mediaDto'
 import { StorageService } from '@/core/StorageService'
 import { IMediaRepository } from '../domain/repositories/IMediaRepository'
 import { MEDIA_EVENTS, MediaAddedPayload } from './media.events'

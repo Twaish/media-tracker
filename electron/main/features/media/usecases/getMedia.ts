@@ -1,5 +1,5 @@
 import { IMediaRepository } from '../domain/repositories/IMediaRepository'
-import { MediaPaginationOptions } from '@shared/types'
+import { MediaPaginationOptions } from '../application/dto/mediaDto'
 
 export default class GetMedia {
   constructor(private readonly repo: IMediaRepository) {}

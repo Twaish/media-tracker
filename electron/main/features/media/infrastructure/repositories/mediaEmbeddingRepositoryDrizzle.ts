@@ -1,6 +1,6 @@
 import { and, eq, gt, isNull } from 'drizzle-orm'
 
-import { AddMediaEmbeddingDTO } from '@shared/types/mediaEmbedding'
+import { AddMediaEmbeddingDTO } from '../../application/dto/mediaEmbeddingDto'
 
 import { DrizzleDb, Executor } from '@/infrastructure/db/types'
 import { mediaEmbeddingsTable, mediaTable } from '@/infrastructure/db/schema'

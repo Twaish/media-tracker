@@ -1,5 +1,5 @@
 import { IAiService } from '@/features/ai/application/ports/IAiService'
-import { AddMediaDTO } from '@shared/types/media'
+import { AddMediaDTO } from '../application/dto/mediaDto'
 
 export default class FetchMediaFromUrl {
   constructor(private readonly aiService: IAiService) {}

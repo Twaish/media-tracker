@@ -1,4 +1,4 @@
-import { BulkUpdateMediaDTO } from '@shared/types'
+import { BulkUpdateMediaDTO } from '../application/dto/mediaDto'
 import { IMediaRepository } from '../domain/repositories/IMediaRepository'
 import { MEDIA_EVENTS, MediaUpdatedPayload } from './media.events'
 import { IEventBus } from '@/features/events/application/ports/IEventBus'

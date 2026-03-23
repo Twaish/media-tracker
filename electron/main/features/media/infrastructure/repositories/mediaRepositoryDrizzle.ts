@@ -23,7 +23,7 @@ import {
   BulkUpdateMediaDTO,
   MediaPaginationOptions,
   UpdateMediaDTO,
-} from '@shared/types'
+} from '../../application/dto/mediaDto'
 
 import {
   genresTable,
@@ -32,7 +32,7 @@ import {
 } from '@/infrastructure/db/schema'
 import { DrizzleDb, Executor } from '@/infrastructure/db/types'
 
-import { Filter } from '@/domain/services/QueryResolver'
+import { Filter } from '../../application/services/QueryResolver'
 
 import { Genre, PersistedGenre } from '@/features/genres/domain/entities/genre'
 

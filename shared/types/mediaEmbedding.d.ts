@@ -1,3 +1,3 @@
-import { MediaEmbeddingProps } from '@/features/media/domain/entities/mediaEmbedding'
-
-export type AddMediaEmbeddingDTO = MediaEmbeddingProps
+export type {
+  AddMediaEmbeddingDTO,
+} from '@/features/media/application/dto/mediaEmbeddingDto'
