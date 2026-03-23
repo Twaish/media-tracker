@@ -1,4 +1,4 @@
-import { Pagination } from '@shared/types/pagination'
+import { Pagination } from '@shared/types'
 import { MediaProps } from '../../domain/entities/media'
 import { Filter } from '../../domain/query/Filter'
 

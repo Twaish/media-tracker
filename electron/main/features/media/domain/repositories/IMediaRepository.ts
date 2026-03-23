@@ -1,4 +1,4 @@
-import { Pagination, PaginationResult } from '@shared/types/pagination'
+import { Pagination, PaginationResult } from '@shared/types'
 import {
   AddMediaDTO,
   BulkUpdateMediaDTO,
