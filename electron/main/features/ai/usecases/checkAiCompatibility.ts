@@ -1,9 +1,10 @@
 import { IAiService } from '../application/ports/IAiService'
+import { AiCompatibilityResultDTO } from '@/features/ai/application/dto/AiCompatibilityResult'
 
 export default class CheckAiCompatibility {
   constructor(private readonly aiService: IAiService) {}
 
-  async execute() {
+  async execute(): Promise<AiCompatibilityResultDTO> {
     try {
       const [version, models] = await Promise.all([
         this.aiService.getVersion(),

@@ -1,20 +1,8 @@
+import { AiCompatibilityResultDTO } from '@/features/ai/application/dto/AiCompatibilityResult'
 import { AiSettings } from '@/features/ai/domain/models/AiSettings'
 
-export type AiStatusSuccess = {
-  available: true
-  version: string
-  models: string[]
-}
-
-export type AiStatusFailure = {
-  available: false
-  error: string
-}
-
-export type AiStatus = AiStatusFailure | AiStatusSuccess
-
 export interface AiContext {
-  checkCompatibility(): Promise<AiStatus>
+  checkCompatibility(): Promise<AiCompatibilityResultDTO>
   updateHost(host: string): Promise<void>
   updateApiKey(key: string): Promise<void>
   getSettings(): Promise<AiSettings>
