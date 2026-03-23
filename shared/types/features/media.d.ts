@@ -12,7 +12,7 @@ import type {
   UpdateMediaDTO,
   BulkUpdateMediaDTO,
 } from '@/features/media/application/dto/mediaDto'
-import { Pagination, PaginationResult } from './pagination'
+import { Pagination, PaginationResult } from '../pagination'
 
 export interface MediaContext {
   get(options: Pagination): Promise<PaginationResult<PersistedMedia>>

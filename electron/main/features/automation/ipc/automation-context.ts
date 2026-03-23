@@ -1,4 +1,4 @@
-import { AutomationContext } from '@shared/types/automation'
+import { AutomationContext } from '@shared/types'
 import {
   RULE_ADD,
   RULE_ENGINE_SYNC,

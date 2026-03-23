@@ -5,7 +5,7 @@ import {
   WATCH_PLAN_REMOVE,
   WATCH_PLAN_UPDATE,
 } from './watch-plans-channels'
-import { WatchPlansContext } from '@shared/types/watchPlans'
+import { WatchPlansContext } from '@shared/types'
 import { createWatchPlanUseCases } from '../usecases'
 import { registerIpcHandlers } from '@/helpers/ipc/register-ipc-handlers'
 

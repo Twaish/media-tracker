@@ -1,4 +1,4 @@
-import { AddTemplateDTO } from '@shared/types/automation'
+import { AddTemplateDTO } from '@shared/types'
 import { TemplateNode } from '../domain/ast/TemplateNode'
 import { ITemplateRepository } from '../domain/repositories/ITemplateRepository'
 import { IRuleEngineCompiler } from '../application/interfaces/IRuleEngineCompiler'

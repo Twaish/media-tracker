@@ -1,9 +1,4 @@
-import {
-  Task,
-  TaskCallback,
-  TaskDetails,
-  TaskProgress,
-} from '@shared/types/tasks'
+import { Task, TaskCallback, TaskDetails, TaskProgress } from '@shared/types'
 
 export async function getTasks() {
   return window.tasks.getTasks()

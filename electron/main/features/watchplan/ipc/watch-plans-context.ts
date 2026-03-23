@@ -1,4 +1,4 @@
-import { WatchPlansContext } from '@shared/types/watchPlans'
+import { WatchPlansContext } from '@shared/types'
 import {
   WATCH_PLAN_ADD,
   WATCH_PLAN_GET,

@@ -1,4 +1,4 @@
-import { ExportingContext } from '@shared/types/exporting'
+import { ExportingContext } from '@shared/types'
 import {
   EXPORTING_IMPORT_LIBRARY,
   EXPORTING_LIBRARY,

@@ -1,4 +1,4 @@
-import { Task, TaskCallback, TasksContext } from '@shared/types/tasks'
+import { Task, TaskCallback, TasksContext } from '@shared/types'
 import {
   TASKS_ADD_TASK,
   TASKS_GET_TASKS,

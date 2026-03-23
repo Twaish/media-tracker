@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid'
 import EventEmitter from 'events'
-import { Task, TaskDetails, TaskProgress } from '@shared/types/tasks'
+import { Task, TaskDetails, TaskProgress } from '@shared/types'
 
 export class TaskService extends EventEmitter {
   private readonly tasks: Record<string, Task> = {}

@@ -6,7 +6,7 @@ import {
   TASKS_ON_TASK_PROGRESS,
   TASKS_PROGRESS_TASK,
 } from './tasks-channels'
-import { Task, TasksContext } from '@shared/types/tasks'
+import { Task, TasksContext } from '@shared/types'
 import { registerIpcHandlers } from '../../../helpers/ipc/register-ipc-handlers'
 
 export function addTasksEventListeners({ window, TaskService }: Modules) {

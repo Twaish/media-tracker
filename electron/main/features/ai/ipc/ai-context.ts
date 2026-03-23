@@ -1,4 +1,4 @@
-import { AiContext } from '@shared/types/ai'
+import { AiContext } from '@shared/types'
 import {
   AI_CHECK_COMPATIBILITY,
   AI_CREATE_EMBEDDING,
