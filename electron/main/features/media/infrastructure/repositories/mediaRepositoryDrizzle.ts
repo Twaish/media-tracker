@@ -21,6 +21,7 @@ import { SQLiteColumn } from 'drizzle-orm/sqlite-core'
 import {
   AddMediaDTO,
   BulkUpdateMediaDTO,
+  MediaSearchOptions,
   UpdateMediaDTO,
 } from '../../application/dto/mediaDto'
 
@@ -37,7 +38,7 @@ import { Genre, PersistedGenre } from '@/features/genres/domain/entities/genre'
 
 import { IMediaRepository } from '../../domain/repositories/IMediaRepository'
 import { Media, PersistedMedia } from '../../domain/entities/media'
-import { Pagination } from '@shared/types/pagination'
+import { Pagination } from '@shared/types'
 
 export class MediaRepositoryDrizzle implements IMediaRepository {
   private readonly columnMap: Record<string, SQLiteColumn> = {
@@ -200,15 +201,8 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
     }
   }
 
-  async search({
-    title,
-    filters = [],
-    pagination,
-  }: {
-    title?: string
-    filters?: Filter[]
-    pagination?: Pagination
-  }) {
+  async search(options: MediaSearchOptions) {
+    const { title, filters = [], pagination } = options
     const page = pagination?.page ?? 1
     const limit = pagination?.limit ?? 12
     const offset = (page - 1) * limit
