@@ -1,10 +1,8 @@
 import {
   PersistedRule,
-  RuleProps,
 } from '@/features/automation/domain/entities/rule'
 import {
   PersistedTemplate,
-  TemplateProps,
 } from '@/features/automation/domain/entities/template'
 
 export type AddRuleDTO = {
@@ -15,23 +13,17 @@ export type UpdateRuleDTO = Partial<AddRuleDTO> & {
   id: number
 }
 
-export type AddRuleRepoDTO = Omit<RuleProps, 'createdAt' | 'lastUpdated'>
-export type UpdateRuleRepoDTO = Partial<AddRuleRepoDTO> & {
-  id: number
-}
+export type {
+  AddRuleRepoDTO,
+  UpdateRuleRepoDTO,
+  AddTemplateRepoDTO,
+  UpdateTemplateRepoDTO,
+} from '@/features/automation/application/dto/automationDto'
 
 export type AddTemplateDTO = {
   source: string
 }
 export type UpdateTemplateDTO = Partial<AddTemplateDTO> & {
-  id: number
-}
-
-export type AddTemplateRepoDTO = Omit<
-  TemplateProps,
-  'createdAt' | 'lastUpdated'
->
-export type UpdateTemplateRepoDTO = Partial<AddTemplateRepoDTO> & {
   id: number
 }
 
