@@ -5,7 +5,6 @@ export type {
   AddMediaDTO,
   UpdateMediaDTO,
   BulkUpdateMediaDTO,
-  MediaPaginationOptions,
   MediaPaginationResult,
 } from '@/features/media/application/dto/mediaDto'
 
@@ -13,12 +12,12 @@ import type {
   AddMediaDTO,
   UpdateMediaDTO,
   BulkUpdateMediaDTO,
-  MediaPaginationOptions,
   MediaPaginationResult,
 } from '@/features/media/application/dto/mediaDto'
+import { Pagination } from './pagination'
 
 export interface MediaContext {
-  get(options: MediaPaginationOptions): Promise<MediaPaginationResult>
+  get(options: Pagination): Promise<MediaPaginationResult>
   add(media: AddMediaDTO): Promise<PersistedMedia>
   remove(mediaIds: number[]): Promise<{ deleted: number; ids: number[] }>
   update(media: UpdateMediaDTO): Promise<PersistedMedia>

@@ -1,7 +1,4 @@
-import {
-  MediaProps,
-  PersistedMedia,
-} from '../../domain/entities/media'
+import { MediaProps, PersistedMedia } from '../../domain/entities/media'
 
 export type AddMediaDTO = Omit<
   MediaProps,
@@ -25,11 +22,6 @@ export type BulkUpdateMediaDTO = {
   remove?: {
     genres?: number[]
   }
-}
-
-export interface MediaPaginationOptions {
-  page: number
-  limit: number
 }
 
 export type MediaPaginationResult = {

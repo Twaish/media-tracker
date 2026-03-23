@@ -1,10 +1,10 @@
 import { IMediaRepository } from '../domain/repositories/IMediaRepository'
-import { MediaPaginationOptions } from '../application/dto/mediaDto'
+import { Pagination } from '@shared/types/pagination'
 
 export default class GetMedia {
   constructor(private readonly repo: IMediaRepository) {}
 
-  async execute(options: MediaPaginationOptions) {
+  async execute(options: Pagination) {
     return this.repo.getWithPagination(options)
   }
 }
