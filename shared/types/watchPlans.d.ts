@@ -1,13 +1,16 @@
 import {
   PersistedWatchPlan,
-  WatchPlanProps,
 } from '@/features/watchplan/domain/entities/watchPlan'
 
-export type AddWatchPlanDTO = Omit<WatchPlanProps, 'createdAt'>
+export type {
+  AddWatchPlanDTO,
+  UpdateWatchPlanDTO,
+} from '@/features/watchplan/application/dto/watchPlanDto'
 
-export type UpdateWatchPlanDTO = Partial<AddWatchPlanDTO> & {
-  id: number
-}
+import type {
+  AddWatchPlanDTO,
+  UpdateWatchPlanDTO,
+} from '@/features/watchplan/application/dto/watchPlanDto'
 
 export interface WatchPlansContext {
   get(): Promise<PersistedWatchPlan[]>

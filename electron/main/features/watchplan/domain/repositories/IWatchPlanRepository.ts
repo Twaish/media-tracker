@@ -1,4 +1,4 @@
-import { AddWatchPlanDTO, UpdateWatchPlanDTO } from '@shared/types/watchPlans'
+import { AddWatchPlanDTO, UpdateWatchPlanDTO } from '../../application/dto/watchPlanDto'
 import { PersistedWatchPlan } from '../entities/watchPlan'
 
 export interface IWatchPlanRepository {

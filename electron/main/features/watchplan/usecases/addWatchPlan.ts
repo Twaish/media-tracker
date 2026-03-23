@@ -1,4 +1,4 @@
-import { AddWatchPlanDTO } from '@shared/types/watchPlans'
+import { AddWatchPlanDTO } from '../application/dto/watchPlanDto'
 import { IWatchPlanRepository } from '../domain/repositories/IWatchPlanRepository'
 
 export default class AddWatchPlan {
