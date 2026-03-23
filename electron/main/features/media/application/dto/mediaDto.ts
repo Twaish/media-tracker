@@ -1,4 +1,6 @@
-import { MediaProps, PersistedMedia } from '../../domain/entities/media'
+import { Pagination } from '@shared/types/pagination'
+import { MediaProps } from '../../domain/entities/media'
+import { Filter } from '../../domain/query/Filter'
 
 export type AddMediaDTO = Omit<
   MediaProps,
@@ -24,12 +26,8 @@ export type BulkUpdateMediaDTO = {
   }
 }
 
-export type MediaPaginationResult = {
-  data: PersistedMedia[]
-  pagination: {
-    page: number
-    limit: number
-    totalPages: number
-    totalItems: number
-  }
+export type MediaSearchOptions = {
+  title?: string
+  filters?: Filter[]
+  pagination?: Pagination
 }

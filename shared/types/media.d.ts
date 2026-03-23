@@ -5,25 +5,23 @@ export type {
   AddMediaDTO,
   UpdateMediaDTO,
   BulkUpdateMediaDTO,
-  MediaPaginationResult,
 } from '@/features/media/application/dto/mediaDto'
 
 import type {
   AddMediaDTO,
   UpdateMediaDTO,
   BulkUpdateMediaDTO,
-  MediaPaginationResult,
 } from '@/features/media/application/dto/mediaDto'
-import { Pagination } from './pagination'
+import { Pagination, PaginationResult } from './pagination'
 
 export interface MediaContext {
-  get(options: Pagination): Promise<MediaPaginationResult>
+  get(options: Pagination): Promise<PaginationResult<PersistedMedia>>
   add(media: AddMediaDTO): Promise<PersistedMedia>
   remove(mediaIds: number[]): Promise<{ deleted: number; ids: number[] }>
   update(media: UpdateMediaDTO): Promise<PersistedMedia>
   setNextMedia(mediaId: number, nextMediaId: number): Promise<void>
   resolveExternalLink(mediaId: number): Promise<string | null>
-  search(query: string): Promise<MediaPaginationResult>
+  search(query: string): Promise<PaginationResult<PersistedMedia>>
   getById(mediaId: number): Promise<PersistedMedia>
   bulkUpdate(mediaUpdates: BulkUpdateMediaDTO): Promise<{ affected: number }>
   findDuplicates(media: Partial<AddMediaDTO>): Promise<PersistedMedia[]>

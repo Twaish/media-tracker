@@ -1,25 +1,22 @@
-import { Pagination } from '@shared/types/pagination'
+import { Pagination, PaginationResult } from '@shared/types/pagination'
 import {
   AddMediaDTO,
   BulkUpdateMediaDTO,
-  MediaPaginationResult,
+  MediaSearchOptions,
   UpdateMediaDTO,
 } from '../../application/dto/mediaDto'
 import { PersistedMedia } from '../entities/media'
-import { Filter } from '../query/Filter'
 
 export interface IMediaRepository {
   getById(id: number): Promise<PersistedMedia>
   getByIds(ids: number[]): Promise<PersistedMedia[]>
-  getWithPagination(options: Pagination): Promise<MediaPaginationResult>
+  getWithPagination(
+    options: Pagination,
+  ): Promise<PaginationResult<PersistedMedia>>
   add(media: AddMediaDTO): Promise<PersistedMedia>
   remove(ids: number[]): Promise<{ deleted: number; ids: number[] }>
   update(media: UpdateMediaDTO): Promise<PersistedMedia>
-  search(options: {
-    title?: string
-    filters?: Filter[]
-    pagination?: Pagination
-  }): Promise<MediaPaginationResult>
+  search(options: MediaSearchOptions): Promise<PaginationResult<PersistedMedia>>
   bulkUpdate(
     mediaUpdates: BulkUpdateMediaDTO,
   ): Promise<{ affected: number; ids: number[] }>
