@@ -1,3 +1,5 @@
+import { IQueryResolver } from '../interfaces/IQueryResolver'
+
 export type Operator = '=' | '!=' | '<' | '<=' | '>' | '>='
 
 export interface Filter {
@@ -11,7 +13,7 @@ export interface SearchQuery {
   filters: Filter[]
 }
 
-export class QueryResolver {
+export class QueryResolver implements IQueryResolver {
   private readonly OP_REGEX = /(!=|<=|>=|=|<|>)/
 
   // Processes queries:

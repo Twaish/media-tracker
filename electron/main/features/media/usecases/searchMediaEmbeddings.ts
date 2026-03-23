@@ -1,10 +1,10 @@
-import { QueryResolver } from '@/domain/services/QueryResolver'
 import { IMediaSimilarityService } from '../application/interfaces/IMediaSimilarityService'
+import { IQueryResolver } from '../application/interfaces/IQueryResolver'
 
 export default class SearchMediaEmbeddings {
   constructor(
     private readonly similarityService: IMediaSimilarityService,
-    private readonly resolver: QueryResolver,
+    private readonly resolver: IQueryResolver,
   ) {}
 
   async execute(query: string, model: string) {

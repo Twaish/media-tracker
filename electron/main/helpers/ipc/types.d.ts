@@ -17,7 +17,7 @@ import { AppInfo } from '@/core/types'
 import { IExportManager } from '@/features/exporting/application/interfaces/IExportManager'
 import { IImportManager } from '@/features/exporting/application/interfaces/IImportManager'
 import { ExternalLinkResolver } from '@/domain/services/ExternalLinkResolver'
-import { QueryResolver } from '@/domain/services/QueryResolver'
+import { IQueryResolver } from '@/features/media/application/interfaces/IQueryResolver'
 import { IRuleEngine } from '@/features/automation/application/interfaces/IRuleEngine'
 import { IRuleEngineCompiler } from '@/features/automation/application/interfaces/IRuleEngineCompiler'
 import { IRuleEnginePrinter } from '@/features/automation/application/interfaces/IRuleEnginePrinter'
@@ -29,7 +29,7 @@ declare interface Modules {
   ElectronWindow: ElectronWindow
   StorageService: StorageService
   ExternalLinkResolver: ExternalLinkResolver
-  QueryResolver: QueryResolver
+  QueryResolver: IQueryResolver
 
   TaskService: TaskService
   ExportManager: IExportManager

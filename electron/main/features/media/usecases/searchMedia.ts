@@ -1,10 +1,10 @@
 import { IMediaRepository } from '../domain/repositories/IMediaRepository'
-import { QueryResolver } from '@/domain/services/QueryResolver'
+import { IQueryResolver } from '../application/interfaces/IQueryResolver'
 
 export default class SearchMedia {
   constructor(
     private readonly repo: IMediaRepository,
-    private readonly resolver: QueryResolver,
+    private readonly resolver: IQueryResolver,
   ) {}
 
   async execute(query: string) {
