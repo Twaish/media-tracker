@@ -1,32 +1,10 @@
+import { Filter, Operator } from '../../domain/query/Filter'
+import { SearchQuery } from '../../domain/query/SearchQuery'
 import { IQueryResolver } from '../interfaces/IQueryResolver'
-
-export type Operator = '=' | '!=' | '<' | '<=' | '>' | '>='
-
-export interface Filter {
-  field: string
-  op: Operator
-  values: (string | number)[]
-}
-
-export interface SearchQuery {
-  title: string
-  filters: Filter[]
-}
 
 export class QueryResolver implements IQueryResolver {
   private readonly OP_REGEX = /(!=|<=|>=|=|<|>)/
 
-  // Processes queries:
-  // "One punch [Genre=Comedy, Fighting][Year>=2015][Genre!=Thriller] man"
-  // into:
-  // {
-  //   title: "One punch man",
-  //   filters: {
-  //     { field: "genre", op: "=", values: ["Comedy", "Fighting"] },
-  //     { field: "year", op: ">=", values: [2015] },
-  //     { field: "genre", op: "!=", values: ["Thriller"] }
-  //   }
-  // }
   resolve(query: string): SearchQuery {
     const filters: Filter[] = []
     const bracketRegex = /\[(.*?)\]/g

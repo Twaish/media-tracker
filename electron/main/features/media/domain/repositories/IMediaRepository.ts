@@ -6,7 +6,7 @@ import {
   UpdateMediaDTO,
 } from '../../application/dto/mediaDto'
 import { PersistedMedia } from '../entities/media'
-import { Filter } from '../../application/services/QueryResolver'
+import { Filter } from '../query/Filter'
 
 export interface IMediaRepository {
   getById(id: number): Promise<PersistedMedia>

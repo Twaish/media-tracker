@@ -32,7 +32,7 @@ import {
 } from '@/infrastructure/db/schema'
 import { DrizzleDb, Executor } from '@/infrastructure/db/types'
 
-import { Filter } from '../../application/services/QueryResolver'
+import { Filter } from '../../domain/query/Filter'
 
 import { Genre, PersistedGenre } from '@/features/genres/domain/entities/genre'
 
