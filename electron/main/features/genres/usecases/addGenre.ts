@@ -1,4 +1,4 @@
-import { AddGenreDTO } from '@shared/types'
+import { AddGenreDTO } from '../application/dto/genreDto'
 import { IGenresRepository } from '../domain/repositories/IGenresRepository'
 
 export default class AddGenre {

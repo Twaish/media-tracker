@@ -1,4 +1,4 @@
-import { AddGenreDTO } from '@shared/types'
+import { AddGenreDTO } from '../../application/dto/genreDto'
 import { PersistedGenre } from '../entities/genre'
 
 export interface IGenresRepository {

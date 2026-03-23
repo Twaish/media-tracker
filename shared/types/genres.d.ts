@@ -1,9 +1,14 @@
 import {
-  GenreProps,
   PersistedGenre,
 } from '@/features/genres/domain/entities/genre'
 
-export type AddGenreDTO = Omit<GenreProps, 'isDeletable'>
+export type {
+  AddGenreDTO,
+} from '@/features/genres/application/dto/genreDto'
+
+import type {
+  AddGenreDTO,
+} from '@/features/genres/application/dto/genreDto'
 
 export interface GenresContext {
   get(): Promise<PersistedGenre[]>
