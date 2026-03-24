@@ -38,7 +38,7 @@ export class OllamaService implements IAiService {
   ): Ollama {
     const apiKey = this.settingsProvider?.settings?.apiKey
     if (apiKey) {
-      process.env.OLLAMA_API_KEY = apiKey
+      process.env['OLLAMA_API_KEY'] = apiKey
     }
     return new Ollama({ host, ...options })
   }
@@ -104,7 +104,7 @@ export class OllamaService implements IAiService {
     return this.runExclusive(async () => {
       const apiKey = this.settingsProvider.settings.apiKey
       if (apiKey) {
-        process.env.OLLAMA_API_KEY = apiKey
+        process.env['OLLAMA_API_KEY'] = apiKey
       }
       const response = await this.ollama.webFetch({ url })
       return response.content
