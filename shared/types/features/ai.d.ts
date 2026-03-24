@@ -1,4 +1,4 @@
-import { AiCompatibilityResultDTO } from '@/features/ai/application/dto/AiCompatibilityResult'
+import { AiCompatibilityResultDTO } from '@/features/ai/application/dto/AiCompatibilityResult.dto'
 import { AiSettings } from '@/features/ai/domain/models/AiSettings'
 
 export interface AiContext {

@@ -1,4 +1,4 @@
-import { UpdateWatchPlanDTO } from '../application/dto/watchPlanDto'
+import { UpdateWatchPlanDTO } from '../application/dto/watchPlan.dto'
 import { IWatchPlanRepository } from '../domain/repositories/IWatchPlanRepository'
 
 export default class UpdateWatchPlan {

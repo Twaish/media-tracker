@@ -3,7 +3,7 @@ import { eq, gt } from 'drizzle-orm'
 import { DrizzleDb, Executor } from '@/infrastructure/db/types'
 import { genresTable } from '@/infrastructure/db/schema'
 
-import { AddGenreDTO } from '../../application/dto/genreDto'
+import { AddGenreDTO } from '../../application/dto/genre.dto'
 
 import { IGenresRepository } from '../../domain/repositories/IGenresRepository'
 import { Genre, PersistedGenre } from '../../domain/entities/genre'

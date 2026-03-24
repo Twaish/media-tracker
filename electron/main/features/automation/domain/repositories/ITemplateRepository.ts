@@ -1,7 +1,7 @@
 import {
   AddTemplateRepoDTO,
   UpdateTemplateRepoDTO,
-} from '../../application/dto/automationDto'
+} from '../../application/dto/automation.dto'
 import { PersistedTemplate } from '../entities/template'
 
 export interface ITemplateRepository {

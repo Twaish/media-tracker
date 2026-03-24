@@ -1,5 +1,5 @@
 import { UpdateRuleDTO } from '@shared/types'
-import { UpdateRuleRepoDTO } from '../application/dto/automationDto'
+import { UpdateRuleRepoDTO } from '../application/dto/automation.dto'
 
 import { RuleNode } from '../domain/ast/RuleNode'
 import { IRuleRepository } from '../domain/repositories/IRuleRepository'

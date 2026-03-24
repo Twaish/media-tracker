@@ -23,7 +23,7 @@ import {
   BulkUpdateMediaDTO,
   MediaSearchOptions,
   UpdateMediaDTO,
-} from '../../application/dto/mediaDto'
+} from '../../application/dto/media.dto'
 
 import {
   genresTable,

@@ -3,7 +3,10 @@ import { eq, gt, inArray } from 'drizzle-orm'
 import { DrizzleDb, Executor } from '@/infrastructure/db/types'
 import { ruleEventsTable, rulesTable } from '@/infrastructure/db/schema'
 
-import { AddRuleRepoDTO, UpdateRuleRepoDTO } from '../../application/dto/automationDto'
+import {
+  AddRuleRepoDTO,
+  UpdateRuleRepoDTO,
+} from '../../application/dto/automation.dto'
 
 import { IRuleRepository } from '../../domain/repositories/IRuleRepository'
 import { PersistedRule, Rule } from '../../domain/entities/rule'

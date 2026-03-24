@@ -1,4 +1,4 @@
-import { AddGenreDTO } from '../../application/dto/genreDto'
+import { AddGenreDTO } from '../../application/dto/genre.dto'
 import { PersistedGenre } from '../entities/genre'
 
 export interface IGenresRepository {

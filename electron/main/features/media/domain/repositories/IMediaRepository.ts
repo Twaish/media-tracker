@@ -4,7 +4,7 @@ import {
   BulkUpdateMediaDTO,
   MediaSearchOptions,
   UpdateMediaDTO,
-} from '../../application/dto/mediaDto'
+} from '../../application/dto/media.dto'
 import { PersistedMedia } from '../entities/media'
 
 export interface IMediaRepository {

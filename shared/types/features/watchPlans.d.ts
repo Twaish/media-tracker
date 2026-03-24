@@ -1,16 +1,14 @@
-import {
-  PersistedWatchPlan,
-} from '@/features/watchplan/domain/entities/watchPlan'
+import { PersistedWatchPlan } from '@/features/watchplan/domain/entities/watchPlan'
 
 export type {
   AddWatchPlanDTO,
   UpdateWatchPlanDTO,
-} from '@/features/watchplan/application/dto/watchPlanDto'
+} from '@/features/watchplan/application/dto/watchPlan.dto'
 
 import type {
   AddWatchPlanDTO,
   UpdateWatchPlanDTO,
-} from '@/features/watchplan/application/dto/watchPlanDto'
+} from '@/features/watchplan/application/dto/watchPlan.dto'
 
 export interface WatchPlansContext {
   get(): Promise<PersistedWatchPlan[]>

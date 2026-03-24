@@ -4,7 +4,10 @@ import {
   watchPlansTable,
 } from '@/infrastructure/db/schema'
 
-import { AddWatchPlanDTO, UpdateWatchPlanDTO } from '../../application/dto/watchPlanDto'
+import {
+  AddWatchPlanDTO,
+  UpdateWatchPlanDTO,
+} from '../../application/dto/watchPlan.dto'
 
 import { DrizzleDb, Executor } from '@/infrastructure/db/types'
 

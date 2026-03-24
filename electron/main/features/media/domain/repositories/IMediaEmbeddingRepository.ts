@@ -1,5 +1,5 @@
 import { PersistedMediaEmbedding } from '../entities/mediaEmbedding'
-import { AddMediaEmbeddingDTO } from '../../application/dto/mediaEmbeddingDto'
+import { AddMediaEmbeddingDTO } from '../../application/dto/mediaEmbedding.dto'
 
 export interface IMediaEmbeddingRepository {
   getByMediaId(mediaId: number, model: string): Promise<PersistedMediaEmbedding>

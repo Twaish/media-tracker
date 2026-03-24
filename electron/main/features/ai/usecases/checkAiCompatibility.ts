@@ -1,5 +1,5 @@
 import { IAiService } from '../application/ports/IAiService'
-import { AiCompatibilityResultDTO } from '@/features/ai/application/dto/AiCompatibilityResult'
+import { AiCompatibilityResultDTO } from '@/features/ai/application/dto/AiCompatibilityResult.dto'
 
 export default class CheckAiCompatibility {
   constructor(private readonly aiService: IAiService) {}

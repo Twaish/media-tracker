@@ -1,5 +1,5 @@
 import { UpdateTemplateDTO } from '@shared/types'
-import { UpdateTemplateRepoDTO } from '../application/dto/automationDto'
+import { UpdateTemplateRepoDTO } from '../application/dto/automation.dto'
 
 import { TemplateNode } from '../domain/ast/TemplateNode'
 import { ITemplateRepository } from '../domain/repositories/ITemplateRepository'

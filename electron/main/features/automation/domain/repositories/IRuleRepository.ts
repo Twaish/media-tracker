@@ -1,4 +1,7 @@
-import { AddRuleRepoDTO, UpdateRuleRepoDTO } from '../../application/dto/automationDto'
+import {
+  AddRuleRepoDTO,
+  UpdateRuleRepoDTO,
+} from '../../application/dto/automation.dto'
 import { PersistedRule } from '../entities/rule'
 
 export interface IRuleRepository {

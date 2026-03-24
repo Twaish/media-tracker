@@ -1,9 +1,5 @@
-import {
-  PersistedRule,
-} from '@/features/automation/domain/entities/rule'
-import {
-  PersistedTemplate,
-} from '@/features/automation/domain/entities/template'
+import { PersistedRule } from '@/features/automation/domain/entities/rule'
+import { PersistedTemplate } from '@/features/automation/domain/entities/template'
 
 export type AddRuleDTO = {
   source: string
@@ -18,7 +14,7 @@ export type {
   UpdateRuleRepoDTO,
   AddTemplateRepoDTO,
   UpdateTemplateRepoDTO,
-} from '@/features/automation/application/dto/automationDto'
+} from '@/features/automation/application/dto/automation.dto'
 
 export type AddTemplateDTO = {
   source: string

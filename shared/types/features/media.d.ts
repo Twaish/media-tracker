@@ -5,13 +5,13 @@ export type {
   AddMediaDTO,
   UpdateMediaDTO,
   BulkUpdateMediaDTO,
-} from '@/features/media/application/dto/mediaDto'
+} from '@/features/media/application/dto/media.dto'
 
 import type {
   AddMediaDTO,
   UpdateMediaDTO,
   BulkUpdateMediaDTO,
-} from '@/features/media/application/dto/mediaDto'
+} from '@/features/media/application/dto/media.dto'
 import { Pagination, PaginationResult } from '../pagination'
 
 export interface MediaContext {

@@ -1,6 +1,6 @@
 import { StorageService } from '@/core/StorageService'
 import { IMediaRepository } from '../domain/repositories/IMediaRepository'
-import { UpdateMediaDTO } from '../application/dto/mediaDto'
+import { UpdateMediaDTO } from '../application/dto/media.dto'
 import { MEDIA_EVENTS, MediaUpdatedPayload } from './media.events'
 import { IEventBus } from '@/features/events/application/ports/IEventBus'
 

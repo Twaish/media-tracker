@@ -6,7 +6,7 @@ import { templatesTable } from '@/infrastructure/db/schema'
 import {
   AddTemplateRepoDTO,
   UpdateTemplateRepoDTO,
-} from '../../application/dto/automationDto'
+} from '../../application/dto/automation.dto'
 
 import { ITemplateRepository } from '../../domain/repositories/ITemplateRepository'
 import { PersistedTemplate, Template } from '../../domain/entities/template'
