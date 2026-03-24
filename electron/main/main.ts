@@ -25,7 +25,7 @@ import { MediaRepositoryDrizzle } from './features/media/infrastructure/reposito
 import { GenresRepositoryDrizzle } from './features/genres/infrastructure/repositories/genresRepositoryDrizzle'
 import { JsonStore } from './core/JsonStore'
 import { OllamaSettingsProvider } from './features/ai/infrastructure/adapters/OllamaSettingsProvider'
-import { TaskService } from './core/TaskService'
+import { TaskService } from './features/tasks/application/services/TaskService'
 import { WatchPlanRepositoryDrizzle } from './features/watchplan/infrastructure/repositories/watchPlanRepositoryDrizzle'
 import { MediaEmbeddingRepositoryDrizzle } from './features/media/infrastructure/repositories/mediaEmbeddingRepositoryDrizzle'
 import { MediaSimilarityService } from './features/media/application/services/MediaSimilarityService'

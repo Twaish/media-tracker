@@ -1,8 +1,9 @@
 import { v4 as uuidv4 } from 'uuid'
 import EventEmitter from 'events'
 import { Task, TaskDetails, TaskProgress } from '@shared/types'
+import { ITaskService } from '@/features/tasks/application/interfaces/ITaskService'
 
-export class TaskService extends EventEmitter {
+export class TaskService extends EventEmitter implements ITaskService {
   private readonly tasks: Record<string, Task> = {}
   getTasks(): Record<string, Task> {
     return this.tasks

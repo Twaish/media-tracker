@@ -7,7 +7,7 @@ import { IAiService } from '@/features/ai/application/ports/IAiService'
 import { ILogger } from '@/application/logging/ILogger'
 import { IMediaRepository } from '@/features/media/domain/repositories/IMediaRepository'
 import { IAiSettingsProvider } from '@/features/ai/application/ports/IAiSettingsProvider'
-import { TaskService } from '@/core/TaskService'
+import { ITaskService } from '@/features/tasks/application/interfaces/ITaskService'
 import { IMediaEmbeddingRepository } from '@/features/media/domain/repositories/IMediaEmbeddingRepository'
 import { IRuleRepository } from '@/features/automation/domain/repositories/IRuleRepository'
 import { ITemplateRepository } from '@/features/automation/domain/repositories/ITemplateRepository'
@@ -31,7 +31,7 @@ declare interface Modules {
   ExternalLinkResolver: ExternalLinkResolver
   QueryResolver: IQueryResolver
 
-  TaskService: TaskService
+  TaskService: ITaskService
   ExportManager: IExportManager
   ImportManager: IImportManager
   RuleEngine: IRuleEngine
