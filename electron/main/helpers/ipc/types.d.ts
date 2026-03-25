@@ -2,6 +2,7 @@ import { BrowserWindow, IpcMainInvokeEvent } from 'electron'
 
 import { ElectronWindow } from '@/core/ElectronWindow'
 import { StorageService } from '@/core/StorageService'
+import { ISettingsBuilder } from '@/application/ports/settings/ISettingsBuilder'
 
 import { IAiService } from '@/features/ai/application/ports/IAiService'
 import { ILogger } from '@/application/logging/ILogger'
@@ -28,6 +29,8 @@ import { IWatchPlanRepository } from '@/features/watchplan/domain/repositories/I
 declare interface Modules {
   ElectronWindow: ElectronWindow
   StorageService: StorageService
+  SettingsBuilder: ISettingsBuilder
+
   ExternalLinkResolver: ExternalLinkResolver
   QueryResolver: IQueryResolver
 

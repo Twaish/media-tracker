@@ -48,6 +48,8 @@ import { ActionExecutor } from './features/automation/application/services/Actio
 import { ExpressionEvaluator } from './features/automation/application/services/ExpressionEvaluator'
 import { registerExportSchemas } from './helpers/register-export-schemas'
 import { registerImportSchemas } from './helpers/register-import-schemas'
+import { SettingsBuilder } from './infrastructure/settings/SettingsBuilder'
+import { createCryptoServices } from './helpers/create-crypto-services'
 
 app.whenReady().then(async () => {
   const userData = app.getPath('userData')
@@ -96,6 +98,12 @@ app.whenReady().then(async () => {
       logger.info(`Stored image ${imagePath}`)
     })
 
+    logger.info('Initializing settings')
+    const settingsBuilder = new SettingsBuilder({
+      store: settingsStore,
+      ...createCryptoServices(),
+    })
+
     logger.info('Initializing AI services')
     const ollamaSettings = new OllamaSettingsProvider(settingsStore)
     await ollamaSettings.init()
@@ -137,6 +145,8 @@ app.whenReady().then(async () => {
     const modules: Modules = {
       ElectronWindow: mainWindow,
       StorageService: storageService,
+      SettingsBuilder: settingsBuilder,
+
       ExternalLinkResolver: externalLinkResolver,
       QueryResolver: queryResolver,
       TaskService: taskService,
