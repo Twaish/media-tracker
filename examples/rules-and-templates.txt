@@ -1,0 +1,38 @@
+RULE CallPluginOnMediaUpdated
+FOR mediaUpdated
+ON media
+DO {
+  call plugin("Test Plugin")
+}
+
+
+RULE AutoCompleteOnFinish
+FOR mediaUpdated
+ONCE media currentEpisode >= maxEpisodes
+PRIORITY 1
+DO {
+  set completedAt = now()
+  set status = "Completed"
+  call template("LogMediaActivity")
+  call plugin("Test Plugin")
+}
+
+
+TEMPLATE LogMediaActivity
+PARAMETERS { 
+  media 
+}
+DO {
+  call http(config("discord.url")) {
+    METHOD post
+    BODY {
+      "title": media.title,
+      "status": media.status,
+      "completedAt": now()
+    }
+    HEADERS {
+      "Authorization": concat("Bearer ", secret("discord.token"))
+    }
+    RETRY 3 EXPONENTIAL DELAY 1000
+  }
+}
