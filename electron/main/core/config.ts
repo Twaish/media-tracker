@@ -10,6 +10,7 @@ const logFileName = 'app.log'
 const devUrl = process.env['ELECTRON_RENDERER_URL']
 
 export default {
+  PLUGINS_DIR: path.join(userData, 'plugins'),
   DB_PATH: `file:${path.join(userData, databaseFileName)}`,
   MIGRATIONS_PATH: path.join(appPath, 'drizzle'),
   LOG_PATH: path.join(userData, logFileName),
