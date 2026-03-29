@@ -30,7 +30,6 @@ npm run build:release
 - Full keyboard navigable
 - Cloud sync
 - User defined fields with type system
-- Settings
 - Plugin system
 - CLI
 - Encrypted storage/libraries
@@ -192,3 +191,4 @@ DO {
 - Rule engine. Run automation on conditions.
 - Export data as packages containing manifest file and resource files
 - Automatically fill information of media by link using AI
+- Settings
