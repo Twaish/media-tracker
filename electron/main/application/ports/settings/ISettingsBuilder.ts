@@ -16,7 +16,7 @@ export type RuntimeValue<T> = 'default' extends keyof T
     ? string | undefined
     : unknown
 
-export type RuntimeSchema<T extends Schema> = {
+export type RuntimeSchema<T extends Schema = Schema> = {
   [K in keyof T]: RuntimeValue<T[K]>
 }
 
