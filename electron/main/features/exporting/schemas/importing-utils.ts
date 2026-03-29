@@ -153,13 +153,28 @@ export const createImportUseCases = ({
 }: Modules) => {
   const context: {
     registeredGenres: Record<string, number>
+    registeredMedias: Record<number, number>
   } = {
     registeredGenres: {},
+    // We use this to map old media ids to new ones
+    registeredMedias: {},
   }
+
+  const mapItemToNewMediaId = <T extends { mediaId: number }>(item: T) => {
+    const mapped = context.registeredMedias[item.mediaId]
+
+    if (mapped == null) {
+      throw new Error(`Missing media mapping for id ${item.mediaId}`)
+    }
+
+    return {
+      ...item,
+      mediaId: mapped,
+    }
+  }
+
   return {
     importGenres: async (stream: AsyncIterable<PersistedGenre>) => {
-      context.registeredGenres ??= {}
-
       const genres = await GenresRepository.get()
       genres.forEach((value) => {
         context.registeredGenres[value.name] = value.id
@@ -184,13 +199,23 @@ export const createImportUseCases = ({
       for await (const media of stream) {
         // TODO: Check for duplicates
         logger.debug(JSON.stringify(media, null, 2))
-        // const mappedGenres = media.genres.map(
-        //   (g) => context.registeredGenres[g.name],
-        // )
-        // await MediaRepository.add({
-        //   ...media,
-        //   genres: mappedGenres,
-        // })
+
+        const mappedGenres = media.genres.map((g) => {
+          const id = context.registeredGenres[g.name]
+
+          if (id == null) {
+            throw new Error(`Missing genre mapping for "${g.name}"`)
+          }
+
+          return id
+        })
+
+        const previousId = media.id
+        const newMedia = await MediaRepository.add({
+          ...media,
+          genres: mappedGenres,
+        })
+        context.registeredMedias[previousId] = newMedia.id
       }
     },
 
@@ -198,7 +223,7 @@ export const createImportUseCases = ({
       for await (const rule of stream) {
         // TODO: Check for duplicates
         logger.debug(JSON.stringify(rule, null, 2))
-        // await RuleRepository.add(rule)
+        await RuleRepository.add(rule)
       }
     },
 
@@ -206,7 +231,7 @@ export const createImportUseCases = ({
       for await (const t of stream) {
         // TODO: Check for duplicates
         logger.debug(JSON.stringify(t, null, 2))
-        // await TemplateRepository.add(t)
+        await TemplateRepository.add(t)
       }
     },
 
@@ -218,12 +243,13 @@ export const createImportUseCases = ({
         logger.debug(
           JSON.stringify({ mediaId: emb.mediaId, model: emb.model }, null, 2),
         )
-        // try {
-        //   await MediaEmbeddingRepository.add({
-        //     ...emb,
-        //     mediaId: emb.mediaId,
-        //   })
-        // } catch {}
+        try {
+          await MediaEmbeddingRepository.add(mapItemToNewMediaId(emb))
+        } catch (err) {
+          logger.error(
+            `Failed to import embedding ${err instanceof Error ? err.stack : String(err)}`,
+          )
+        }
       }
     },
 
@@ -231,9 +257,13 @@ export const createImportUseCases = ({
       for await (const plan of stream) {
         // TODO: Check for duplicates
         logger.debug(JSON.stringify(plan, null, 2))
-        // await WatchPlanRepository.add({
-        //   ...plan,
-        // })
+
+        const mappedSegments = plan.segments.map(mapItemToNewMediaId)
+
+        await WatchPlanRepository.add({
+          ...plan,
+          segments: mappedSegments,
+        })
       }
     },
   }
