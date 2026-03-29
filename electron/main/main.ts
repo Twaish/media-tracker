@@ -51,10 +51,13 @@ import { registerImportSchemas } from './helpers/register-import-schemas'
 import { SettingsBuilder } from './infrastructure/settings/SettingsBuilder'
 import { createCryptoServices } from './helpers/create-crypto-services'
 import { SettingsRegistry } from './infrastructure/settings/SettingsRegistry'
+import { PluginManager } from './infrastructure/plugins/PluginManager'
+import { PluginRegistry } from './infrastructure/plugins/PluginRegistry'
 
 app.whenReady().then(async () => {
   const userData = app.getPath('userData')
   const {
+    PLUGINS_DIR,
     DB_PATH,
     MIGRATIONS_PATH,
     LOG_PATH,
@@ -109,6 +112,10 @@ app.whenReady().then(async () => {
       settingsRegistry,
     )
 
+    logger.info('Initializing plugin system')
+    const pluginRegistry = new PluginRegistry()
+    const pluginManager = new PluginManager(pluginRegistry)
+
     logger.info('Initializing AI services')
     const ollamaSettings = new OllamaSettingsProvider(settingsBuilder)
     await ollamaSettings.init()
@@ -130,9 +137,6 @@ app.whenReady().then(async () => {
     const expressionEvaluator = new ExpressionEvaluator()
     const actionExecutor = new ActionExecutor(expressionEvaluator)
     const ruleEngine = new RuleEngine(expressionEvaluator, actionExecutor)
-
-    expressionEvaluator.setServices(createExpressionServices(settingsRegistry))
-    actionExecutor.setServices(createActionServices(ruleEngine))
 
     const eventBus = new InMemoryEventBus()
     const eventRegistry = new InMemoryEventRegistry()
@@ -178,6 +182,23 @@ app.whenReady().then(async () => {
       RuleRepository: ruleRepository,
       TemplateRepository: templateRepository,
     }
+
+    app.on('before-quit', async () => {
+      logger.header('Shutting down plugins')
+      await pluginManager.destroyAll()
+    })
+
+    logger.header('Plugins')
+    logger.info('Initializing plugins')
+    pluginManager.setModules(modules)
+    await pluginManager.load(PLUGINS_DIR)
+    await pluginManager.setup()
+    console.log(pluginRegistry.getAll())
+
+    logger.header('Rule Engine Services')
+    logger.info('Creating rule engine services')
+    expressionEvaluator.setServices(createExpressionServices(settingsRegistry))
+    actionExecutor.setServices(createActionServices(ruleEngine, pluginManager))
 
     logger.header('Database')
     logger.info('Running migrations')
