@@ -1,23 +1,32 @@
-import { safeStorage } from 'electron'
 import EventEmitter from 'events'
 
-import { JsonStore } from '@/core/JsonStore'
-
-import { AiSettings } from '../../domain/models/AiSettings'
 import { IAiSettingsProvider } from '../../application/ports/IAiSettingsProvider'
+import {
+  ISettingsBuilder,
+  Schema,
+  SettingsInterface,
+} from '@/application/ports/settings/ISettingsBuilder'
+import { AiSettings } from '../../domain/models/AiSettings'
+
+export const settingsSchema = {
+  host: { default: 'http://localhost:11434/' },
+  apiKey: { secret: true },
+} satisfies Schema
 
 export class OllamaSettingsProvider
   extends EventEmitter
   implements IAiSettingsProvider
 {
   private readonly filename = 'ollama-settings'
-  private _settings: AiSettings
-  private store: JsonStore
+  private _settings: SettingsInterface<typeof settingsSchema>
 
-  constructor(store: JsonStore) {
+  constructor(builder: ISettingsBuilder) {
     super()
-    this.store = store
-    this._settings = { host: 'http://localhost:11434/' }
+    this._settings = builder.defineSettings('ai', this.filename, settingsSchema)
+  }
+
+  get settings(): AiSettings {
+    return { ...this._settings.getAll() }
   }
 
   onHostChanged(listener: (host: string) => void): () => void {
@@ -26,25 +35,7 @@ export class OllamaSettingsProvider
   }
 
   async init() {
-    const saved = await this.store.get<AiSettings>(this.filename)
-
-    if (saved) {
-      if (saved.apiKey && safeStorage.isEncryptionAvailable()) {
-        try {
-          const buffer = Buffer.from(saved.apiKey, 'base64')
-          saved.apiKey = safeStorage.decryptString(buffer)
-        } catch {
-          // Failed to decrypt, could be unencrypted or key changed
-        }
-      }
-      this._settings = saved
-    } else {
-      await this.store.set(this.filename, this._settings)
-    }
-  }
-
-  get settings() {
-    return { ...this._settings }
+    await this._settings.init()
   }
 
   private normalizeHost(host: string) {
@@ -57,36 +48,17 @@ export class OllamaSettingsProvider
   }
 
   async updateHost(newHost: string) {
-    if (this._settings.host === newHost) return
+    if (this._settings.getAll().host === newHost) return
 
     const normalizedHost = this.normalizeHost(newHost)
-    this._settings.host = normalizedHost
 
-    const settingsToSave = { ...this._settings }
-    if (settingsToSave.apiKey && safeStorage.isEncryptionAvailable()) {
-      settingsToSave.apiKey = safeStorage
-        .encryptString(settingsToSave.apiKey)
-        .toString('base64')
-    }
-
-    await this.store.set(this.filename, settingsToSave)
+    await this._settings.set('host', normalizedHost)
 
     this.emit('hostChanged', normalizedHost)
   }
 
   async updateApiKey(apiKey: string) {
-    if (this._settings.apiKey === apiKey) return
-
-    this._settings.apiKey = apiKey
-
-    const settingsToSave = { ...this._settings }
-    if (apiKey && safeStorage.isEncryptionAvailable()) {
-      settingsToSave.apiKey = safeStorage
-        .encryptString(apiKey)
-        .toString('base64')
-    }
-
-    await this.store.set(this.filename, settingsToSave)
+    this._settings.set('apiKey', apiKey)
     this.emit('apiKeyChanged', apiKey)
   }
 }
