@@ -104,8 +104,9 @@ app.whenReady().then(async () => {
       ...createCryptoServices(),
     })
 
+    // TODO: Move usecase tests into their respective feature folder
     logger.info('Initializing AI services')
-    const ollamaSettings = new OllamaSettingsProvider(settingsStore)
+    const ollamaSettings = new OllamaSettingsProvider(settingsBuilder)
     await ollamaSettings.init()
 
     const ollamaService = new OllamaService(ollamaSettings)
