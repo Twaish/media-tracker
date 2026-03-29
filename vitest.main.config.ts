@@ -10,9 +10,11 @@ export default defineConfig({
     },
   },
   test: {
-    dir: './electron/main/tests/unit',
     environment: 'node',
     globals: true,
-    include: ['**/*.test.ts'],
+    include: [
+      'electron/main/tests/unit/**/*.test.ts',
+      'electron/main/features/**/*.test.ts',
+    ],
   },
 })
