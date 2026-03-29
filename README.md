@@ -21,7 +21,6 @@ npm run build:release
 
 ## Feature Todo List
 - Create splash screen (Fixes FOUC)
-- Automatically fill information of media by link using AI
 - Add summary to current episode using AI (Continue without missing context)
 - Import data as packages containing manifest file and resource files
 - Viewing statistics
@@ -192,3 +191,4 @@ DO {
 ```
 - Rule engine. Run automation on conditions.
 - Export data as packages containing manifest file and resource files
+- Automatically fill information of media by link using AI
