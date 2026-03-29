@@ -1,0 +1,9 @@
+{
+  "name": "Test Plugin",
+  "description": "This is a plugin for testing",
+  "version": "1.0.0",
+  "author": "Axiom",
+  "icon": "./assets/icon.png",
+  "repository": "https://github.com/Twaish/media-tracker.git",
+  "minAppVersion": "1.0.0"
+}
