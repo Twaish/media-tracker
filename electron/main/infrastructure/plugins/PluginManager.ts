@@ -28,6 +28,11 @@ export class PluginManager implements IPluginManager {
       try {
         const pluginDir = path.join(pluginsPath, dir)
         const { manifest, module } = await this.loadPlugin(pluginDir)
+
+        if (manifest.icon) {
+          manifest.icon = path.join(pluginDir, manifest.icon)
+        }
+
         this.registry.register(manifest.name, manifest)
         this.pluginModules.set(manifest.name, module)
         this.pluginPaths.set(manifest.name, pluginDir)
