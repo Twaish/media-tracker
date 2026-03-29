@@ -5,6 +5,7 @@ import {
   RuntimeSchema,
   Schema,
 } from '@/application/ports/settings/ISettingsBuilder'
+import { ISettingsRegistry } from '@/application/ports/settings/ISettingsRegistry'
 import { JsonStore } from '@/core/JsonStore'
 
 type SettingsBuilderOptions = {
@@ -14,7 +15,10 @@ type SettingsBuilderOptions = {
 }
 
 export class SettingsBuilder implements ISettingsBuilder {
-  constructor(private readonly options: SettingsBuilderOptions) {}
+  constructor(
+    private readonly options: SettingsBuilderOptions,
+    private readonly registry: ISettingsRegistry,
+  ) {}
 
   defineSettings<T extends Schema>(
     namespace: string,
@@ -103,7 +107,7 @@ export class SettingsBuilder implements ISettingsBuilder {
       cache = data
     }
 
-    return {
+    const settingsProvider = {
       namespace,
       async init() {
         if (!cache) await load()
@@ -130,5 +134,7 @@ export class SettingsBuilder implements ISettingsBuilder {
         return schema[key]?.secret === true
       },
     }
+    this.registry.register(namespace, settingsProvider)
+    return settingsProvider
   }
 }
