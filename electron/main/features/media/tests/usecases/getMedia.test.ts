@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { IMediaRepository } from '@/features/media/domain/repositories/IMediaRepository'
-import { makeMedia } from '../utils'
+import { makeMedia } from './utils'
 import GetMedia from '@/features/media/usecases/getMedia'
 
 describe('GetMedia', () => {

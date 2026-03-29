@@ -1,13 +1,13 @@
-import { describe, it, beforeEach, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { IMediaRepository } from '@/features/media/domain/repositories/IMediaRepository'
 import { StorageService } from '@/core/StorageService'
-import UpdateMedia from '@/features/media/usecases/updateMedia'
-import { makeMedia } from '../utils'
-import { MEDIA_EVENTS } from '@/features/media/usecases/media.events'
+import AddMedia from '@/features/media/usecases/addMedia'
+import { makeMedia } from './utils'
 import { IEventBus } from '@/features/events/application/ports/IEventBus'
+import { MEDIA_EVENTS } from '@/features/media/usecases/media.events'
 
-describe('UpdateMedia', () => {
-  let usecase: UpdateMedia
+describe('AddMedia', () => {
+  let usecase: AddMedia
   let mockEventBus: IEventBus
   let mockRepo: IMediaRepository
   let mockStorage: StorageService
@@ -21,11 +21,11 @@ describe('UpdateMedia', () => {
     height: 480,
     size: 12345,
   }
+  const defaultProps = makeMedia()
 
   beforeEach(() => {
     mockRepo = {
-      update: vi.fn(),
-      getById: vi.fn(),
+      add: vi.fn(),
     } as unknown as IMediaRepository
 
     mockStorage = {
@@ -36,88 +36,83 @@ describe('UpdateMedia', () => {
       publish: vi.fn(),
     } as unknown as IEventBus
 
-    usecase = new UpdateMedia(mockRepo, mockStorage, mockEventBus)
+    usecase = new AddMedia(mockRepo, mockStorage, mockEventBus)
   })
 
-  it('stores thumbnail and updates media with stored path', async () => {
+  it('stores thumbnail and adds media with stored path', async () => {
     const input = {
-      id: 1,
+      ...defaultProps,
       title: 'Movie',
       thumbnail: 'image/path',
       genres: [],
     }
-
-    const previousMedia = makeMedia({ ...input })
-    const updatedMedia = makeMedia({
-      ...input,
-      thumbnail: 'fullpath/images/thumb.jpg',
-    })
+    const media = makeMedia({ id: 1 })
 
     vi.mocked(mockStorage.storeImage).mockResolvedValue(imageResult)
-    vi.mocked(mockRepo.getById).mockResolvedValue(previousMedia)
-    vi.mocked(mockRepo.update).mockResolvedValue(updatedMedia)
+
+    vi.mocked(mockRepo.add).mockResolvedValue(media)
 
     const result = await usecase.execute(input)
 
     expect(mockStorage.storeImage).toHaveBeenCalledWith(input.thumbnail)
 
-    expect(mockRepo.update).toHaveBeenCalledWith({
+    expect(mockRepo.add).toHaveBeenCalledWith({
       ...input,
       thumbnail: '/images/thumb.jpg',
     })
 
     expect(mockEventBus.publish).toHaveBeenCalledWith(
-      MEDIA_EVENTS.MEDIA_UPDATED,
+      MEDIA_EVENTS.MEDIA_ADDED,
       {
-        previous: previousMedia,
-        current: updatedMedia,
+        current: media,
       },
     )
 
-    expect(result).toEqual(updatedMedia)
+    expect(result).toEqual(media)
   })
 
-  it('updates media without storing image when thumbnail missing', async () => {
+  it('adds media without storing image when thumbnail missing', async () => {
     const input = {
-      id: 1,
+      ...defaultProps,
       title: 'Movie',
       genres: [],
     }
-    const updatedMedia = makeMedia(input)
+    const media = makeMedia({ id: 1 })
 
-    vi.mocked(mockRepo.update).mockResolvedValue(updatedMedia)
+    vi.mocked(mockRepo.add).mockResolvedValue(media)
 
     const result = await usecase.execute(input)
 
     expect(mockStorage.storeImage).not.toHaveBeenCalled()
 
-    expect(mockRepo.update).toHaveBeenCalledWith({
+    expect(mockRepo.add).toHaveBeenCalledWith({
       ...input,
+      thumbnail: null,
     })
 
-    expect(result).toEqual(updatedMedia)
+    expect(result).toEqual(media)
   })
 
   it('throws if storage fails', async () => {
+    const storageError = new Error('Storage failed')
     const input = {
-      id: 1,
+      ...defaultProps,
       title: 'Movie',
       thumbnail: 'image/path',
       genres: [],
     }
 
-    const storageError = new Error('Storage failed')
-
     vi.mocked(mockStorage.storeImage).mockRejectedValue(storageError)
 
     await expect(usecase.execute(input)).rejects.toThrow('Storage failed')
 
-    expect(mockRepo.update).not.toHaveBeenCalled()
+    expect(mockRepo.add).not.toHaveBeenCalled()
   })
 
   it('throws if repository fails', async () => {
+    const repoError = new Error('Database failed')
     const input = {
-      id: 1,
+      ...defaultProps,
       title: 'Movie',
       thumbnail: 'image/path',
       genres: [],
@@ -125,8 +120,7 @@ describe('UpdateMedia', () => {
 
     vi.mocked(mockStorage.storeImage).mockResolvedValue(imageResult)
 
-    const repoError = new Error('Database failed')
-    vi.mocked(mockRepo.update).mockRejectedValue(repoError)
+    vi.mocked(mockRepo.add).mockRejectedValue(repoError)
 
     await expect(usecase.execute(input)).rejects.toThrow('Database failed')
   })
