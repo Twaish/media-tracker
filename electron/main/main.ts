@@ -131,7 +131,7 @@ app.whenReady().then(async () => {
     const actionExecutor = new ActionExecutor(expressionEvaluator)
     const ruleEngine = new RuleEngine(expressionEvaluator, actionExecutor)
 
-    expressionEvaluator.setServices(createExpressionServices())
+    expressionEvaluator.setServices(createExpressionServices(settingsRegistry))
     actionExecutor.setServices(createActionServices(ruleEngine))
 
     const eventBus = new InMemoryEventBus()
