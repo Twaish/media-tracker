@@ -2,6 +2,7 @@ import { AutomationContext } from '@shared/types'
 import {
   RULE_ADD,
   RULE_ENGINE_SYNC,
+  RULE_GET_ALL,
   RULE_GET_ENABLED,
   RULE_REMOVE,
   RULE_UPDATE,
@@ -19,6 +20,7 @@ export function exposeAutomationContext() {
     updateRule: (rule) => ipcRenderer.invoke(RULE_UPDATE, rule),
     removeRules: (ids) => ipcRenderer.invoke(RULE_REMOVE, ids),
     getEnabledRules: () => ipcRenderer.invoke(RULE_GET_ENABLED),
+    getAllRules: () => ipcRenderer.invoke(RULE_GET_ALL),
     addTemplate: (template) => ipcRenderer.invoke(TEMPLATE_ADD, template),
     updateTemplate: (template) => ipcRenderer.invoke(TEMPLATE_UPDATE, template),
     removeTemplates: (ids) => ipcRenderer.invoke(TEMPLATE_REMOVE, ids),

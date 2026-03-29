@@ -4,6 +4,7 @@ export const RULE_ADD = 'rule:add'
 export const RULE_UPDATE = 'rule:update'
 export const RULE_REMOVE = 'rule:remove'
 export const RULE_GET_ENABLED = 'rule:get-enabled'
+export const RULE_GET_ALL = 'rule:get-all'
 
 export const TEMPLATE_ADD = 'template:add'
 export const TEMPLATE_UPDATE = 'template:update'

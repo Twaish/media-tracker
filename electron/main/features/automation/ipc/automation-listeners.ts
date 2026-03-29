@@ -2,6 +2,7 @@ import { AutomationContext } from '@shared/types'
 import {
   RULE_ADD,
   RULE_ENGINE_SYNC,
+  RULE_GET_ALL,
   RULE_GET_ENABLED,
   RULE_REMOVE,
   RULE_UPDATE,
@@ -26,6 +27,7 @@ export function addAutomationEventListeners(modules: Modules) {
       RULE_GET_ENABLED,
       () => useCases.getEnabledRules.execute(),
     ],
+    getAllRules: [RULE_GET_ALL, () => useCases.getAllRules.execute()],
     addTemplate: [
       TEMPLATE_ADD,
       (_, template) => useCases.addTemplate.execute(template),

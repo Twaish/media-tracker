@@ -30,6 +30,7 @@ export interface AutomationContext {
   updateRule(rule: UpdateRuleDTO): Promise<PersistedRule>
   removeRules(ids: number[]): Promise<{ deleted: number; ids: number[] }>
   getEnabledRules(): Promise<PersistedRule[]>
+  getAllRules(): Promise<PersistedRule[]>
 
   addTemplate(template: AddTemplateDTO): Promise<PersistedTemplate>
   updateTemplate(template: UpdateTemplateDTO): Promise<PersistedTemplate>
