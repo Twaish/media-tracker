@@ -101,6 +101,13 @@ export class RuleRepositoryDrizzle implements IRuleRepository {
     return rows.map(this.toDomain)
   }
 
+  async getAll(): Promise<PersistedRule[]> {
+    const rows = await this.db.query.rulesTable.findMany({
+      with: { events: true },
+    })
+    return rows.map(this.toDomain)
+  }
+
   async *streamAll(batchSize: number = 10): AsyncIterable<PersistedRule> {
     let lastId: number | undefined
 
