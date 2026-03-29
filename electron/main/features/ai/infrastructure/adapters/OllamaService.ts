@@ -12,8 +12,7 @@ export class OllamaService implements IAiService {
 
   constructor(settingsProvider: IAiSettingsProvider) {
     this.settingsProvider = settingsProvider
-    const settings = settingsProvider.settings
-    this.currentHost = settings.host
+    this.currentHost = settingsProvider.settings.host
     this.ollama = this.createClient(this.currentHost)
 
     settingsProvider.onHostChanged(this.reconnect)
@@ -36,7 +35,7 @@ export class OllamaService implements IAiService {
     host: string,
     options: Partial<Omit<Config, 'host'>> = {},
   ): Ollama {
-    const apiKey = this.settingsProvider?.settings?.apiKey
+    const apiKey = this.settingsProvider.settings.apiKey
     if (apiKey) {
       process.env['OLLAMA_API_KEY'] = apiKey
     }
