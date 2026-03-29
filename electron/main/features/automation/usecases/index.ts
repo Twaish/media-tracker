@@ -8,6 +8,7 @@ import UpdateTemplate from './updateTemplate'
 import RemoveTemplates from './removeTemplates'
 import GetAllTemplates from './getAllTemplates'
 import SyncRuleEngine from './syncRuleEngine'
+import GetAllRules from './getAllRules'
 
 export function createAutomationUseCases({
   RuleEngine,
@@ -26,6 +27,7 @@ export function createAutomationUseCases({
     updateRule: new UpdateRule(RuleRepository, RuleEngineCompiler),
     removeRules: new RemoveRules(RuleRepository),
     getEnabledRules: new GetEnabledRules(RuleRepository),
+    getAllRules: new GetAllRules(RuleRepository),
 
     addTemplate: new AddTemplate(TemplateRepository, RuleEngineCompiler),
     updateTemplate: new UpdateTemplate(TemplateRepository, RuleEngineCompiler),
