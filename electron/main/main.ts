@@ -50,6 +50,7 @@ import { registerExportSchemas } from './helpers/register-export-schemas'
 import { registerImportSchemas } from './helpers/register-import-schemas'
 import { SettingsBuilder } from './infrastructure/settings/SettingsBuilder'
 import { createCryptoServices } from './helpers/create-crypto-services'
+import { SettingsRegistry } from './infrastructure/settings/SettingsRegistry'
 
 app.whenReady().then(async () => {
   const userData = app.getPath('userData')
@@ -99,10 +100,14 @@ app.whenReady().then(async () => {
     })
 
     logger.info('Initializing settings')
-    const settingsBuilder = new SettingsBuilder({
-      store: settingsStore,
-      ...createCryptoServices(),
-    })
+    const settingsRegistry = new SettingsRegistry()
+    const settingsBuilder = new SettingsBuilder(
+      {
+        store: settingsStore,
+        ...createCryptoServices(),
+      },
+      settingsRegistry,
+    )
 
     logger.info('Initializing AI services')
     const ollamaSettings = new OllamaSettingsProvider(settingsBuilder)
