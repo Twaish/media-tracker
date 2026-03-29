@@ -152,16 +152,16 @@ export const createImportUseCases = ({
   logger,
 }: Modules) => {
   const context: {
-    registeredGenres: Record<string, number>
-    registeredMedias: Record<number, number>
+    registeredGenres: Map<string, number>
+    registeredMedias: Map<number, number>
   } = {
-    registeredGenres: {},
+    registeredGenres: new Map(),
     // We use this to map old media ids to new ones
-    registeredMedias: {},
+    registeredMedias: new Map(),
   }
 
   const mapItemToNewMediaId = <T extends { mediaId: number }>(item: T) => {
-    const mapped = context.registeredMedias[item.mediaId]
+    const mapped = context.registeredMedias.get(item.mediaId)
 
     if (mapped == null) {
       throw new Error(`Missing media mapping for id ${item.mediaId}`)
@@ -177,11 +177,11 @@ export const createImportUseCases = ({
     importGenres: async (stream: AsyncIterable<PersistedGenre>) => {
       const genres = await GenresRepository.get()
       genres.forEach((value) => {
-        context.registeredGenres[value.name] = value.id
+        context.registeredGenres.set(value.name, value.id)
       })
 
       for await (const genre of stream) {
-        const registeredGenre = context.registeredGenres[genre.name]
+        const registeredGenre = context.registeredGenres.get(genre.name)
         if (registeredGenre != null) {
           logger.info(
             `Skipping existing genre "${genre.name}" with mapped id ${registeredGenre}`,
@@ -190,7 +190,7 @@ export const createImportUseCases = ({
         }
 
         const created = await GenresRepository.add(genre)
-        context.registeredGenres[genre.name] = created.id
+        context.registeredGenres.set(genre.name, created.id)
         logger.info(`Created genre "${genre.name}" with id ${created.id}`)
       }
     },
@@ -201,7 +201,7 @@ export const createImportUseCases = ({
         logger.debug(JSON.stringify(media, null, 2))
 
         const mappedGenres = media.genres.map((g) => {
-          const id = context.registeredGenres[g.name]
+          const id = context.registeredGenres.get(g.name)
 
           if (id == null) {
             throw new Error(`Missing genre mapping for "${g.name}"`)
@@ -215,7 +215,7 @@ export const createImportUseCases = ({
           ...media,
           genres: mappedGenres,
         })
-        context.registeredMedias[previousId] = newMedia.id
+        context.registeredMedias.set(previousId, newMedia.id)
       }
     },
 
