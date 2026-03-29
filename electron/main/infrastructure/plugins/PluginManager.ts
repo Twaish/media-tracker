@@ -9,14 +9,17 @@ import path from 'path'
 import { pathToFileURL } from 'url'
 
 export class PluginManager implements IPluginManager {
+  private modules?: Modules
   private pluginModules: Map<string, PluginModule> = new Map()
   private pluginPaths: Map<string, string> = new Map()
-  constructor(
-    private readonly modules: Modules,
-    private readonly registry: IPluginRegistry,
-  ) {}
+  constructor(private readonly registry: IPluginRegistry) {}
+
+  setModules(modules: Modules) {
+    this.modules = modules
+  }
 
   async load(pluginsPath: string): Promise<void> {
+    const modules = this.getModules()
     await fs.mkdir(pluginsPath, { recursive: true })
 
     const dirs = await fs.readdir(pluginsPath)
@@ -29,7 +32,7 @@ export class PluginManager implements IPluginManager {
         this.pluginModules.set(manifest.name, module)
         this.pluginPaths.set(manifest.name, pluginDir)
       } catch (err) {
-        this.modules.logger.error(
+        modules.logger.error(
           `Couldn't import plugin at ${dir}. ${err instanceof Error ? err.stack : String(err)}`,
         )
       }
@@ -37,16 +40,18 @@ export class PluginManager implements IPluginManager {
   }
 
   async setup(): Promise<void> {
+    const modules = this.getModules()
     await Promise.all(
       this.pluginModules
         .entries()
         .map(([name, module]) =>
-          module.setup?.(this.modules, this.pluginPaths.get(name)!),
+          module.setup?.(modules, this.pluginPaths.get(name)!),
         ),
     )
   }
 
   async execute(pluginName: string, ...args: unknown[]): Promise<void> {
+    const modules = this.getModules()
     const plugin = this.pluginModules.get(pluginName)
     if (!plugin) {
       throw new Error(`No plugin found with name "${pluginName}"`)
@@ -54,10 +59,11 @@ export class PluginManager implements IPluginManager {
     if (!plugin.execute) {
       throw new Error(`Plugin "${pluginName}" has no execute method`)
     }
-    await plugin.execute(this.modules, ...args)
+    await plugin.execute(modules, ...args)
   }
 
   async destroy(pluginName: string): Promise<void> {
+    const modules = this.getModules()
     const plugin = this.pluginModules.get(pluginName)
     if (!plugin) {
       throw new Error(`No plugin found with name "${pluginName}"`)
@@ -65,12 +71,13 @@ export class PluginManager implements IPluginManager {
     if (!plugin.destroy) {
       throw new Error(`Plugin "${pluginName}" has no destroy method`)
     }
-    await plugin.destroy(this.modules)
+    await plugin.destroy(modules)
   }
 
   async destroyAll(): Promise<void> {
+    const modules = this.getModules()
     await Promise.all(
-      this.pluginModules.values().map((p) => p.destroy?.(this.modules)),
+      this.pluginModules.values().map((p) => p.destroy?.(modules)),
     )
   }
 
@@ -88,5 +95,12 @@ export class PluginManager implements IPluginManager {
     const modulePath = pathToFileURL(path.join(dir, 'index.js'))
     const module = (await import(modulePath.href)).default as PluginModule
     return { manifest, module }
+  }
+
+  private getModules() {
+    if (!this.modules) {
+      throw new Error(`Modules has not been set in PluginManager`)
+    }
+    return this.modules!
   }
 }
