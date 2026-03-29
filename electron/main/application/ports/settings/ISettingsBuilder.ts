@@ -1,4 +1,4 @@
-export type Schema = Record<string, { default?: any; secret?: boolean }>
+export type Schema = Record<string, { default?: unknown; secret?: boolean }>
 
 export type OnDiskValue<T> = 'default' extends keyof T
   ? T['default']
@@ -20,7 +20,7 @@ export type RuntimeSchema<T extends Schema> = {
   [K in keyof T]: RuntimeValue<T[K]>
 }
 
-export type SettingsInterface<T extends Schema = {}> = {
+export type SettingsInterface<T extends Schema = Schema> = {
   namespace: string
   init(): Promise<void>
   get<K extends keyof T>(key: K): RuntimeSchema<T>[K]

@@ -3,7 +3,6 @@ import {
   OnDiskSchema,
   OnDiskValue,
   RuntimeSchema,
-  RuntimeValue,
   Schema,
 } from '@/application/ports/settings/ISettingsBuilder'
 import { JsonStore } from '@/core/JsonStore'
@@ -33,25 +32,47 @@ export class SettingsBuilder implements ISettingsBuilder {
 
       const result = {} as RuntimeSchema<T>
 
-      for (const key of Object.keys(schema) as (keyof T)[]) {
-        const definition = schema[key]!
-        const storedOption = stored[key as string]
+      for (const [key, definition] of Object.entries(schema) as [
+        keyof T,
+        T[keyof T],
+      ][]) {
+        const storedOption = stored[key]
 
-        if (
-          definition.secret &&
-          typeof storedOption === 'object' &&
-          storedOption &&
-          '__encrypted' in storedOption
-        ) {
+        type RuntimeValue = RuntimeSchema<T>[typeof key]
+
+        function isEncryptedValue(
+          value: unknown,
+        ): value is { __encrypted: true; value: string } {
+          return (
+            typeof value === 'object' &&
+            value !== null &&
+            '__encrypted' in value &&
+            value.__encrypted === true &&
+            'value' in value
+          )
+        }
+
+        function isSecretDefinition(
+          definition: Schema[keyof Schema],
+        ): definition is { secret: true; default?: RuntimeValue } {
+          return (
+            typeof definition === 'object' &&
+            definition !== null &&
+            'secret' in definition &&
+            definition.secret === true
+          )
+        }
+
+        if (isSecretDefinition(definition) && isEncryptedValue(storedOption)) {
           try {
-            result[key] = decrypt(storedOption.value) as RuntimeValue<
-              T[typeof key]
-            >
+            result[key] = <RuntimeValue>decrypt(storedOption.value)
           } catch {
-            result[key] = definition.default
+            if (definition.default != null) {
+              result[key] = definition.default
+            }
           }
         } else {
-          result[key] = storedOption ?? definition.default
+          result[key] = <RuntimeValue>(storedOption ?? definition.default)
         }
       }
 
