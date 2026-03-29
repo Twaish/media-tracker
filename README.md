@@ -21,7 +21,6 @@ npm run build:release
 
 ## Feature Todo List
 - Create splash screen (Fixes FOUC)
-- Add summary to current episode using AI (Continue without missing context)
 - Viewing statistics
 - System tray icon UI for quickly updating progress or adding new media
 - Backup/Restore using versioning system (delta-based)
