@@ -22,7 +22,6 @@ npm run build:release
 ## Feature Todo List
 - Create splash screen (Fixes FOUC)
 - Add summary to current episode using AI (Continue without missing context)
-- Import data as packages containing manifest file and resource files
 - Viewing statistics
 - System tray icon UI for quickly updating progress or adding new media
 - Backup/Restore using versioning system (delta-based)
@@ -189,6 +188,6 @@ DO {
 }
 ```
 - Rule engine. Run automation on conditions.
-- Export data as packages containing manifest file and resource files
+- Export/Import data as packages containing manifest file and resource files
 - Automatically fill information of media by link using AI
 - Settings
