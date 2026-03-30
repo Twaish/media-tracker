@@ -6,6 +6,7 @@ import { Modules } from '@/helpers/ipc/types'
 
 import fs from 'fs/promises'
 import path from 'path'
+import semver from 'semver'
 import { pathToFileURL } from 'url'
 
 export class PluginManager implements IPluginManager {
@@ -28,6 +29,15 @@ export class PluginManager implements IPluginManager {
       try {
         const pluginDir = path.join(pluginsPath, dir)
         const { manifest, module } = await this.loadPlugin(pluginDir)
+
+        if (
+          manifest.minAppVersion &&
+          semver.gt(manifest.minAppVersion, modules.appInfo.version)
+        ) {
+          throw new Error(
+            `Plugin "${manifest.name}" requires app version ${manifest.minAppVersion} or higher (current: ${modules.appInfo.version}) `,
+          )
+        }
 
         if (manifest.icon) {
           manifest.icon = path.join(pluginDir, manifest.icon)
