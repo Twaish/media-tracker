@@ -5,6 +5,7 @@ import { createThemeRouters } from '../../features/theme/ipc'
 import { createWatchPlanRouters } from '../../features/watchplan/ipc'
 import { createTasksRouters } from '../../features/tasks/ipc'
 import { createMediaRouters } from '../../features/media/ipc'
+import { createEventsRouters } from '../../features/events/ipc'
 
 export function createOrpcRouter(modules: Modules) {
   return {
@@ -14,5 +15,6 @@ export function createOrpcRouter(modules: Modules) {
     watchPlans: createWatchPlanRouters(modules),
     tasks: createTasksRouters(modules),
     media: createMediaRouters(modules),
+    events: createEventsRouters(modules),
   }
 }
