@@ -1,4 +1,5 @@
 import { ThemeMode } from '@shared/types'
+import { ipc } from './ipc'
 
 const THEME_KEY = 'theme'
 
@@ -8,7 +9,7 @@ export interface ThemePreferences {
 }
 
 export async function getCurrentTheme(): Promise<ThemePreferences> {
-  const currentTheme = await window.themeMode.current()
+  const currentTheme = await ipc.client.themeMode.current()
   const localTheme = localStorage.getItem(THEME_KEY) as ThemeMode | null
 
   return {
@@ -20,15 +21,15 @@ export async function getCurrentTheme(): Promise<ThemePreferences> {
 export async function setTheme(newTheme: ThemeMode) {
   switch (newTheme) {
     case 'dark':
-      await window.themeMode.dark()
+      await ipc.client.themeMode.dark()
       updateDocumentTheme(true)
       break
     case 'light':
-      await window.themeMode.light()
+      await ipc.client.themeMode.light()
       updateDocumentTheme(false)
       break
     case 'system': {
-      const isDarkMode = await window.themeMode.system()
+      const isDarkMode = await ipc.client.themeMode.system()
       updateDocumentTheme(isDarkMode)
       break
     }
@@ -38,7 +39,7 @@ export async function setTheme(newTheme: ThemeMode) {
 }
 
 export async function toggleTheme() {
-  const isDarkMode = await window.themeMode.toggle()
+  const isDarkMode = await ipc.client.themeMode.toggle()
   const newTheme = isDarkMode ? 'dark' : 'light'
 
   updateDocumentTheme(isDarkMode)

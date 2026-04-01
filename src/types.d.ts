@@ -1,5 +1,4 @@
 import type {
-  ThemeModeContext,
   MediaContext,
   GenresContext,
   TasksContext,
@@ -8,7 +7,6 @@ import type {
 
 declare global {
   interface Window {
-    themeMode: ThemeModeContext
     media: MediaContext
     genres: GenresContext
     tasks: TasksContext

@@ -4,11 +4,9 @@ import { exposeExportingContext } from '@/features/exporting/ipc/exporting-conte
 import { exposeGenresContext } from '@/features/genres/ipc/genres-context'
 import { exposeMediaContext } from '@/features/media/ipc/media-context'
 import { exposeTasksContext } from '@/features/tasks/ipc/tasks-context'
-import { exposeThemeContext } from '@/features/theme/ipc/theme-context'
 import { exposeWatchPlansContext } from '@/features/watchplan/ipc/watch-plans-context'
 
 export default function exposeContexts() {
-  exposeThemeContext()
   exposeGenresContext()
   exposeMediaContext()
   exposeAiContext()
