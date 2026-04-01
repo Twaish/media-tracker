@@ -60,7 +60,7 @@ export type WatchPlanSegmentProps = {
   mediaId: number
   startEpisode: number
   endEpisode: number
-  order: number
+  order?: number
 }
 
 export type PersistedWatchPlanSegment = WatchPlanSegmentProps & {
