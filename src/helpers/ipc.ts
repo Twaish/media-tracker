@@ -2,6 +2,7 @@ import { createORPCClient } from '@orpc/client'
 import { RPCLink } from '@orpc/client/message-port'
 import type { RouterClient } from '@orpc/server'
 import { Router } from '@shared/types'
+import './task_helpers'
 
 class IPCManager {
   readonly client: RouterClient<Router>

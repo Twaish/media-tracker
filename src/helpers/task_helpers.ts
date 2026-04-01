@@ -1,20 +1,32 @@
-import { Task, TaskCallback, TaskDetails, TaskProgress } from '@shared/types'
+import { consumeEventIterator } from '@orpc/client'
+import { Task, AddTaskDTO } from '@shared/types'
+import { ipc } from './ipc'
 
 export async function getTasks() {
-  return window.tasks.getTasks()
+  return ipc.client.tasks.get()
 }
-export async function addTask(details: TaskDetails): Promise<Task> {
-  return window.tasks.addTask(details)
+export async function addTask(details: AddTaskDTO): Promise<Task> {
+  return ipc.client.tasks.add(details)
 }
 export async function progressTask(
   id: string,
-  progress: TaskProgress,
+  description: string,
+  progress: number,
 ): Promise<Task> {
-  return window.tasks.progressTask(id, progress)
+  return ipc.client.tasks.progress({ id, description, progress })
 }
+
+export type TaskCallback = (task: Task) => void
+
 export function onTaskAdded(callback: TaskCallback) {
-  return window.tasks.onTaskAdded(callback)
+  return consumeEventIterator(ipc.client.tasks.onTaskAdded(), {
+    onEvent: (task: Task) => callback(task),
+    onError: (err) => console.error('onTaskAdded error', err),
+  })
 }
 export function onTaskProgressed(callback: TaskCallback) {
-  return window.tasks.onTaskProgress(callback)
+  return consumeEventIterator(ipc.client.tasks.onTaskProgress(), {
+    onEvent: (task: Task) => callback(task),
+    onError: (err) => console.error('onTaskProgress error', err),
+  })
 }

@@ -1,26 +1,3 @@
-export type TaskDetails = {
-  label: string
-  description: string
-}
-
-export type TaskProgress = {
-  description: string
-  progress: number
-}
-
-export type Task = {
-  id: string
-} & TaskDetails &
-  TaskProgress
-
-export type TaskCallback = (task: Task) => void
-
-export type TaskEventHandler = (callback: TaskCallback) => () => void
-
-export interface TasksContext {
-  onTaskAdded: TaskEventHandler
-  onTaskProgress: TaskEventHandler
-  addTask(details: TaskDetails): Task
-  getTasks(): Record<string, Task>
-  progressTask(id: string, progress: TaskProgress): Task
-}
+export { AddTaskDTO } from '@/features/tasks/application/dto/addTask.dto'
+export { ProgressTaskDTO } from '@/features/tasks/application/dto/progressTask.dto'
+export { Task } from '@/features/tasks/application/models/task.model'

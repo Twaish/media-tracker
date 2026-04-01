@@ -1,14 +1,17 @@
 import { v4 as uuidv4 } from 'uuid'
 import EventEmitter from 'events'
-import { Task, TaskDetails, TaskProgress } from '@shared/types'
-import { ITaskService } from '@/features/tasks/application/interfaces/ITaskService'
+
+import { ITaskService } from '../interfaces/ITaskService'
+import { Task } from '../models/task.model'
+import { AddTaskDTO } from '../dto/addTask.dto'
+import { ProgressTaskDTO } from '../dto/progressTask.dto'
 
 export class TaskService extends EventEmitter implements ITaskService {
   private readonly tasks: Record<string, Task> = {}
   getTasks(): Record<string, Task> {
     return this.tasks
   }
-  addTask(task: TaskDetails): Task {
+  addTask(task: AddTaskDTO): Task {
     if (!task.label) {
       throw new Error(`Task is required to have a label`)
     }
@@ -27,7 +30,7 @@ export class TaskService extends EventEmitter implements ITaskService {
     this.emit('taskAdded', newTask)
     return newTask
   }
-  updateTaskProgress(id: string, progress: TaskProgress): Task {
+  updateTaskProgress({ id, description, progress }: ProgressTaskDTO): Task {
     const task = this.tasks[id]
     if (!task) {
       throw new Error(`Task with id ${id} not found`)
@@ -35,7 +38,8 @@ export class TaskService extends EventEmitter implements ITaskService {
 
     const updatedTask = {
       ...task,
-      ...progress,
+      description,
+      progress,
     }
     this.tasks[id] = updatedTask
     this.emit('taskProgress', updatedTask)
