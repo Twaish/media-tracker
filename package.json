@@ -65,6 +65,8 @@
     "@electron-toolkit/utils": "^4.0.0",
     "@icons-pack/react-simple-icons": "^12.7.0",
     "@libsql/client": "^0.15.15",
+    "@orpc/client": "^1.13.13",
+    "@orpc/server": "^1.13.13",
     "@radix-ui/react-navigation-menu": "^1.2.10",
     "@radix-ui/react-select": "^2.2.5",
     "@radix-ui/react-slot": "^1.2.0",
@@ -92,6 +94,7 @@
     "tailwindcss-animate": "^1.0.7",
     "uuid": "^13.0.0",
     "winston": "^3.19.0",
+    "zod": "^3.25.76",
     "zustand": "^5.0.10"
   }
 }
