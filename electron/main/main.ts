@@ -53,6 +53,8 @@ import { createCryptoServices } from './helpers/create-crypto-services'
 import { SettingsRegistry } from './infrastructure/settings/SettingsRegistry'
 import { PluginManager } from './infrastructure/plugins/PluginManager'
 import { PluginRegistry } from './infrastructure/plugins/PluginRegistry'
+import { createOrpcRouter } from './helpers/ipc/create-orpc-router'
+import { registerOrpcHandler } from './helpers/ipc/register-orpc-handler'
 
 app.whenReady().then(async () => {
   const userData = app.getPath('userData')
@@ -213,6 +215,8 @@ app.whenReady().then(async () => {
 
     logger.info('Registering custom protocols')
     registerProtocols(modules)
+
+    registerOrpcHandler(createOrpcRouter(modules))
 
     logger.info('Registering domain events')
     registerDomainEvents(modules)
