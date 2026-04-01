@@ -1,3 +1,5 @@
+Bootstrapped with template from https://github.com/LuanRoger/electron-shadcn
+
 ## Install
 ```bash
 # Clone the repository
