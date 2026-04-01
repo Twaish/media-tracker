@@ -1,24 +1,10 @@
-export type StoreImageOptions = {
-  maxWidth?: number
-  maxHeight?: number
-  format?: 'webp' | 'png' | 'jpeg'
-  quality?: number
-}
+export { StoreImageDTO } from '@/features/storage/application/dto/storeImage.dto'
+export { StoredImageResultDTO } from '@/features/storage/application/dto/storedImageResult.dto'
 
-export type StoredImageResult = {
-  hash: string
-  filename: string
-  fullPath: string
-  relativePath: string
-  width: number
-  height: number
-  size: number
-}
+import { StoreImageDTO } from './storage'
+import { StoredImageResultDTO } from './storage'
 
 export interface StorageContext {
-  storeImage(
-    imagePath: string,
-    options: StoreImageOptions,
-  ): Promise<StoredImageResult>
+  storeImage(args: StoreImageDTO): Promise<StoredImageResultDTO>
   exportImages(destinationPath: string): Promise<void>
 }
