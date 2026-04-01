@@ -88,7 +88,7 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
     return mediaList.map(this.toDomain)
   }
 
-  async getWithPagination(options: Pagination) {
+  async getWithPagination(options?: Pagination) {
     return this.search({ pagination: options })
   }
 

@@ -15,18 +15,18 @@ export type MediaStatus = (typeof MEDIA_STATUS)[number]
 export type MediaProps = {
   title: string
   currentEpisode: number
-  maxEpisodes: number | null
-  thumbnail: string | null
+  maxEpisodes?: number | null
+  thumbnail?: string | null
   type: MediaType
   status: MediaStatus
-  externalLink: string | null
-  alternateTitles: string | null
-  watchAfter: number | null
-  lastUpdated: Date | null
-  createdAt: Date | null
+  externalLink?: string | null
+  alternateTitles?: string | null
+  watchAfter?: number | null
+  lastUpdated?: Date | null
+  createdAt?: Date | null
   isFavorite: boolean
   genres: PersistedGenre[]
-  deletedAt: Date | null
+  deletedAt?: Date | null
 }
 
 export type PersistedMedia = MediaProps & {

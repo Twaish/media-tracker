@@ -11,7 +11,7 @@ export interface IMediaRepository {
   getById(id: number): Promise<PersistedMedia>
   getByIds(ids: number[]): Promise<PersistedMedia[]>
   getWithPagination(
-    options: Pagination,
+    options?: Pagination,
   ): Promise<PaginationResult<PersistedMedia>>
   add(media: AddMediaDTO): Promise<PersistedMedia>
   remove(ids: number[]): Promise<{ deleted: number; ids: number[] }>
