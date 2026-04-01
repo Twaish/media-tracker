@@ -1,6 +1,5 @@
 import { Modules } from './types'
 import { addThemeEventListeners } from '@/features/theme/ipc/theme-listeners'
-import { addWindowEventListeners } from '@/features/window/ipc/window-listeners'
 import { addGenresEventListeners } from '@/features/genres/ipc/genres-listeners'
 import { addMediaEventListeners } from '@/features/media/ipc/media-listeners'
 import { addAiEventListeners } from '@/features/ai/ipc/ai-listeners'
@@ -10,7 +9,6 @@ import { addAutomationEventListeners } from '@/features/automation/ipc/automatio
 import { addExportingEventListeners } from '@/features/exporting/ipc/exporting-listeners'
 
 export default function registerListeners(modules: Modules) {
-  addWindowEventListeners(modules)
   addThemeEventListeners()
   addGenresEventListeners(modules)
   addMediaEventListeners(modules)

@@ -1,12 +1,14 @@
+import { ipc } from './ipc'
+
 export async function minimizeWindow() {
-  await window.electronWindow.minimize()
+  await ipc.client.electronWindow.minimize()
 }
 export async function maximizeWindow() {
-  await window.electronWindow.maximize()
+  await ipc.client.electronWindow.maximize()
 }
 export async function closeWindow() {
-  await window.electronWindow.close()
+  await ipc.client.electronWindow.close()
 }
 export async function readyWindow() {
-  await window.electronWindow.ready()
+  await ipc.client.electronWindow.ready()
 }

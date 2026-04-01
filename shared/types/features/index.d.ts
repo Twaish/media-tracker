@@ -1,6 +1,5 @@
 export * from './media'
 export * from './theme'
-export * from './window'
 export * from './genres'
 export * from './storage'
 export * from './tasks'
