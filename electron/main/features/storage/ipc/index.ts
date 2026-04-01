@@ -9,9 +9,6 @@ import {
   storeImageInputSchema,
 } from './schemas'
 
-export * from './storage-channels'
-export * from './storage-listeners'
-
 export function createStorageRouters(modules: Modules) {
   const useCases = createStorageUseCases(modules)
 

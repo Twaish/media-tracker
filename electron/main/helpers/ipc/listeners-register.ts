@@ -3,7 +3,6 @@ import { addThemeEventListeners } from '@/features/theme/ipc/theme-listeners'
 import { addWindowEventListeners } from '@/features/window/ipc/window-listeners'
 import { addGenresEventListeners } from '@/features/genres/ipc/genres-listeners'
 import { addMediaEventListeners } from '@/features/media/ipc/media-listeners'
-import { addStorageEventListeners } from '@/features/storage/ipc/storage-listeners'
 import { addAiEventListeners } from '@/features/ai/ipc/ai-listeners'
 import { addTasksEventListeners } from '@/features/tasks/ipc/tasks-listeners'
 import { addWatchPlansEventListeners } from '@/features/watchplan/ipc/watch-plans-listeners'
@@ -15,7 +14,6 @@ export default function registerListeners(modules: Modules) {
   addThemeEventListeners()
   addGenresEventListeners(modules)
   addMediaEventListeners(modules)
-  addStorageEventListeners(modules)
   addAiEventListeners(modules)
   addTasksEventListeners(modules)
   addWatchPlansEventListeners(modules)

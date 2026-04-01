@@ -3,7 +3,6 @@ import type {
   WindowContext,
   MediaContext,
   GenresContext,
-  StorageContext,
   TasksContext,
   AiContext,
 } from '@shared/types'
@@ -14,7 +13,6 @@ declare global {
     electronWindow: WindowContext
     media: MediaContext
     genres: GenresContext
-    storage: StorageContext
     tasks: TasksContext
     ai: AiContext
   }
