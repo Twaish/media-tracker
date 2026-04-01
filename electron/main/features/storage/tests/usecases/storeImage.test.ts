@@ -1,6 +1,5 @@
 import { describe, it, beforeEach, expect, vi } from 'vitest'
 import { StorageService } from '@/core/StorageService'
-import { StoreImageOptions } from '@shared/types'
 import StoreImage from '@/features/storage/usecases/storeImage'
 
 describe('StoreImage', () => {
@@ -16,10 +15,12 @@ describe('StoreImage', () => {
   })
 
   it('stores image with provided path and options', async () => {
-    const imagePath = '/tmp/image.jpg'
-    const options: StoreImageOptions = {
-      maxWidth: 480,
-      maxHeight: 480,
+    const storeImageArgs = {
+      imagePath: '/tmp/image.jpg',
+      options: {
+        maxWidth: 480,
+        maxHeight: 480,
+      },
     }
 
     const storageResult = {
@@ -34,20 +35,21 @@ describe('StoreImage', () => {
 
     vi.mocked(mockStorage.storeImage).mockResolvedValue(storageResult)
 
-    const result = await usecase.execute(imagePath, options)
+    const result = await usecase.execute(storeImageArgs)
 
-    expect(mockStorage.storeImage).toHaveBeenCalledWith(imagePath, options)
+    expect(mockStorage.storeImage).toHaveBeenCalledWith(storeImageArgs)
     expect(result).toEqual(storageResult)
   })
 
   it('throws if storage fails', async () => {
-    const imagePath = '/tmp/image.jpg'
-    const options = {}
+    const storeImageArgs = {
+      imagePath: '/tmp/image.jpg',
+    }
     const storageError = new Error('Storage failed')
 
     vi.mocked(mockStorage.storeImage).mockRejectedValue(storageError)
 
-    await expect(usecase.execute(imagePath, options)).rejects.toThrow(
+    await expect(usecase.execute(storeImageArgs)).rejects.toThrow(
       'Storage failed',
     )
   })

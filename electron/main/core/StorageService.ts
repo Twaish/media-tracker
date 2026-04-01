@@ -3,7 +3,8 @@ import fs from 'fs'
 import sharp from 'sharp'
 import crypto from 'crypto'
 import EventEmitter from 'events'
-import { StoredImageResult, StoreImageOptions } from '@shared/types'
+import { StoreImageDTO } from '@/features/storage/application/dto/storeImage.dto'
+import { StoredImageResultDTO } from '@/features/storage/application/dto/storedImageResult.dto'
 
 export class StorageService extends EventEmitter {
   dataPath: string
@@ -20,13 +21,13 @@ export class StorageService extends EventEmitter {
     return path.join(this.fullPath, relativePath)
   }
 
-  async storeImage(
-    sourcePath: string,
-    options: StoreImageOptions = {},
-  ): Promise<StoredImageResult> {
+  async storeImage({
+    imagePath,
+    options = {},
+  }: StoreImageDTO): Promise<StoredImageResultDTO> {
     const { maxWidth = 512, maxHeight = 512, format = 'png' } = options
 
-    const { data, info } = await sharp(sourcePath)
+    const { data, info } = await sharp(imagePath)
       .rotate()
       .resize({
         width: maxWidth,

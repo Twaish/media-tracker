@@ -23,8 +23,8 @@ export const importSchemaV1 = (modules: Modules): ImportSchema[] => {
       async (src: string) => {
         const files = await fs.readdir(src)
         files.forEach(async (file) => {
-          const filePath = path.join(src, file)
-          await modules.StorageService.storeImage(filePath)
+          const imagePath = path.join(src, file)
+          await modules.StorageService.storeImage({ imagePath })
         })
       },
     ]),
