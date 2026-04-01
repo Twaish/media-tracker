@@ -1,6 +1,7 @@
 import z from 'zod'
+import { Task } from '../application/models/task.model'
 
-export const taskSchema = z.object({
+export const taskSchema: z.ZodType<Task> = z.object({
   id: z.string(),
   label: z.string(),
   description: z.string(),
