@@ -1,14 +1,4 @@
-export type AddNodeDTO = {
-  source: string
-  enabled?: boolean
-}
-export type UpdateNodeDTO = Partial<AddNodeDTO> & {
-  id: number
-}
-
 export type {
-  AddRuleRepoDTO,
-  UpdateRuleRepoDTO,
-  AddTemplateRepoDTO,
-  UpdateTemplateRepoDTO,
+  AddNodeDTO,
+  UpdateNodeDTO,
 } from '@/features/automation/application/dto/automation.dto'

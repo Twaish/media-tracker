@@ -1,15 +1,5 @@
-import { RuleProps } from '../../domain/entities/rule'
-import { TemplateProps } from '../../domain/entities/template'
+import z from 'zod'
+import { addNodeInputSchema, updateNodeInputSchema } from '../../ipc/schemas'
 
-export type AddRuleRepoDTO = Omit<RuleProps, 'createdAt' | 'lastUpdated'>
-export type UpdateRuleRepoDTO = Partial<AddRuleRepoDTO> & {
-  id: number
-}
-
-export type AddTemplateRepoDTO = Omit<
-  TemplateProps,
-  'createdAt' | 'lastUpdated'
->
-export type UpdateTemplateRepoDTO = Partial<AddTemplateRepoDTO> & {
-  id: number
-}
+export type AddNodeDTO = z.infer<typeof addNodeInputSchema>
+export type UpdateNodeDTO = z.infer<typeof updateNodeInputSchema>

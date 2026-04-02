@@ -1,13 +1,12 @@
 import { and, eq, gt, isNull } from 'drizzle-orm'
 
-import { AddMediaEmbeddingDTO } from '../../application/dto/mediaEmbedding.dto'
-
 import { DrizzleDb, Executor } from '@/infrastructure/db/types'
 import { mediaEmbeddingsTable, mediaTable } from '@/infrastructure/db/schema'
 
 import { IMediaEmbeddingRepository } from '../../domain/repositories/IMediaEmbeddingRepository'
 import {
   MediaEmbedding,
+  MediaEmbeddingProps,
   PersistedMediaEmbedding,
 } from '../../domain/entities/mediaEmbedding'
 
@@ -32,7 +31,7 @@ export class MediaEmbeddingRepositoryDrizzle implements IMediaEmbeddingRepositor
   }
 
   async add(
-    mediaEmbedding: AddMediaEmbeddingDTO,
+    mediaEmbedding: MediaEmbeddingProps,
   ): Promise<PersistedMediaEmbedding> {
     return this.db.transaction(async (tx) => {
       const embedding = JSON.stringify(mediaEmbedding.embedding)

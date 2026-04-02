@@ -2,7 +2,7 @@ import { Modules } from '@/helpers/ipc/types'
 import { createAiUseCases } from '../usecases'
 import { os } from '@orpc/server'
 import {
-  AiCompatibilityResultDTOSchema,
+  aiCompatibilityResultSchema,
   createEmbeddingInputSchema,
   createEmbeddingOutputSchema,
   getCapabilitiesInputSchema,
@@ -17,7 +17,7 @@ export function createAiRouters(modules: Modules) {
 
   return {
     checkCompatibility: os
-      .output(AiCompatibilityResultDTOSchema)
+      .output(aiCompatibilityResultSchema)
       .handler(() => useCases.checkAiCompatibility.execute()),
     updateHost: os
       .input(updateHostInputSchema)

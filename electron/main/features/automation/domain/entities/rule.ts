@@ -90,3 +90,6 @@ export class Rule {
     return this.props.lastUpdated
   }
 }
+
+export type AddRuleParams = Omit<RuleProps, 'createdAt' | 'lastUpdated'>
+export type UpdateRuleParams = Partial<AddRuleParams> & { id: number }

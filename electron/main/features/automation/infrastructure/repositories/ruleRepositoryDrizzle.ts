@@ -3,13 +3,13 @@ import { eq, gt, inArray } from 'drizzle-orm'
 import { DrizzleDb, Executor } from '@/infrastructure/db/types'
 import { ruleEventsTable, rulesTable } from '@/infrastructure/db/schema'
 
-import {
-  AddRuleRepoDTO,
-  UpdateRuleRepoDTO,
-} from '../../application/dto/automation.dto'
-
 import { IRuleRepository } from '../../domain/repositories/IRuleRepository'
-import { PersistedRule, Rule } from '../../domain/entities/rule'
+import {
+  AddRuleParams,
+  UpdateRuleParams,
+  PersistedRule,
+  Rule,
+} from '../../domain/entities/rule'
 
 export class RuleRepositoryDrizzle implements IRuleRepository {
   constructor(private readonly db: DrizzleDb) {}
@@ -29,7 +29,7 @@ export class RuleRepositoryDrizzle implements IRuleRepository {
 
     return this.toDomain(row)
   }
-  async add(rule: AddRuleRepoDTO): Promise<PersistedRule> {
+  async add(rule: AddRuleParams): Promise<PersistedRule> {
     return this.db.transaction(async (tx) => {
       const { events, ast, ...ruleData } = rule
       const astString = JSON.stringify(ast)
@@ -63,7 +63,7 @@ export class RuleRepositoryDrizzle implements IRuleRepository {
       ids: rows.map((r) => r.id),
     }
   }
-  async update(rule: UpdateRuleRepoDTO): Promise<PersistedRule> {
+  async update(rule: UpdateRuleParams): Promise<PersistedRule> {
     return this.db.transaction(async (tx) => {
       const { id, ast, events, ...ruleUpdates } = rule
 

@@ -1,9 +1,9 @@
-import { UpdateNodeDTO } from '@shared/types'
-import { UpdateRuleRepoDTO } from '../application/dto/automation.dto'
+import { UpdateNodeDTO } from '../application/dto/automation.dto'
 
 import { RuleNode } from '../domain/ast/RuleNode'
 import { IRuleRepository } from '../domain/repositories/IRuleRepository'
 import { IRuleEngineCompiler } from '../application/interfaces/IRuleEngineCompiler'
+import { UpdateRuleParams } from '../domain/entities/rule'
 
 export default class UpdateRule {
   constructor(
@@ -12,7 +12,7 @@ export default class UpdateRule {
   ) {}
 
   async execute(rule: UpdateNodeDTO) {
-    let ruleChanges: UpdateRuleRepoDTO = { id: rule.id }
+    let ruleChanges: UpdateRuleParams = { id: rule.id }
     if (rule.source) {
       const compiled = this.compiler.compile(rule.source) as RuleNode
       ruleChanges = {

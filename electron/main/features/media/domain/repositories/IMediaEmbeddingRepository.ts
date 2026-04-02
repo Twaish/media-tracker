@@ -1,9 +1,11 @@
-import { PersistedMediaEmbedding } from '../entities/mediaEmbedding'
-import { AddMediaEmbeddingDTO } from '../../application/dto/mediaEmbedding.dto'
+import {
+  MediaEmbeddingProps,
+  PersistedMediaEmbedding,
+} from '../entities/mediaEmbedding'
 
 export interface IMediaEmbeddingRepository {
   getByMediaId(mediaId: number, model: string): Promise<PersistedMediaEmbedding>
-  add(mediaEmbedding: AddMediaEmbeddingDTO): Promise<PersistedMediaEmbedding>
+  add(mediaEmbedding: MediaEmbeddingProps): Promise<PersistedMediaEmbedding>
   streamEmbeddingsByModel(model: string): AsyncIterable<{
     mediaId: number
     embedding: number[]

@@ -3,8 +3,7 @@ import EventEmitter from 'events'
 
 import { ITaskService } from '../interfaces/ITaskService'
 import { Task } from '../models/task.model'
-import { AddTaskDTO } from '../dto/addTask.dto'
-import { ProgressTaskDTO } from '../dto/progressTask.dto'
+import { AddTaskDTO, ProgressTaskDTO } from '../dto/tasks.dto'
 
 export class TaskService extends EventEmitter implements ITaskService {
   private readonly tasks: Record<string, Task> = {}

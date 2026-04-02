@@ -65,3 +65,6 @@ export class Template {
     return this.props.lastUpdated
   }
 }
+
+export type AddTemplateParams = Omit<TemplateProps, 'createdAt' | 'lastUpdated'>
+export type UpdateTemplateParams = Partial<AddTemplateParams> & { id: number }

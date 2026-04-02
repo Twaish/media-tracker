@@ -1,7 +1,8 @@
-import { WatchPlanProps } from '../../domain/entities/watchPlan'
+import z from 'zod'
+import {
+  addWatchPlanInputSchema,
+  updateWatchPlanInputSchema,
+} from '../../ipc/schemas'
 
-export type AddWatchPlanDTO = Omit<WatchPlanProps, 'createdAt'>
-
-export type UpdateWatchPlanDTO = Partial<AddWatchPlanDTO> & {
-  id: number
-}
+export type AddWatchPlanDTO = z.infer<typeof addWatchPlanInputSchema>
+export type UpdateWatchPlanDTO = z.infer<typeof updateWatchPlanInputSchema>

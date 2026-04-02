@@ -1,9 +1,6 @@
 import z from 'zod'
 
-import { StoreImageDTO } from '../application/dto/storeImage.dto'
-import { StoredImageResultDTO } from '../application/dto/storedImageResult.dto'
-
-export const storeImageInputSchema: z.ZodType<StoreImageDTO> = z.object({
+export const storeImageInputSchema = z.object({
   imagePath: z.string(),
   options: z
     .object({
@@ -15,13 +12,12 @@ export const storeImageInputSchema: z.ZodType<StoreImageDTO> = z.object({
     .optional(),
 })
 export const exportImagesInputSchema = z.string()
-export const storedImageResultSchema: z.ZodType<StoredImageResultDTO> =
-  z.object({
-    hash: z.string(),
-    filename: z.string(),
-    fullPath: z.string(),
-    relativePath: z.string(),
-    width: z.number(),
-    height: z.number(),
-    size: z.number(),
-  })
+export const storedImageResultSchema = z.object({
+  hash: z.string(),
+  filename: z.string(),
+  fullPath: z.string(),
+  relativePath: z.string(),
+  width: z.number(),
+  height: z.number(),
+  size: z.number(),
+})

@@ -1,3 +1,4 @@
-import { GenreProps } from '../../domain/entities/genre'
+import z from 'zod'
+import { addInputSchema } from '../../ipc/schemas'
 
-export type AddGenreDTO = Omit<GenreProps, 'isDeletable'>
+export type AddGenreDTO = z.infer<typeof addInputSchema>

@@ -3,13 +3,13 @@ import { eq, gt, inArray } from 'drizzle-orm'
 import { DrizzleDb, Executor } from '@/infrastructure/db/types'
 import { templatesTable } from '@/infrastructure/db/schema'
 
-import {
-  AddTemplateRepoDTO,
-  UpdateTemplateRepoDTO,
-} from '../../application/dto/automation.dto'
-
 import { ITemplateRepository } from '../../domain/repositories/ITemplateRepository'
-import { PersistedTemplate, Template } from '../../domain/entities/template'
+import {
+  AddTemplateParams,
+  UpdateTemplateParams,
+  PersistedTemplate,
+  Template,
+} from '../../domain/entities/template'
 
 export class TemplateRepositoryDrizzle implements ITemplateRepository {
   constructor(private readonly db: DrizzleDb) {}
@@ -32,7 +32,7 @@ export class TemplateRepositoryDrizzle implements ITemplateRepository {
     return rows.map(this.toDomain)
   }
 
-  async add(template: AddTemplateRepoDTO): Promise<PersistedTemplate> {
+  async add(template: AddTemplateParams): Promise<PersistedTemplate> {
     return this.db.transaction(async (tx) => {
       const ast = JSON.stringify(template.ast)
       const [inserted] = await tx
@@ -56,7 +56,7 @@ export class TemplateRepositoryDrizzle implements ITemplateRepository {
       ids: rows.map((r) => r.id),
     }
   }
-  async update(template: UpdateTemplateRepoDTO): Promise<PersistedTemplate> {
+  async update(template: UpdateTemplateParams): Promise<PersistedTemplate> {
     return this.db.transaction(async (tx) => {
       const { id, ast, ...templateUpdates } = template
 

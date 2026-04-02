@@ -1,14 +1,14 @@
 import {
-  AddRuleRepoDTO,
-  UpdateRuleRepoDTO,
-} from '../../application/dto/automation.dto'
-import { PersistedRule } from '../entities/rule'
+  AddRuleParams,
+  PersistedRule,
+  UpdateRuleParams,
+} from '../entities/rule'
 
 export interface IRuleRepository {
   getById(id: number): Promise<PersistedRule>
-  add(rule: AddRuleRepoDTO): Promise<PersistedRule>
+  add(rule: AddRuleParams): Promise<PersistedRule>
   remove(ids: number[]): Promise<{ deleted: number; ids: number[] }>
-  update(rule: UpdateRuleRepoDTO): Promise<PersistedRule>
+  update(rule: UpdateRuleParams): Promise<PersistedRule>
   getAll(): Promise<PersistedRule[]>
   getAllEnabled(): Promise<PersistedRule[]>
   streamAll(batchSize?: number): AsyncIterable<PersistedRule>

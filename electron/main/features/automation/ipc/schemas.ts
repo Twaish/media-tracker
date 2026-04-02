@@ -1,35 +1,54 @@
 import z from 'zod'
 import { RuleNode } from '../domain/ast/RuleNode'
-import { Expression } from '../domain/ast/Expression'
-import { Action, HttpMethods } from '../domain/ast/Action'
+import {
+  BinaryExpression,
+  Expression,
+  FieldExpression,
+  FunctionExpression,
+  LiteralExpression,
+  MemberExpression,
+  ObjectExpression,
+  SelfExpression,
+} from '../domain/ast/Expression'
+import {
+  Action,
+  AppendAction,
+  HttpAction,
+  HttpMethods,
+  PluginAction,
+  SetAction,
+  TemplateAction,
+} from '../domain/ast/Action'
 import { TemplateNode } from '../domain/ast/TemplateNode'
 import { PersistedRule } from '../domain/entities/rule'
 import { PersistedTemplate } from '../domain/entities/template'
 
 // Expressions
-export const literalExpressionSchema = z.object({
+export const literalExpressionSchema: z.ZodType<LiteralExpression> = z.object({
   type: z.literal('literal'),
   value: z.union([z.string(), z.number(), z.boolean()]),
 })
 
-export const fieldExpressionSchema = z.object({
+export const fieldExpressionSchema: z.ZodType<FieldExpression> = z.object({
   type: z.literal('field'),
   name: z.string(),
 })
 
-export const memberExpressionSchema = z.object({
+export const memberExpressionSchema: z.ZodType<MemberExpression> = z.object({
   type: z.literal('member'),
   property: z.string(),
   object: z.lazy(() => expressionSchema),
 })
 
-export const functionExpressionSchema = z.object({
-  type: z.literal('function'),
-  name: z.string(),
-  args: z.array(z.lazy(() => expressionSchema)),
-})
+export const functionExpressionSchema: z.ZodType<FunctionExpression> = z.object(
+  {
+    type: z.literal('function'),
+    name: z.string(),
+    args: z.array(z.lazy(() => expressionSchema)),
+  },
+)
 
-export const objectExpressionSchema = z.object({
+export const objectExpressionSchema: z.ZodType<ObjectExpression> = z.object({
   type: z.literal('object'),
   value: z.record(
     z.string(),
@@ -37,11 +56,11 @@ export const objectExpressionSchema = z.object({
   ),
 })
 
-export const selfExpressionSchema = z.object({
+export const selfExpressionSchema: z.ZodType<SelfExpression> = z.object({
   type: z.literal('self'),
 })
 
-export const binaryExpressionSchema = z.object({
+export const binaryExpressionSchema: z.ZodType<BinaryExpression> = z.object({
   type: z.literal('binary'),
   operator: z.enum(['>', '<', '>=', '<=', '==', '!=']),
   left: z.lazy(() => expressionSchema),
@@ -61,7 +80,7 @@ export const expressionSchema: z.ZodType<Expression> = z.lazy(() =>
 )
 
 // Actions
-export const httpActionSchema = z.object({
+export const httpActionSchema: z.ZodType<HttpAction> = z.object({
   type: z.literal('http'),
   url: expressionSchema,
   method: z.enum(HttpMethods),
@@ -76,25 +95,25 @@ export const httpActionSchema = z.object({
     .optional(),
 })
 
-export const setActionSchema = z.object({
+export const setActionSchema: z.ZodType<SetAction> = z.object({
   type: z.literal('set'),
   field: z.string(),
   value: expressionSchema,
 })
 
-export const appendActionSchema = z.object({
+export const appendActionSchema: z.ZodType<AppendAction> = z.object({
   type: z.literal('append'),
   field: z.string(),
   value: expressionSchema,
 })
 
-export const templateActionSchema = z.object({
+export const templateActionSchema: z.ZodType<TemplateAction> = z.object({
   type: z.literal('template'),
   name: z.string(),
   args: z.record(z.string(), expressionSchema),
 })
 
-export const pluginActionSchema = z.object({
+export const pluginActionSchema: z.ZodType<PluginAction> = z.object({
   type: z.literal('plugin'),
   name: z.string(),
   args: z.record(z.string(), expressionSchema),

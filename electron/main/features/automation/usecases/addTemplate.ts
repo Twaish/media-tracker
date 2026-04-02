@@ -1,7 +1,6 @@
-import { AddNodeDTO } from '@shared/types'
-import { TemplateNode } from '../domain/ast/TemplateNode'
 import { ITemplateRepository } from '../domain/repositories/ITemplateRepository'
 import { IRuleEngineCompiler } from '../application/interfaces/IRuleEngineCompiler'
+import { AddNodeDTO } from '../application/dto/automation.dto'
 
 export default class AddTemplate {
   constructor(
@@ -10,7 +9,12 @@ export default class AddTemplate {
   ) {}
 
   async execute(template: AddNodeDTO) {
-    const compiled = this.compiler.compile(template.source) as TemplateNode
+    const compiled = this.compiler.compile(template.source)
+
+    if (compiled.type !== 'template') {
+      throw new Error('Provided source does not compile to a template')
+    }
+
     return this.repo.add({
       name: compiled.name,
       source: template.source,

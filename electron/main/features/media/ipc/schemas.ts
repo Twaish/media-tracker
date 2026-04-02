@@ -1,11 +1,6 @@
 import z from 'zod'
 import { MEDIA_STATUS, MEDIA_TYPES } from '../domain/entities/media'
-
-export const genreSchema = z.object({
-  id: z.number(),
-  name: z.string(),
-  isDeletable: z.boolean(),
-})
+import { persistedGenreSchema } from '@/features/genres/ipc/schemas'
 
 export const mediaSchema = z.object({
   id: z.number(),
@@ -21,7 +16,7 @@ export const mediaSchema = z.object({
   lastUpdated: z.date().nullish(),
   createdAt: z.date().nullish(),
   isFavorite: z.boolean().default(false),
-  genres: z.array(genreSchema),
+  genres: z.array(persistedGenreSchema),
   deletedAt: z.date().nullish(),
 })
 
@@ -73,7 +68,10 @@ export const getByIdInputSchema = z.number()
 
 export const bulkUpdateInputSchema = z.object({
   ids: z.array(z.number()),
-  update: updateMediaInputSchema.omit({ id: true }).partial().optional(),
+  update: updateMediaInputSchema
+    .omit({ id: true, genres: true })
+    .partial()
+    .optional(),
   add: z.object({ genres: z.array(z.number()).optional() }).optional(),
   remove: z.object({ genres: z.array(z.number()).optional() }).optional(),
 })

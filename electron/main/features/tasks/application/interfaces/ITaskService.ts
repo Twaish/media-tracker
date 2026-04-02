@@ -1,8 +1,7 @@
 import { EventEmitter } from 'events'
 
 import { Task } from '../models/task.model'
-import { AddTaskDTO } from '../dto/addTask.dto'
-import { ProgressTaskDTO } from '../dto/progressTask.dto'
+import { AddTaskDTO, ProgressTaskDTO } from '../dto/tasks.dto'
 
 export interface ITaskService extends EventEmitter {
   getTasks(): Record<string, Task>
