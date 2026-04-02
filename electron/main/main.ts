@@ -23,16 +23,16 @@ import { SettingsBuilder } from './infrastructure/settings/SettingsBuilder'
 import { SettingsRegistry } from './infrastructure/settings/SettingsRegistry'
 
 import { Modules } from './helpers/ipc/types'
+import { createOrpcRouter } from './helpers/ipc/create-orpc-router'
 import { registerProtocols } from './helpers/ipc/protocols-register'
-import { registerDomainEvents } from './helpers/ipc/register-domain-events'
+import { registerOrpcHandler } from './helpers/ipc/register-orpc-handler'
+import { registerDomainEvents } from './helpers/register-domain-events'
 import { createCryptoServices } from './helpers/create-crypto-services'
 import { createActionServices } from './helpers/create-action-services'
 import { createExpressionServices } from './helpers/create-expression-services'
 import { registerExportSchemas } from './helpers/register-export-schemas'
 import { registerImportSchemas } from './helpers/register-import-schemas'
 import { registerAutomationSchemas } from './helpers/register-automation-schemas'
-import { createOrpcRouter } from './helpers/ipc/create-orpc-router'
-import { registerOrpcHandler } from './helpers/ipc/register-orpc-handler'
 
 import { OllamaService } from './features/ai/infrastructure/adapters/OllamaService'
 import { OllamaSettingsProvider } from './features/ai/infrastructure/adapters/OllamaSettingsProvider'
@@ -164,8 +164,8 @@ app.whenReady().then(async () => {
     const modules: Modules = {
       ElectronWindow: mainWindow,
       window: mainWindow.window,
-      logger: logger,
-      appInfo: appInfo,
+      logger,
+      appInfo,
       ExternalLinkResolver: externalLinkResolver,
       SettingsBuilder: settingsBuilder,
 
@@ -208,7 +208,7 @@ app.whenReady().then(async () => {
     pluginManager.setModules(modules)
     await pluginManager.load(PLUGINS_DIR)
     await pluginManager.setup()
-    console.log(pluginRegistry.getAll())
+    logger.debug(`Plugins: ${JSON.stringify(pluginRegistry.getAll(), null, 2)}`)
 
     logger.header('Rule Engine Services')
     logger.info('Creating rule engine services')
