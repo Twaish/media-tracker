@@ -3,57 +3,66 @@ import { app, BrowserWindow } from 'electron'
 
 import config from './core/config'
 import { AppInfo } from './core/types'
-import { StorageService } from './features/storage/application/services/StorageService'
+import { JsonStore } from './core/JsonStore'
 import { ElectronWindow } from './core/ElectronWindow'
+
+import { ExternalLinkResolver } from './domain/services/ExternalLinkResolver'
 
 import { seedDatabase } from './infrastructure/db/seeding'
 import { runMigrations } from './infrastructure/db/migrate'
-
-import registerProtocols from './helpers/ipc/protocols-register'
-
 import { consoleFormat, fileFormat } from './infrastructure/logging/formats'
 import {
   createConsoleTransport,
   createFileTransport,
 } from './infrastructure/logging/transports'
 import { WinstonLogger } from './infrastructure/logging'
-import { Modules } from './helpers/ipc/types'
-import { OllamaService } from './features/ai/infrastructure/adapters/OllamaService'
 import { createDb } from './infrastructure/db/client'
-import { MediaRepositoryDrizzle } from './features/media/infrastructure/repositories/mediaRepositoryDrizzle'
-import { GenresRepositoryDrizzle } from './features/genres/infrastructure/repositories/genresRepositoryDrizzle'
-import { JsonStore } from './core/JsonStore'
-import { OllamaSettingsProvider } from './features/ai/infrastructure/adapters/OllamaSettingsProvider'
-import { TaskService } from './features/tasks/application/services/TaskService'
-import { WatchPlanRepositoryDrizzle } from './features/watchplan/infrastructure/repositories/watchPlanRepositoryDrizzle'
-import { MediaEmbeddingRepositoryDrizzle } from './features/media/infrastructure/repositories/mediaEmbeddingRepositoryDrizzle'
-import { MediaSimilarityService } from './features/media/application/services/MediaSimilarityService'
-import { RuleEngine } from './features/automation/application/services/RuleEngine'
-import { RuleEnginePrinter } from './features/automation/application/services/RuleEnginePrinter'
-import { RuleEngineCompiler } from './features/automation/application/services/RuleEngineCompiler'
-import { RuleRepositoryDrizzle } from './features/automation/infrastructure/repositories/ruleRepositoryDrizzle'
-import { TemplateRepositoryDrizzle } from './features/automation/infrastructure/repositories/templateRepositoryDrizzle'
-import { InMemoryEventBus } from './features/events/infrastructure/adapters/InMemoryEventBus'
-import { InMemoryEventRegistry } from './features/events/infrastructure/adapters/InMemoryEventRegistry'
-import { registerDomainEvents } from './helpers/ipc/register-domain-events'
-import { ExportManager } from './features/exporting/application/services/ExportManager'
-import { registerAutomationSchemas } from './helpers/register-automation-schemas'
-import { createExpressionServices } from './helpers/create-expression-services'
-import { createActionServices } from './helpers/create-action-services'
-import { ImportManager } from './features/exporting/application/services/ImportManager'
-import { ExternalLinkResolver } from './domain/services/ExternalLinkResolver'
-import { QueryResolver } from './features/media/application/services/QueryResolver'
-import { ActionExecutor } from './features/automation/application/services/ActionExecutor'
-import { ExpressionEvaluator } from './features/automation/application/services/ExpressionEvaluator'
-import { registerExportSchemas } from './helpers/register-export-schemas'
-import { registerImportSchemas } from './helpers/register-import-schemas'
-import { SettingsBuilder } from './infrastructure/settings/SettingsBuilder'
-import { createCryptoServices } from './helpers/create-crypto-services'
-import { SettingsRegistry } from './infrastructure/settings/SettingsRegistry'
 import { PluginManager } from './infrastructure/plugins/PluginManager'
 import { PluginRegistry } from './infrastructure/plugins/PluginRegistry'
+import { SettingsBuilder } from './infrastructure/settings/SettingsBuilder'
+import { SettingsRegistry } from './infrastructure/settings/SettingsRegistry'
+
+import { Modules } from './helpers/ipc/types'
+import { registerProtocols } from './helpers/ipc/protocols-register'
+import { registerDomainEvents } from './helpers/ipc/register-domain-events'
+import { createCryptoServices } from './helpers/create-crypto-services'
+import { createActionServices } from './helpers/create-action-services'
+import { createExpressionServices } from './helpers/create-expression-services'
+import { registerExportSchemas } from './helpers/register-export-schemas'
+import { registerImportSchemas } from './helpers/register-import-schemas'
+import { registerAutomationSchemas } from './helpers/register-automation-schemas'
 import { createOrpcRouter } from './helpers/ipc/create-orpc-router'
 import { registerOrpcHandler } from './helpers/ipc/register-orpc-handler'
+
+import { OllamaService } from './features/ai/infrastructure/adapters/OllamaService'
+import { OllamaSettingsProvider } from './features/ai/infrastructure/adapters/OllamaSettingsProvider'
+
+import { RuleEngine } from './features/automation/application/services/RuleEngine'
+import { ActionExecutor } from './features/automation/application/services/ActionExecutor'
+import { RuleEnginePrinter } from './features/automation/application/services/RuleEnginePrinter'
+import { RuleEngineCompiler } from './features/automation/application/services/RuleEngineCompiler'
+import { ExpressionEvaluator } from './features/automation/application/services/ExpressionEvaluator'
+import { RuleRepositoryDrizzle } from './features/automation/infrastructure/repositories/ruleRepositoryDrizzle'
+import { TemplateRepositoryDrizzle } from './features/automation/infrastructure/repositories/templateRepositoryDrizzle'
+
+import { InMemoryEventBus } from './features/events/infrastructure/adapters/InMemoryEventBus'
+import { InMemoryEventRegistry } from './features/events/infrastructure/adapters/InMemoryEventRegistry'
+
+import { ExportManager } from './features/exporting/application/services/ExportManager'
+import { ImportManager } from './features/exporting/application/services/ImportManager'
+
+import { GenresRepositoryDrizzle } from './features/genres/infrastructure/repositories/genresRepositoryDrizzle'
+
+import { QueryResolver } from './features/media/application/services/QueryResolver'
+import { MediaSimilarityService } from './features/media/application/services/MediaSimilarityService'
+import { MediaRepositoryDrizzle } from './features/media/infrastructure/repositories/mediaRepositoryDrizzle'
+import { MediaEmbeddingRepositoryDrizzle } from './features/media/infrastructure/repositories/mediaEmbeddingRepositoryDrizzle'
+
+import { StorageService } from './features/storage/application/services/StorageService'
+
+import { TaskService } from './features/tasks/application/services/TaskService'
+
+import { WatchPlanRepositoryDrizzle } from './features/watchplan/infrastructure/repositories/watchPlanRepositoryDrizzle'
 
 app.whenReady().then(async () => {
   const userData = app.getPath('userData')
@@ -94,16 +103,16 @@ app.whenReady().then(async () => {
     const taskService = new TaskService()
 
     logger.info('Initializing storage')
-    const settingsStore = new JsonStore({
-      basePath: SETTINGS_DIR,
-      root: userData,
-    })
     const storageService = new StorageService(MEDIA_DIR, userData)
     storageService.on('image-stored', (imagePath) => {
       logger.info(`Stored image ${imagePath}`)
     })
 
     logger.info('Initializing settings')
+    const settingsStore = new JsonStore({
+      basePath: SETTINGS_DIR,
+      root: userData,
+    })
     const settingsRegistry = new SettingsRegistry()
     const settingsBuilder = new SettingsBuilder(
       {
@@ -154,34 +163,39 @@ app.whenReady().then(async () => {
 
     const modules: Modules = {
       ElectronWindow: mainWindow,
-      StorageService: storageService,
-      SettingsBuilder: settingsBuilder,
-
-      ExternalLinkResolver: externalLinkResolver,
-      QueryResolver: queryResolver,
-      TaskService: taskService,
-      ExportManager: exportManager,
-      ImportManager: importManager,
-      RuleEngine: ruleEngine,
-      RuleEngineCompiler: ruleEngineCompiler,
-      RuleEnginePrinter: ruleEnginePrinter,
-      EventBus: eventBus,
-      EventRegistry: eventRegistry,
       window: mainWindow.window,
       logger: logger,
       appInfo: appInfo,
+      ExternalLinkResolver: externalLinkResolver,
+      SettingsBuilder: settingsBuilder,
 
-      AiSettingsProvider: ollamaSettings,
       AiService: ollamaService,
+      AiSettingsProvider: ollamaSettings,
 
-      MediaSimilarityService: mediaSimilarityService,
-
-      MediaRepository: mediaRepository,
-      GenresRepository: genresRepository,
-      WatchPlanRepository: watchPlanRepository,
-      MediaEmbeddingRepository: mediaEmbeddingRepository,
+      RuleEngine: ruleEngine,
+      RuleEnginePrinter: ruleEnginePrinter,
+      RuleEngineCompiler: ruleEngineCompiler,
       RuleRepository: ruleRepository,
       TemplateRepository: templateRepository,
+
+      EventBus: eventBus,
+      EventRegistry: eventRegistry,
+
+      ExportManager: exportManager,
+      ImportManager: importManager,
+
+      GenresRepository: genresRepository,
+
+      QueryResolver: queryResolver,
+      MediaSimilarityService: mediaSimilarityService,
+      MediaRepository: mediaRepository,
+      MediaEmbeddingRepository: mediaEmbeddingRepository,
+
+      StorageService: storageService,
+
+      TaskService: taskService,
+
+      WatchPlanRepository: watchPlanRepository,
     }
 
     app.on('before-quit', async () => {
