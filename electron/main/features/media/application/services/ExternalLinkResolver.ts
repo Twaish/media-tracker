@@ -1,4 +1,6 @@
-export class ExternalLinkResolver {
+import { IExternalLinkResolver } from '../interfaces/IExternalLinkResolver'
+
+export class ExternalLinkResolver implements IExternalLinkResolver {
   private readonly SUPPORTED_PLACEHOLDERS = [
     '{{chapter}}',
     '{{episode}}',

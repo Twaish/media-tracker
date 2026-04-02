@@ -3,8 +3,6 @@ import { BrowserWindow } from 'electron'
 import { AppInfo } from '@/core/types'
 import { ElectronWindow } from '@/core/ElectronWindow'
 
-import { ExternalLinkResolver } from '@/domain/services/ExternalLinkResolver'
-
 import { ILogger } from '@/application/logging/ILogger'
 import { ISettingsBuilder } from '@/application/ports/settings/ISettingsBuilder'
 
@@ -26,6 +24,7 @@ import { IImportManager } from '@/features/exporting/application/interfaces/IImp
 import { IGenresRepository } from '@/features/genres/domain/repositories/IGenresRepository'
 
 import { IQueryResolver } from '@/features/media/application/interfaces/IQueryResolver'
+import { IExternalLinkResolver } from '@/features/media/application/interfaces/IExternalLinkResolver'
 import { IMediaRepository } from '@/features/media/domain/repositories/IMediaRepository'
 import { IMediaSimilarityService } from '@/features/media/application/interfaces/IMediaSimilarityService'
 import { IMediaEmbeddingRepository } from '@/features/media/domain/repositories/IMediaEmbeddingRepository'
@@ -41,7 +40,6 @@ declare interface Modules {
   window: BrowserWindow
   logger: ILogger
   appInfo: AppInfo
-  ExternalLinkResolver: ExternalLinkResolver
   SettingsBuilder: ISettingsBuilder
 
   AiService: IAiService
@@ -62,6 +60,7 @@ declare interface Modules {
   GenresRepository: IGenresRepository
 
   QueryResolver: IQueryResolver
+  ExternalLinkResolver: IExternalLinkResolver
   MediaSimilarityService: IMediaSimilarityService
   MediaRepository: IMediaRepository
   MediaEmbeddingRepository: IMediaEmbeddingRepository

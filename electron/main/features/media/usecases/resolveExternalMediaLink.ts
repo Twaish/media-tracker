@@ -1,10 +1,10 @@
+import { IExternalLinkResolver } from '../application/interfaces/IExternalLinkResolver'
 import { IMediaRepository } from '../domain/repositories/IMediaRepository'
-import { ExternalLinkResolver } from '@/domain/services/ExternalLinkResolver'
 
 export default class ResolveExternalMediaLink {
   constructor(
     private readonly repo: IMediaRepository,
-    private readonly resolver: ExternalLinkResolver,
+    private readonly resolver: IExternalLinkResolver,
   ) {}
 
   async execute(mediaId: number) {

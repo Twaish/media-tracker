@@ -6,8 +6,6 @@ import { AppInfo } from './core/types'
 import { JsonStore } from './core/JsonStore'
 import { ElectronWindow } from './core/ElectronWindow'
 
-import { ExternalLinkResolver } from './domain/services/ExternalLinkResolver'
-
 import { seedDatabase } from './infrastructure/db/seeding'
 import { runMigrations } from './infrastructure/db/migrate'
 import { consoleFormat, fileFormat } from './infrastructure/logging/formats'
@@ -54,6 +52,7 @@ import { ImportManager } from './features/exporting/application/services/ImportM
 import { GenresRepositoryDrizzle } from './features/genres/infrastructure/repositories/genresRepositoryDrizzle'
 
 import { QueryResolver } from './features/media/application/services/QueryResolver'
+import { ExternalLinkResolver } from './features/media/application/services/ExternalLinkResolver'
 import { MediaSimilarityService } from './features/media/application/services/MediaSimilarityService'
 import { MediaRepositoryDrizzle } from './features/media/infrastructure/repositories/mediaRepositoryDrizzle'
 import { MediaEmbeddingRepositoryDrizzle } from './features/media/infrastructure/repositories/mediaEmbeddingRepositoryDrizzle'
@@ -166,7 +165,6 @@ app.whenReady().then(async () => {
       window: mainWindow.window,
       logger,
       appInfo,
-      ExternalLinkResolver: externalLinkResolver,
       SettingsBuilder: settingsBuilder,
 
       AiService: ollamaService,
@@ -187,6 +185,7 @@ app.whenReady().then(async () => {
       GenresRepository: genresRepository,
 
       QueryResolver: queryResolver,
+      ExternalLinkResolver: externalLinkResolver,
       MediaSimilarityService: mediaSimilarityService,
       MediaRepository: mediaRepository,
       MediaEmbeddingRepository: mediaEmbeddingRepository,

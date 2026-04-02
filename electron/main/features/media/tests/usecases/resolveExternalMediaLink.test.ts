@@ -1,13 +1,13 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { ExternalLinkResolver } from '@/domain/services/ExternalLinkResolver'
 import { IMediaRepository } from '@/features/media/domain/repositories/IMediaRepository'
 import ResolveExternalMediaLink from '@/features/media/usecases/resolveExternalMediaLink'
 import { makeMedia } from './utils'
+import { IExternalLinkResolver } from '../../application/interfaces/IExternalLinkResolver'
 
 describe('ResolveExternalMediaLink', () => {
   let usecase: ResolveExternalMediaLink
   let mockRepo: IMediaRepository
-  let mockResolver: ExternalLinkResolver
+  let mockResolver: IExternalLinkResolver
 
   beforeEach(() => {
     mockRepo = {
@@ -16,7 +16,7 @@ describe('ResolveExternalMediaLink', () => {
 
     mockResolver = {
       resolveExternalLink: vi.fn(),
-    } as unknown as ExternalLinkResolver
+    } as unknown as IExternalLinkResolver
 
     usecase = new ResolveExternalMediaLink(mockRepo, mockResolver)
   })
