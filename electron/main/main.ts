@@ -3,7 +3,7 @@ import { app, BrowserWindow } from 'electron'
 
 import config from './core/config'
 import { AppInfo } from './core/types'
-import { StorageService } from './core/StorageService'
+import { StorageService } from './features/storage/application/services/StorageService'
 import { ElectronWindow } from './core/ElectronWindow'
 
 import { seedDatabase } from './infrastructure/db/seeding'

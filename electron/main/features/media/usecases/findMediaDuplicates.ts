@@ -1,11 +1,11 @@
 import { IMediaRepository } from '../domain/repositories/IMediaRepository'
-import { StorageService } from '@/core/StorageService'
 import { AddMediaDTO } from '../application/dto/media.dto'
+import { IStorageService } from '@/features/storage/application/interfaces/IStorageService'
 
 export default class FindMediaDuplicates {
   constructor(
     private readonly repo: IMediaRepository,
-    private readonly storage: StorageService,
+    private readonly storage: IStorageService,
   ) {}
 
   async execute(media: Partial<AddMediaDTO>) {

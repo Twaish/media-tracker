@@ -1,7 +1,6 @@
 import { BrowserWindow } from 'electron'
 
 import { ElectronWindow } from '@/core/ElectronWindow'
-import { StorageService } from '@/core/StorageService'
 import { ISettingsBuilder } from '@/application/ports/settings/ISettingsBuilder'
 
 import { IAiService } from '@/features/ai/application/ports/IAiService'
@@ -25,10 +24,10 @@ import { IRuleEnginePrinter } from '@/features/automation/application/interfaces
 import { IGenresRepository } from '@/features/genres/domain/repositories/IGenresRepository'
 import { IMediaSimilarityService } from '@/features/media/application/interfaces/IMediaSimilarityService'
 import { IWatchPlanRepository } from '@/features/watchplan/domain/repositories/IWatchPlanRepository'
+import { IStorageService } from '@/features/storage/application/interfaces/IStorageService'
 
 declare interface Modules {
   ElectronWindow: ElectronWindow
-  StorageService: StorageService
   SettingsBuilder: ISettingsBuilder
 
   ExternalLinkResolver: ExternalLinkResolver
@@ -45,6 +44,8 @@ declare interface Modules {
   window: BrowserWindow
   logger: ILogger
   appInfo: AppInfo
+
+  StorageService: IStorageService
 
   AiSettingsProvider: IAiSettingsProvider
   AiService: IAiService

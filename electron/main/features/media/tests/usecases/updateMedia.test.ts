@@ -1,16 +1,16 @@
 import { describe, it, beforeEach, expect, vi } from 'vitest'
 import { IMediaRepository } from '@/features/media/domain/repositories/IMediaRepository'
-import { StorageService } from '@/core/StorageService'
 import UpdateMedia from '@/features/media/usecases/updateMedia'
 import { makeMedia } from './utils'
 import { MEDIA_EVENTS } from '@/features/media/usecases/media.events'
 import { IEventBus } from '@/features/events/application/ports/IEventBus'
+import { IStorageService } from '@/features/storage/application/interfaces/IStorageService'
 
 describe('UpdateMedia', () => {
   let usecase: UpdateMedia
   let mockEventBus: IEventBus
   let mockRepo: IMediaRepository
-  let mockStorage: StorageService
+  let mockStorage: IStorageService
 
   const imageResult = {
     relativePath: '/images/thumb.jpg',
@@ -30,7 +30,7 @@ describe('UpdateMedia', () => {
 
     mockStorage = {
       storeImage: vi.fn(),
-    } as unknown as StorageService
+    } as unknown as IStorageService
 
     mockEventBus = {
       publish: vi.fn(),

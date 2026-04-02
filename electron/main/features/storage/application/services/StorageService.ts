@@ -7,8 +7,9 @@ import {
   StoredImageResultDTO,
   StoreImageDTO,
 } from '@/features/storage/application/dto/storage.dto'
+import { IStorageService } from '@/features/storage/application/interfaces/IStorageService'
 
-export class StorageService extends EventEmitter {
+export class StorageService extends EventEmitter implements IStorageService {
   dataPath: string
   fullPath: string
   basePath: string

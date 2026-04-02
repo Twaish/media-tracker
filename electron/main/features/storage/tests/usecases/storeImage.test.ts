@@ -1,5 +1,5 @@
 import { describe, it, beforeEach, expect, vi } from 'vitest'
-import { StorageService } from '@/core/StorageService'
+import { StorageService } from '@/features/storage/application/services/StorageService'
 import StoreImage from '@/features/storage/usecases/storeImage'
 
 describe('StoreImage', () => {
