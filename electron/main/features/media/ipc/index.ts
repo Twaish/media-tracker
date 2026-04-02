@@ -15,7 +15,6 @@ import {
   getMediaMissingEmbeddingsInputSchema,
   getMediaMissingEmbeddingsOutputSchema,
   mediaSchema,
-  paginationSchema,
   removeMediaInputSchema,
   removeMediaOutputSchema,
   resolveExternalLinkInputSchema,
@@ -26,7 +25,7 @@ import {
   setNextMediaInputSchema,
   updateMediaInputSchema,
 } from './schemas'
-import { paginationResultSchema } from '@/helpers/ipc/schemas'
+import { paginationResultSchema, paginationSchema } from '@/helpers/ipc/schemas'
 
 export function createMediaRouters(modules: Modules) {
   const useCases = createMediaUseCases(modules)

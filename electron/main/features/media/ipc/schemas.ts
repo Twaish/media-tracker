@@ -43,13 +43,6 @@ export const paginationResultSchema = <T>(itemSchema: z.ZodType<T>) =>
     }),
   })
 
-export const paginationSchema = z
-  .object({
-    page: z.number().min(1).optional(),
-    limit: z.number().min(1).max(100).optional(),
-  })
-  .optional()
-
 export const addMediaInputSchema = mediaSchema
   .omit({ id: true, lastUpdated: true, createdAt: true, deletedAt: true })
   .extend({ genres: z.array(z.number()) })
