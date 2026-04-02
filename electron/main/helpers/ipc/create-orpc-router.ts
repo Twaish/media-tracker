@@ -7,6 +7,7 @@ import { createTasksRouters } from '../../features/tasks/ipc'
 import { createMediaRouters } from '../../features/media/ipc'
 import { createEventsRouters } from '../../features/events/ipc'
 import { createGenresRouters } from '../../features/genres/ipc'
+import { createExportingRouters } from '../../features/exporting/ipc'
 
 export function createOrpcRouter(modules: Modules) {
   return {
@@ -18,5 +19,6 @@ export function createOrpcRouter(modules: Modules) {
     media: createMediaRouters(modules),
     events: createEventsRouters(modules),
     genres: createGenresRouters(modules),
+    exporting: createExportingRouters(modules),
   }
 }
