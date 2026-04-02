@@ -1,4 +1,4 @@
-import { UpdateTemplateDTO } from '@shared/types'
+import { UpdateNodeDTO } from '@shared/types'
 import { UpdateTemplateRepoDTO } from '../application/dto/automation.dto'
 
 import { TemplateNode } from '../domain/ast/TemplateNode'
@@ -11,7 +11,7 @@ export default class UpdateTemplate {
     private readonly compiler: IRuleEngineCompiler,
   ) {}
 
-  async execute(template: UpdateTemplateDTO) {
+  async execute(template: UpdateNodeDTO) {
     let templateChanges: UpdateTemplateRepoDTO = { id: template.id }
     if (template.source) {
       const compiled = this.compiler.compile(template.source) as TemplateNode

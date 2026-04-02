@@ -9,7 +9,6 @@ import { ElectronWindow } from './core/ElectronWindow'
 import { seedDatabase } from './infrastructure/db/seeding'
 import { runMigrations } from './infrastructure/db/migrate'
 
-import registerListeners from './helpers/ipc/listeners-register'
 import registerProtocols from './helpers/ipc/protocols-register'
 
 import { consoleFormat, fileFormat } from './infrastructure/logging/formats'
@@ -209,14 +208,12 @@ app.whenReady().then(async () => {
     logger.info('Seeding')
     await seedDatabase(database)
 
-    logger.header('IPC / Protocols / Events')
-    logger.info('Registering IPC listeners')
-    registerListeners(modules)
+    logger.header('oRPC / Protocols / Events')
+    logger.info('Registering oRPC handlers')
+    registerOrpcHandler(createOrpcRouter(modules))
 
     logger.info('Registering custom protocols')
     registerProtocols(modules)
-
-    registerOrpcHandler(createOrpcRouter(modules))
 
     logger.info('Registering domain events')
     registerDomainEvents(modules)

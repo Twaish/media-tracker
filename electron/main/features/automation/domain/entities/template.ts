@@ -4,8 +4,8 @@ export type TemplateProps = {
   name: string
   source: string
   ast: TemplateNode
-  createdAt: Date | null
-  lastUpdated: Date | null
+  createdAt?: Date | null
+  lastUpdated?: Date | null
 }
 
 export type PersistedTemplate = TemplateProps & {

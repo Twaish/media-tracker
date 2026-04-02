@@ -9,6 +9,7 @@ import { createEventsRouters } from '../../features/events/ipc'
 import { createGenresRouters } from '../../features/genres/ipc'
 import { createExportingRouters } from '../../features/exporting/ipc'
 import { createAiRouters } from '../../features/ai/ipc'
+import { createAutomationRouters } from '../../features/automation/ipc'
 
 export function createOrpcRouter(modules: Modules) {
   return {
@@ -22,5 +23,6 @@ export function createOrpcRouter(modules: Modules) {
     genres: createGenresRouters(modules),
     exporting: createExportingRouters(modules),
     ai: createAiRouters(modules),
+    automation: createAutomationRouters(modules),
   }
 }

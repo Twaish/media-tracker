@@ -9,8 +9,8 @@ export type RuleProps = {
   enabled: boolean
   source: string
   ast: RuleNode
-  createdAt: Date | null
-  lastUpdated: Date | null
+  createdAt?: Date | null
+  lastUpdated?: Date | null
 }
 
 export type PersistedRule = RuleProps & {

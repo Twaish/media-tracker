@@ -1,4 +1,4 @@
-import { AddRuleDTO } from '@shared/types'
+import { AddNodeDTO } from '@shared/types'
 import { RuleNode } from '../domain/ast/RuleNode'
 import { IRuleRepository } from '../domain/repositories/IRuleRepository'
 import { IRuleEngineCompiler } from '../application/interfaces/IRuleEngineCompiler'
@@ -9,7 +9,7 @@ export default class AddRule {
     private readonly compiler: IRuleEngineCompiler,
   ) {}
 
-  async execute(rule: AddRuleDTO) {
+  async execute(rule: AddNodeDTO) {
     const compiled = this.compiler.compile(rule.source) as RuleNode
     return this.repo.add({
       name: compiled.name,
