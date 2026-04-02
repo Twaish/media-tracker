@@ -1,7 +1,7 @@
-import type { AiContext } from '@shared/types'
+import { ipc } from './helpers/ipc'
 
 declare global {
   interface Window {
-    ai: AiContext
+    ipc: typeof ipc
   }
 }

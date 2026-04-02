@@ -1,6 +1,0 @@
-export const AI_CHECK_COMPATIBILITY = 'ai:check-compatibility'
-export const AI_UPDATE_HOST = 'ai:update-host'
-export const AI_UPDATE_API_KEY = 'ai:update-api-key'
-export const AI_GET_SETTINGS = 'ai:get-settings'
-export const AI_CREATE_EMBEDDING = 'ai:create-embedding'
-export const AI_GET_CAPABILITIES = 'ai:get-capabilities'
