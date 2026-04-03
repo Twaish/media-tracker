@@ -1,1 +1,1 @@
-export { ThemeMode } from '@/features/theme/ipc'
+export { ThemeMode } from '@/app/theme/ipc'

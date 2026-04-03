@@ -1,8 +1,8 @@
-import { IStorageService } from '@/features/storage/application/interfaces/IStorageService'
+import { IStorageService } from '@/app/storage/application/interfaces/IStorageService'
 import { AddMediaDTO } from '../application/dto/media.dto'
 import { IMediaRepository } from '../domain/repositories/IMediaRepository'
 import { MEDIA_EVENTS, MediaAddedPayload } from './media.events'
-import { IEventBus } from '@/features/events/application/ports/IEventBus'
+import { IEventBus } from '@/app/events/application/ports/IEventBus'
 
 export default class AddMedia {
   constructor(

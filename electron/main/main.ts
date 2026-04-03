@@ -32,6 +32,13 @@ import { registerExportSchemas } from './helpers/register-export-schemas'
 import { registerImportSchemas } from './helpers/register-import-schemas'
 import { registerAutomationSchemas } from './helpers/register-automation-schemas'
 
+import { InMemoryEventBus } from './app/events/infrastructure/adapters/InMemoryEventBus'
+import { InMemoryEventRegistry } from './app/events/infrastructure/adapters/InMemoryEventRegistry'
+
+import { StorageService } from './app/storage/application/services/StorageService'
+
+import { TaskService } from './app/tasks/application/services/TaskService'
+
 import { OllamaService } from './features/ai/infrastructure/adapters/OllamaService'
 import { OllamaSettingsProvider } from './features/ai/infrastructure/adapters/OllamaSettingsProvider'
 
@@ -43,9 +50,6 @@ import { ExpressionEvaluator } from './features/automation/application/services/
 import { RuleRepositoryDrizzle } from './features/automation/infrastructure/repositories/ruleRepositoryDrizzle'
 import { TemplateRepositoryDrizzle } from './features/automation/infrastructure/repositories/templateRepositoryDrizzle'
 
-import { InMemoryEventBus } from './features/events/infrastructure/adapters/InMemoryEventBus'
-import { InMemoryEventRegistry } from './features/events/infrastructure/adapters/InMemoryEventRegistry'
-
 import { ExportManager } from './features/exporting/application/services/ExportManager'
 import { ImportManager } from './features/exporting/application/services/ImportManager'
 
@@ -56,10 +60,6 @@ import { ExternalLinkResolver } from './features/media/application/services/Exte
 import { MediaSimilarityService } from './features/media/application/services/MediaSimilarityService'
 import { MediaRepositoryDrizzle } from './features/media/infrastructure/repositories/mediaRepositoryDrizzle'
 import { MediaEmbeddingRepositoryDrizzle } from './features/media/infrastructure/repositories/mediaEmbeddingRepositoryDrizzle'
-
-import { StorageService } from './features/storage/application/services/StorageService'
-
-import { TaskService } from './features/tasks/application/services/TaskService'
 
 import { WatchPlanRepositoryDrizzle } from './features/watchplan/infrastructure/repositories/watchPlanRepositoryDrizzle'
 

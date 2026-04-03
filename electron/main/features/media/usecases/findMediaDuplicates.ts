@@ -1,6 +1,6 @@
 import { IMediaRepository } from '../domain/repositories/IMediaRepository'
 import { AddMediaDTO } from '../application/dto/media.dto'
-import { IStorageService } from '@/features/storage/application/interfaces/IStorageService'
+import { IStorageService } from '@/app/storage/application/interfaces/IStorageService'
 
 export default class FindMediaDuplicates {
   constructor(

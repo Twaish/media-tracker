@@ -1,4 +1,4 @@
 export {
   StoreImageDTO,
   StoredImageResultDTO,
-} from '@/features/storage/application/dto/storage.dto'
+} from '@/app/storage/application/dto/storage.dto'

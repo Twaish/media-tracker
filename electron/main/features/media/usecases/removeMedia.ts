@@ -1,5 +1,5 @@
 import { IMediaRepository } from '../domain/repositories/IMediaRepository'
-import { IEventBus } from '@/features/events/application/ports/IEventBus'
+import { IEventBus } from '@/app/events/application/ports/IEventBus'
 import { MEDIA_EVENTS, MediaRemovedPayload } from './media.events'
 
 export default class RemoveMedia {

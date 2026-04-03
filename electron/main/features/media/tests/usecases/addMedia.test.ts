@@ -2,9 +2,9 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { IMediaRepository } from '@/features/media/domain/repositories/IMediaRepository'
 import AddMedia from '@/features/media/usecases/addMedia'
 import { makeMedia } from './utils'
-import { IEventBus } from '@/features/events/application/ports/IEventBus'
+import { IEventBus } from '@/app/events/application/ports/IEventBus'
 import { MEDIA_EVENTS } from '@/features/media/usecases/media.events'
-import { IStorageService } from '@/features/storage/application/interfaces/IStorageService'
+import { IStorageService } from '@/app/storage/application/interfaces/IStorageService'
 
 describe('AddMedia', () => {
   let usecase: AddMedia

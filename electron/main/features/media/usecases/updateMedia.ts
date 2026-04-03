@@ -1,8 +1,8 @@
 import { IMediaRepository } from '../domain/repositories/IMediaRepository'
 import { UpdateMediaDTO } from '../application/dto/media.dto'
 import { MEDIA_EVENTS, MediaUpdatedPayload } from './media.events'
-import { IEventBus } from '@/features/events/application/ports/IEventBus'
-import { IStorageService } from '@/features/storage/application/interfaces/IStorageService'
+import { IEventBus } from '@/app/events/application/ports/IEventBus'
+import { IStorageService } from '@/app/storage/application/interfaces/IStorageService'
 
 export default class UpdateMedia {
   constructor(

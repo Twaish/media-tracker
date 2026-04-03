@@ -1,3 +1,3 @@
-export { AddTaskDTO } from '@/features/tasks/application/dto/addTask.dto'
-export { ProgressTaskDTO } from '@/features/tasks/application/dto/progressTask.dto'
-export { Task } from '@/features/tasks/application/models/task.model'
+export { AddTaskDTO } from '@/app/tasks/application/dto/addTask.dto'
+export { ProgressTaskDTO } from '@/app/tasks/application/dto/progressTask.dto'
+export { Task } from '@/app/tasks/application/models/task.model'

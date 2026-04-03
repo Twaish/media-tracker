@@ -1,28 +1,31 @@
 import { Modules } from './types'
-import { createWindowRouters } from '../../features/window/ipc'
-import { createStorageRouters } from '../../features/storage/ipc'
-import { createThemeRouters } from '../../features/theme/ipc'
-import { createWatchPlanRouters } from '../../features/watchplan/ipc'
-import { createTasksRouters } from '../../features/tasks/ipc'
+
+import { createThemeRouters } from '../../app/theme/ipc'
+import { createTasksRouters } from '../../app/tasks/ipc'
+import { createWindowRouters } from '../../app/window/ipc'
+import { createEventsRouters } from '../../app/events/ipc'
+import { createStorageRouters } from '../../app/storage/ipc'
+
+import { createAiRouters } from '../../features/ai/ipc'
 import { createMediaRouters } from '../../features/media/ipc'
-import { createEventsRouters } from '../../features/events/ipc'
 import { createGenresRouters } from '../../features/genres/ipc'
 import { createExportingRouters } from '../../features/exporting/ipc'
-import { createAiRouters } from '../../features/ai/ipc'
+import { createWatchPlanRouters } from '../../features/watchplan/ipc'
 import { createAutomationRouters } from '../../features/automation/ipc'
 
 export function createOrpcRouter(modules: Modules) {
   return {
-    storage: createStorageRouters(modules),
-    electronWindow: createWindowRouters(modules),
     themeMode: createThemeRouters(),
-    watchPlans: createWatchPlanRouters(modules),
     tasks: createTasksRouters(modules),
-    media: createMediaRouters(modules),
+    electronWindow: createWindowRouters(modules),
     events: createEventsRouters(modules),
+    storage: createStorageRouters(modules),
+
+    ai: createAiRouters(modules),
+    media: createMediaRouters(modules),
     genres: createGenresRouters(modules),
     exporting: createExportingRouters(modules),
-    ai: createAiRouters(modules),
+    watchPlans: createWatchPlanRouters(modules),
     automation: createAutomationRouters(modules),
   }
 }

@@ -3,11 +3,8 @@ import fs from 'fs'
 import sharp from 'sharp'
 import crypto from 'crypto'
 import EventEmitter from 'events'
-import {
-  StoredImageResultDTO,
-  StoreImageDTO,
-} from '@/features/storage/application/dto/storage.dto'
-import { IStorageService } from '@/features/storage/application/interfaces/IStorageService'
+import { StoredImageResultDTO, StoreImageDTO } from '../dto/storage.dto'
+import { IStorageService } from '../interfaces/IStorageService'
 
 export class StorageService extends EventEmitter implements IStorageService {
   dataPath: string

@@ -1,1 +1,1 @@
-import { EventDefinition } from '@/features/events/application/ports/IEventRegistry'
+import { EventDefinition } from '@/app/events/application/ports/IEventRegistry'

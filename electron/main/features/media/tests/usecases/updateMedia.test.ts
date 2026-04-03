@@ -3,8 +3,8 @@ import { IMediaRepository } from '@/features/media/domain/repositories/IMediaRep
 import UpdateMedia from '@/features/media/usecases/updateMedia'
 import { makeMedia } from './utils'
 import { MEDIA_EVENTS } from '@/features/media/usecases/media.events'
-import { IEventBus } from '@/features/events/application/ports/IEventBus'
-import { IStorageService } from '@/features/storage/application/interfaces/IStorageService'
+import { IEventBus } from '@/app/events/application/ports/IEventBus'
+import { IStorageService } from '@/app/storage/application/interfaces/IStorageService'
 
 describe('UpdateMedia', () => {
   let usecase: UpdateMedia
