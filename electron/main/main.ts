@@ -15,8 +15,8 @@ import {
 } from './infrastructure/logging/transports'
 import { WinstonLogger } from './infrastructure/logging'
 import { createDb } from './infrastructure/db/client'
-import { PluginManager } from './infrastructure/plugins/PluginManager'
-import { PluginRegistry } from './infrastructure/plugins/PluginRegistry'
+import { PluginManager } from './app/plugins/infrastructure/adapters/PluginManager'
+import { PluginRegistry } from './app/plugins/infrastructure/adapters/PluginRegistry'
 import { SettingsBuilder } from './infrastructure/settings/SettingsBuilder'
 import { SettingsRegistry } from './infrastructure/settings/SettingsRegistry'
 

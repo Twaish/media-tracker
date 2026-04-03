@@ -1,5 +1,5 @@
-import { IPluginRegistry } from '@/application/ports/plugins/IPluginRegistry'
-import { PluginManifest } from '@/application/ports/plugins/PluginManifest'
+import { IPluginRegistry } from '@/app/plugins/application/ports/IPluginRegistry'
+import { PluginManifest } from '@/app/plugins/application/models/PluginManifest'
 
 export class PluginRegistry implements IPluginRegistry {
   private manifests: Map<string, PluginManifest> = new Map()

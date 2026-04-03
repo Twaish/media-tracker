@@ -1,7 +1,7 @@
-import { PluginModule } from '@/application/ports/plugins/PluginModule'
-import { IPluginManager } from '@/application/ports/plugins/IPluginManager'
-import { IPluginRegistry } from '@/application/ports/plugins/IPluginRegistry'
-import { PluginManifest } from '@/application/ports/plugins/PluginManifest'
+import { PluginModule } from '@/app/plugins/infrastructure/adapters/PluginModule'
+import { IPluginManager } from '@/app/plugins/application/ports/IPluginManager'
+import { IPluginRegistry } from '@/app/plugins/application/ports/IPluginRegistry'
+import { PluginManifest } from '@/app/plugins/application/models/PluginManifest'
 import { Modules } from '@/helpers/ipc/types'
 
 import fs from 'fs/promises'

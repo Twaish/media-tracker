@@ -1,4 +1,4 @@
-import { IPluginManager } from '@/application/ports/plugins/IPluginManager'
+import { IPluginManager } from '@/app/plugins/application/ports/IPluginManager'
 import { IRuleEngine } from '@/features/automation/application/interfaces/IRuleEngine'
 import { RuleContext } from '@/features/automation/domain/runtime/RuleContext'
 import { ActionServices } from '@/features/automation/domain/services/ActionServices'

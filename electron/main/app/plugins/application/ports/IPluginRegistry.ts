@@ -1,4 +1,4 @@
-import { PluginManifest } from './PluginManifest'
+import { PluginManifest } from '../models/PluginManifest'
 
 export interface IPluginRegistry {
   register(pluginName: string, manifest: PluginManifest): void
