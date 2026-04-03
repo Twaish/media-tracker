@@ -1,5 +1,5 @@
 import { Modules } from '@/helpers/ipc/types'
-import { importSchemaV1 } from '../features/exporting/schemas/v1/importschema'
+import { importSchemaV1 } from '../app/exporting/schemas/v1/importschema'
 
 const importing = {
   v1: importSchemaV1,

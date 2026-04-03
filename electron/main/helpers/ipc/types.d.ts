@@ -13,6 +13,9 @@ import { IStorageService } from '@/app/storage/application/interfaces/IStorageSe
 
 import { ITaskService } from '@/app/tasks/application/interfaces/ITaskService'
 
+import { IExportManager } from '@/app/exporting/application/interfaces/IExportManager'
+import { IImportManager } from '@/app/exporting/application/interfaces/IImportManager'
+
 import { IAiService } from '@/features/ai/application/ports/IAiService'
 import { IAiSettingsProvider } from '@/features/ai/application/ports/IAiSettingsProvider'
 
@@ -21,9 +24,6 @@ import { IRuleEnginePrinter } from '@/features/automation/application/interfaces
 import { IRuleEngineCompiler } from '@/features/automation/application/interfaces/IRuleEngineCompiler'
 import { IRuleRepository } from '@/features/automation/domain/repositories/IRuleRepository'
 import { ITemplateRepository } from '@/features/automation/domain/repositories/ITemplateRepository'
-
-import { IExportManager } from '@/features/exporting/application/interfaces/IExportManager'
-import { IImportManager } from '@/features/exporting/application/interfaces/IImportManager'
 
 import { IGenresRepository } from '@/features/genres/domain/repositories/IGenresRepository'
 

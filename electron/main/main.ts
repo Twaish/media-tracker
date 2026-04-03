@@ -15,10 +15,6 @@ import {
 } from './infrastructure/logging/transports'
 import { WinstonLogger } from './infrastructure/logging'
 import { createDb } from './infrastructure/db/client'
-import { PluginManager } from './app/plugins/infrastructure/adapters/PluginManager'
-import { PluginRegistry } from './app/plugins/infrastructure/adapters/PluginRegistry'
-import { SettingsBuilder } from './app/settings/infrastructure/adapters/SettingsBuilder'
-import { SettingsRegistry } from './app/settings/infrastructure/adapters/SettingsRegistry'
 
 import { Modules } from './helpers/ipc/types'
 import { createOrpcRouter } from './helpers/ipc/create-orpc-router'
@@ -32,12 +28,21 @@ import { registerExportSchemas } from './helpers/register-export-schemas'
 import { registerImportSchemas } from './helpers/register-import-schemas'
 import { registerAutomationSchemas } from './helpers/register-automation-schemas'
 
+import { PluginManager } from './app/plugins/infrastructure/adapters/PluginManager'
+import { PluginRegistry } from './app/plugins/infrastructure/adapters/PluginRegistry'
+
+import { SettingsBuilder } from './app/settings/infrastructure/adapters/SettingsBuilder'
+import { SettingsRegistry } from './app/settings/infrastructure/adapters/SettingsRegistry'
+
 import { InMemoryEventBus } from './app/events/infrastructure/adapters/InMemoryEventBus'
 import { InMemoryEventRegistry } from './app/events/infrastructure/adapters/InMemoryEventRegistry'
 
 import { StorageService } from './app/storage/application/services/StorageService'
 
 import { TaskService } from './app/tasks/application/services/TaskService'
+
+import { ExportManager } from './app/exporting/application/services/ExportManager'
+import { ImportManager } from './app/exporting/application/services/ImportManager'
 
 import { OllamaService } from './features/ai/infrastructure/adapters/OllamaService'
 import { OllamaSettingsProvider } from './features/ai/infrastructure/adapters/OllamaSettingsProvider'
@@ -49,9 +54,6 @@ import { RuleEngineCompiler } from './features/automation/application/services/R
 import { ExpressionEvaluator } from './features/automation/application/services/ExpressionEvaluator'
 import { RuleRepositoryDrizzle } from './features/automation/infrastructure/repositories/ruleRepositoryDrizzle'
 import { TemplateRepositoryDrizzle } from './features/automation/infrastructure/repositories/templateRepositoryDrizzle'
-
-import { ExportManager } from './features/exporting/application/services/ExportManager'
-import { ImportManager } from './features/exporting/application/services/ImportManager'
 
 import { GenresRepositoryDrizzle } from './features/genres/infrastructure/repositories/genresRepositoryDrizzle'
 
