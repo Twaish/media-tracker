@@ -71,7 +71,14 @@ export class Parser {
     const events: string[] = []
 
     do {
-      const event = this.expect(TokenType.Identifier).value
+      let event = this.expect(TokenType.Identifier).value
+
+      while (this.check(TokenType.Operator)) {
+        let separator = this.expect(TokenType.Operator, ':').value
+        const rest = this.expect(TokenType.Identifier).value
+        event += separator + rest
+      }
+
       events.push(event)
     } while (this.check(TokenType.Comma) && this.consume())
 
