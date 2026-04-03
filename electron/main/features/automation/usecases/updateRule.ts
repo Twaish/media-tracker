@@ -20,6 +20,7 @@ export default class UpdateRule {
         name: compiled.name,
         target: compiled.target,
         trigger: compiled.trigger,
+        events: compiled.events,
         priority: compiled.priority,
         ast: compiled,
         source: rule.source,
