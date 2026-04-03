@@ -8,12 +8,6 @@ import { ElectronWindow } from './core/ElectronWindow'
 
 import { seedDatabase } from './infrastructure/db/seeding'
 import { runMigrations } from './infrastructure/db/migrate'
-import { consoleFormat, fileFormat } from './infrastructure/logging/formats'
-import {
-  createConsoleTransport,
-  createFileTransport,
-} from './infrastructure/logging/transports'
-import { WinstonLogger } from './infrastructure/logging'
 import { createDb } from './infrastructure/db/client'
 
 import { Modules } from './helpers/ipc/types'
@@ -27,6 +21,13 @@ import { createExpressionServices } from './helpers/create-expression-services'
 import { registerExportSchemas } from './helpers/register-export-schemas'
 import { registerImportSchemas } from './helpers/register-import-schemas'
 import { registerAutomationSchemas } from './helpers/register-automation-schemas'
+
+import { consoleFormat, fileFormat } from './app/logging/infrastructure/formats'
+import {
+  createConsoleTransport,
+  createFileTransport,
+} from './app/logging/infrastructure/transports'
+import { WinstonLogger } from './app/logging/infrastructure/adapters/WinstonLogger'
 
 import { PluginManager } from './app/plugins/infrastructure/adapters/PluginManager'
 import { PluginRegistry } from './app/plugins/infrastructure/adapters/PluginRegistry'

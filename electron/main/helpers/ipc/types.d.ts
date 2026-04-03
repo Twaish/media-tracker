@@ -3,7 +3,7 @@ import { BrowserWindow } from 'electron'
 import { AppInfo } from '@/core/types'
 import { ElectronWindow } from '@/core/ElectronWindow'
 
-import { ILogger } from '@/application/logging/ILogger'
+import { ILogger } from '@/app/logging/application/ports/ILogger'
 import { ISettingsBuilder } from '@/app/settings/application/ports/ISettingsBuilder'
 
 import { IEventBus } from '@/app/events/application/ports/IEventBus'
