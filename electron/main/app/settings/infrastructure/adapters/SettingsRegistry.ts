@@ -1,8 +1,8 @@
 import {
   RuntimeSchema,
   SettingsInterface,
-} from '@/application/ports/settings/ISettingsBuilder'
-import { ISettingsRegistry } from '@/application/ports/settings/ISettingsRegistry'
+} from '../../application/ports/ISettingsBuilder'
+import { ISettingsRegistry } from '../../application/ports/ISettingsRegistry'
 
 export class SettingsRegistry implements ISettingsRegistry {
   private providers = new Map<string, SettingsInterface>()

@@ -5,7 +5,7 @@ import {
   ISettingsBuilder,
   Schema,
   SettingsInterface,
-} from '@/application/ports/settings/ISettingsBuilder'
+} from '@/app/settings/application/ports/ISettingsBuilder'
 import { AiSettings } from '../../domain/models/AiSettings'
 
 export const settingsSchema = {

@@ -4,8 +4,8 @@ import {
   OnDiskValue,
   RuntimeSchema,
   Schema,
-} from '@/application/ports/settings/ISettingsBuilder'
-import { ISettingsRegistry } from '@/application/ports/settings/ISettingsRegistry'
+} from '../../application/ports/ISettingsBuilder'
+import { ISettingsRegistry } from '../../application/ports/ISettingsRegistry'
 import { JsonStore } from '@/core/JsonStore'
 
 type SettingsBuilderOptions = {

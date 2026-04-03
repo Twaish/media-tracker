@@ -1,4 +1,4 @@
-import { ISettingsRegistry } from '@/application/ports/settings/ISettingsRegistry'
+import { ISettingsRegistry } from '@/app/settings/application/ports/ISettingsRegistry'
 import { ExpressionServices } from '@/features/automation/domain/services/ExpressionServices'
 
 export function createExpressionServices(
