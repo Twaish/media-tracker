@@ -6,4 +6,5 @@ export type PluginManifest = {
   icon?: string
   repository?: string
   minAppVersion?: string
+  dependencies?: string[] // Other plugin names
 }
