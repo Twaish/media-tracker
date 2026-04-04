@@ -8,6 +8,7 @@ import fs from 'fs/promises'
 import path from 'path'
 import semver from 'semver'
 import { pathToFileURL } from 'url'
+import { Schema } from '@/app/settings/application/ports/ISettingsBuilder'
 
 export type PluginState =
   | 'unloaded'
@@ -78,16 +79,27 @@ export class PluginManager implements IPluginManager {
     for (const batch of this.topologicalBatches()) {
       await Promise.all(
         batch.map(async (name) => {
-          const entry = this.plugins.get(name)!
-          entry.state = 'setting-up'
+          const plugin = this.plugins.get(name)!
+          plugin.state = 'setting-up'
           try {
-            await entry.module.setup?.(modules, entry.path)
-            entry.state = 'running'
+            let settings
+            if (plugin.module.getSettings != null) {
+              const settingsShape = await plugin.module.getSettings()
+              const pluginNamespace = `plugin:${plugin.manifest.name}`
+              const settingsFilename = `plugin-${this.getPluginBasicName(plugin.manifest.name)}`
+              settings = await modules.SettingsBuilder.defineSettings(
+                pluginNamespace,
+                settingsFilename,
+                settingsShape as Schema,
+              ).init()
+            }
+            await plugin.module.setup?.(modules, plugin.path, settings)
+            plugin.state = 'running'
           } catch (err) {
-            entry.state = 'error'
-            entry.error = err instanceof Error ? err : new Error(String(err))
+            plugin.state = 'error'
+            plugin.error = err instanceof Error ? err : new Error(String(err))
             modules.logger.error(
-              `Plugin "${name}" failed during setup: ${entry.error.stack}`,
+              `Plugin "${name}" failed during setup: ${plugin.error.stack}`,
             )
           }
         }),
@@ -184,6 +196,10 @@ export class PluginManager implements IPluginManager {
         this.getModules().logger.error(entry.error.message)
       }
     }
+  }
+
+  private getPluginBasicName(pluginName: string) {
+    return pluginName.toLowerCase().replaceAll(' ', '-')
   }
 
   topologicalBatches(): string[][] {
