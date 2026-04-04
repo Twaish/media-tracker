@@ -2,9 +2,9 @@ import { PersistedMedia } from '../domain/entities/media'
 import { Modules } from '@/helpers/ipc/types'
 
 export enum MEDIA_EVENTS {
-  MEDIA_UPDATED = 'mediaUpdated',
-  MEDIA_ADDED = 'mediaAdded',
-  MEDIA_REMOVED = 'mediaRemoved',
+  MEDIA_UPDATED = 'media:updated',
+  MEDIA_ADDED = 'media:added',
+  MEDIA_REMOVED = 'media:removed',
 }
 
 export const mediaEventDefinitions = [
