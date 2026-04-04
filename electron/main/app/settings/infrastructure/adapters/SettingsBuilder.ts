@@ -28,6 +28,34 @@ export class SettingsBuilder implements ISettingsBuilder {
     const { store, encrypt, decrypt } = this.options
 
     let cache: RuntimeSchema<T> | null = null
+    let writeTimer: NodeJS.Timeout | null = null
+    let dirty = false
+    const DEBOUNCE_MS = 5000
+
+    function schedulePersist() {
+      dirty = true
+
+      if (writeTimer) clearTimeout(writeTimer)
+
+      writeTimer = setTimeout(() => {
+        flushNow()
+      }, DEBOUNCE_MS)
+    }
+
+    async function flushNow() {
+      if (!cache) return
+
+      if (writeTimer) {
+        clearTimeout(writeTimer)
+        writeTimer = null
+      }
+
+      if (!dirty) return
+
+      dirty = false
+
+      await persist(cache)
+    }
 
     async function load(): Promise<RuntimeSchema<T>> {
       if (cache) return cache
@@ -125,8 +153,12 @@ export class SettingsBuilder implements ISettingsBuilder {
 
       async set<K extends keyof T>(key: K, value: RuntimeSchema<T>[K]) {
         const cache = getCache()
+
+        if (cache[key] === value) return
+
         cache[key] = value
-        await persist(cache)
+
+        schedulePersist()
       },
 
       getAll(): RuntimeSchema<T> {
@@ -135,6 +167,10 @@ export class SettingsBuilder implements ISettingsBuilder {
 
       isSecret(key: keyof T) {
         return schema[key]?.secret === true
+      },
+
+      async flushNow() {
+        await flushNow()
       },
     }
     this.registry.register(namespace, settingsProvider)

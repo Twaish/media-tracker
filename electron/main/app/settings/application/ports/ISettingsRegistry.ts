@@ -9,4 +9,6 @@ export interface ISettingsRegistry {
   ): RuntimeSchema[keyof RuntimeSchema]
 
   getSecret(namespace: string, key: string): string
+
+  flushAll(): Promise<void>
 }

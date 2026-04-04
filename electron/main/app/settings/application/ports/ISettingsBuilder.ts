@@ -27,6 +27,7 @@ export type SettingsInterface<T extends Schema = Schema> = {
   set<K extends keyof T>(key: K, value: RuntimeSchema<T>[K]): Promise<void>
   getAll(): RuntimeSchema<T>
   isSecret(key: keyof T): boolean
+  flushNow(): Promise<void>
 }
 
 export interface ISettingsBuilder {

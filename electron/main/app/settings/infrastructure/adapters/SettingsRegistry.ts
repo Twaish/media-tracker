@@ -40,4 +40,10 @@ export class SettingsRegistry implements ISettingsRegistry {
 
     return value
   }
+
+  async flushAll(): Promise<void> {
+    await Promise.all(
+      this.providers.values().map((provider) => provider.flushNow()),
+    )
+  }
 }

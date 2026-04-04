@@ -201,8 +201,13 @@ app.whenReady().then(async () => {
     }
 
     app.on('before-quit', async () => {
-      logger.header('Shutting down plugins')
+      logger.header('Shutting down...')
+
+      logger.warn('Destroying plugins')
       await pluginManager.destroyAll()
+
+      logger.info('Writing settings')
+      await settingsRegistry.flushAll()
     })
 
     logger.header('Plugins')
