@@ -107,6 +107,12 @@ export class SettingsBuilder implements ISettingsBuilder {
       cache = data
     }
 
+    const getCache = () => {
+      if (!cache)
+        throw new Error(`Settings not initialized. Call .init() first`)
+      return cache
+    }
+
     const settingsProvider = {
       namespace,
       async init() {
@@ -114,21 +120,17 @@ export class SettingsBuilder implements ISettingsBuilder {
         return this
       },
       get<K extends keyof T>(key: K): RuntimeSchema<T>[K] {
-        if (!cache)
-          throw new Error(`Settings not initialized. Call .init() first`)
-        return cache[key]
+        return getCache()[key]
       },
 
       async set<K extends keyof T>(key: K, value: RuntimeSchema<T>[K]) {
-        const data = await load()
-        data[key] = value
-        await persist(data)
+        const cache = getCache()
+        cache[key] = value
+        await persist(cache)
       },
 
       getAll(): RuntimeSchema<T> {
-        if (!cache)
-          throw new Error(`Settings not initialized. Call .init() first`)
-        return cache
+        return getCache()
       },
 
       isSecret(key: keyof T) {
