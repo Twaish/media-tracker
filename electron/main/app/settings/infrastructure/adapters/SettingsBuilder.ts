@@ -111,6 +111,7 @@ export class SettingsBuilder implements ISettingsBuilder {
       namespace,
       async init() {
         if (!cache) await load()
+        return this
       },
       get<K extends keyof T>(key: K): RuntimeSchema<T>[K] {
         if (!cache)

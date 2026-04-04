@@ -22,7 +22,7 @@ export type RuntimeSchema<T extends Schema = Schema> = {
 
 export type SettingsInterface<T extends Schema = Schema> = {
   namespace: string
-  init(): Promise<void>
+  init(): Promise<SettingsInterface<T>>
   get<K extends keyof T>(key: K): RuntimeSchema<T>[K]
   set<K extends keyof T>(key: K, value: RuntimeSchema<T>[K]): Promise<void>
   getAll(): RuntimeSchema<T>
