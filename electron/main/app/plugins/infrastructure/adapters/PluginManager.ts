@@ -3,18 +3,15 @@ import { IPluginManager } from '../../application/ports/IPluginManager'
 import { IPluginRegistry } from '../../application/ports/IPluginRegistry'
 import { PluginManifest } from '../../application/models/PluginManifest'
 import { IPermissionRegistry } from '../../application/ports/IPermissionRegistry'
+import { PluginContext } from './PluginContext'
+
+import { ISettingsBuilder } from '@/app/settings/application/ports/ISettingsBuilder'
 
 import fs from 'fs/promises'
 import path from 'path'
 import semver from 'semver'
-import { pathToFileURL } from 'url'
-import {
-  ISettingsBuilder,
-  Schema,
-  SettingsInterface,
-} from '@/app/settings/application/ports/ISettingsBuilder'
-import { PluginContext } from './PluginContext'
 import EventEmitter from 'events'
+import { loadPluginSandboxed } from '../helpers/load-plugin-sandboxed'
 
 export type PluginState =
   | 'unloaded'
@@ -54,7 +51,7 @@ export class PluginManager extends EventEmitter implements IPluginManager {
       const pluginDir = path.join(pluginsPath, dir)
 
       try {
-        const { manifest, module } = await this.loadPlugin(pluginDir)
+        const { manifest, module } = await loadPluginSandboxed(pluginDir)
 
         this.validateVersion(manifest, appVersion)
 
@@ -92,7 +89,10 @@ export class PluginManager extends EventEmitter implements IPluginManager {
 
       try {
         const settings = await this.buildSettings(plugin)
-        const context = this.buildContext(plugin, settings)
+        const context = {
+          ...this.buildContext(plugin),
+          settings,
+        }
 
         await plugin.module.setup?.(context)
         plugin.context = context
@@ -171,22 +171,6 @@ export class PluginManager extends EventEmitter implements IPluginManager {
     )
   }
 
-  private async loadPlugin(
-    dir: string,
-  ): Promise<{ manifest: PluginManifest; module: PluginModule }> {
-    const manifest = JSON.parse(
-      await fs.readFile(path.join(dir, 'manifest.json'), 'utf-8'),
-    ) as PluginManifest
-
-    if (manifest.name == null) {
-      throw new Error(`Plugin at ${dir} is missing a required name`)
-    }
-
-    const modulePath = pathToFileURL(path.join(dir, 'index.js'))
-    const module = (await import(modulePath.href)).default as PluginModule
-    return { manifest, module }
-  }
-
   private async buildSettings(plugin: PluginEntry) {
     if (!plugin.module.settings) return
 
@@ -194,18 +178,17 @@ export class PluginManager extends EventEmitter implements IPluginManager {
     const filename = `plugin-${this.getPluginBasicName(plugin.manifest.name)}`
 
     return this.settingsBuilder
-      .defineSettings(namespace, filename, plugin.module.settings as Schema)
+      .defineSettings(namespace, filename, plugin.module.settings)
       .init()
   }
 
-  private buildContext(plugin: PluginEntry, settings?: SettingsInterface) {
+  private buildContext(plugin: PluginEntry) {
     const permissions = plugin.manifest.permissions ?? []
 
     return {
       ...this.permissionRegsitry.buildContext(permissions),
       pluginName: plugin.manifest.name,
       pluginDir: plugin.path,
-      settings,
     }
   }
 
