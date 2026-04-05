@@ -12,6 +12,7 @@ export function registerPluginPermissions(
   permissionRegistry.register('events:subscribe', {
     events: {
       subscribe: modules.EventBus.subscribe.bind(modules.EventBus),
+      unsubscribe: modules.EventBus.unsubscribe.bind(modules.EventBus),
     },
   })
   permissionRegistry.register('events:emit', {
