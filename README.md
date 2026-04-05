@@ -30,7 +30,6 @@ npm run build:release
 - Full keyboard navigable
 - Cloud sync
 - User defined fields with type system
-- Plugin system
 - CLI
 - Encrypted storage/libraries
 
@@ -60,3 +59,4 @@ SearchQuery {
 - Export/Import data as packages containing manifest file and resource files
 - Automatically fill information of media by link using AI
 - Settings
+- Plugin system
