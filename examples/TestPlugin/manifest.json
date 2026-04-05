@@ -5,5 +5,6 @@
   "author": "Axiom",
   "icon": "./assets/icon.png",
   "repository": "https://github.com/Twaish/media-tracker.git",
-  "minAppVersion": "1.0.0"
+  "minAppVersion": "1.0.0",
+  "permissions": ["events:subscribe", "events:emit"]
 }
