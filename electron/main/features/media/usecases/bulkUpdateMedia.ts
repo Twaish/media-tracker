@@ -1,6 +1,6 @@
 import { BulkUpdateMediaDTO } from '../application/dto/media.dto'
 import { IMediaRepository } from '../domain/repositories/IMediaRepository'
-import { MEDIA_EVENTS, MediaUpdatedPayload } from './media.events'
+import { MEDIA_EVENTS, MediaUpdatedPayload } from '../events/media.events'
 import { IEventBus } from '@/app/events/application/ports/IEventBus'
 
 export default class BulkUpdateMedia {
