@@ -24,7 +24,7 @@ export type SettingsInterface<T extends Schema = Schema> = {
   namespace: string
   init(): Promise<SettingsInterface<T>>
   get<K extends keyof T>(key: K): RuntimeSchema<T>[K]
-  set<K extends keyof T>(key: K, value: RuntimeSchema<T>[K]): Promise<void>
+  set<K extends keyof T>(key: K, value: RuntimeSchema<T>[K]): void
   getAll(): RuntimeSchema<T>
   isSecret(key: keyof T): boolean
   flushNow(): Promise<void>

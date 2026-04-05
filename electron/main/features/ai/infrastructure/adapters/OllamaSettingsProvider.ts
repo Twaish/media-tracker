@@ -52,7 +52,7 @@ export class OllamaSettingsProvider
 
     const normalizedHost = this.normalizeHost(newHost)
 
-    await this._settings.set('host', normalizedHost)
+    this._settings.set('host', normalizedHost)
 
     this.emit('hostChanged', normalizedHost)
   }
