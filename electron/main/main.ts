@@ -21,6 +21,7 @@ import { createExpressionServices } from './helpers/create-expression-services'
 import { registerExportSchemas } from './helpers/register-export-schemas'
 import { registerImportSchemas } from './helpers/register-import-schemas'
 import { registerAutomationSchemas } from './helpers/register-automation-schemas'
+import { registerPluginPermissions } from './helpers/register-plugin-permissions'
 
 import { consoleFormat, fileFormat } from './app/logging/infrastructure/formats'
 import {
@@ -31,6 +32,7 @@ import { WinstonLogger } from './app/logging/infrastructure/adapters/WinstonLogg
 
 import { PluginManager } from './app/plugins/infrastructure/adapters/PluginManager'
 import { PluginRegistry } from './app/plugins/infrastructure/adapters/PluginRegistry'
+import { PermissionRegistry } from './app/plugins/infrastructure/adapters/PermissionRegistry'
 
 import { SettingsBuilder } from './app/settings/infrastructure/adapters/SettingsBuilder'
 import { SettingsRegistry } from './app/settings/infrastructure/adapters/SettingsRegistry'
@@ -125,8 +127,14 @@ app.whenReady().then(async () => {
     )
 
     logger.info('Initializing plugin system')
+    const permissionRegistry = new PermissionRegistry()
     const pluginRegistry = new PluginRegistry()
-    const pluginManager = new PluginManager(pluginRegistry)
+    const pluginManager = new PluginManager(
+      pluginRegistry,
+      permissionRegistry,
+      settingsBuilder,
+    )
+    pluginManager.on('error', (err) => logger.error(err))
 
     logger.info('Initializing AI services')
     const ollamaSettings = new OllamaSettingsProvider(settingsBuilder)
@@ -212,8 +220,8 @@ app.whenReady().then(async () => {
 
     logger.header('Plugins')
     logger.info('Initializing plugins')
-    pluginManager.setModules(modules)
-    await pluginManager.load(PLUGINS_DIR)
+    registerPluginPermissions(modules, permissionRegistry)
+    await pluginManager.load(PLUGINS_DIR, appInfo.version)
     await pluginManager.setup()
     logger.debug(`Plugins: ${JSON.stringify(pluginRegistry.getAll(), null, 2)}`)
 

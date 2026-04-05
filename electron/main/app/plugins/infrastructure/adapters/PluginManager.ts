@@ -2,13 +2,19 @@ import { PluginModule } from '../../infrastructure/adapters/PluginModule'
 import { IPluginManager } from '../../application/ports/IPluginManager'
 import { IPluginRegistry } from '../../application/ports/IPluginRegistry'
 import { PluginManifest } from '../../application/models/PluginManifest'
-import { Modules } from '@/helpers/ipc/types'
+import { IPermissionRegistry } from '../../application/ports/IPermissionRegistry'
 
 import fs from 'fs/promises'
 import path from 'path'
 import semver from 'semver'
 import { pathToFileURL } from 'url'
-import { Schema } from '@/app/settings/application/ports/ISettingsBuilder'
+import {
+  ISettingsBuilder,
+  Schema,
+  SettingsInterface,
+} from '@/app/settings/application/ports/ISettingsBuilder'
+import { PluginContext } from './PluginContext'
+import EventEmitter from 'events'
 
 export type PluginState =
   | 'unloaded'
@@ -23,132 +29,146 @@ type PluginEntry = {
   manifest: PluginManifest
   module: PluginModule
   state: PluginState
+  context?: PluginContext
   error?: Error
 }
 
-export class PluginManager implements IPluginManager {
-  private modules?: Modules
+export class PluginManager extends EventEmitter implements IPluginManager {
   private plugins: Map<string, PluginEntry> = new Map()
-  constructor(private readonly registry: IPluginRegistry) {}
 
-  setModules(modules: Modules) {
-    this.modules = modules
+  constructor(
+    private readonly pluginRegistry: IPluginRegistry,
+    private readonly permissionRegsitry: IPermissionRegistry,
+    private readonly settingsBuilder: ISettingsBuilder,
+  ) {
+    super()
   }
 
-  async load(pluginsPath: string): Promise<void> {
-    const modules = this.getModules()
+  async load(pluginsPath: string, appVersion: string): Promise<void> {
     await fs.mkdir(pluginsPath, { recursive: true })
-
     const dirs = await fs.readdir(pluginsPath)
-    const loaded: PluginManifest[] = []
+
+    const manifests: PluginManifest[] = []
 
     for (const dir of dirs) {
+      const pluginDir = path.join(pluginsPath, dir)
+
       try {
-        const pluginDir = path.join(pluginsPath, dir)
         const { manifest, module } = await this.loadPlugin(pluginDir)
 
-        this.validateVersion(manifest, modules.appInfo.version)
+        this.validateVersion(manifest, appVersion)
 
         if (manifest.icon) {
           manifest.icon = path.join(pluginDir, manifest.icon)
         }
 
-        this.registry.register(manifest.name, manifest)
+        this.pluginRegistry.register(manifest.name, manifest)
+
         this.plugins.set(manifest.name, {
           path: pluginDir,
           manifest,
           module,
           state: 'loaded',
         })
-        loaded.push(manifest)
+
+        manifests.push(manifest)
       } catch (err) {
-        modules.logger.error(
-          `Couldn't import plugin at ${dir}. ${err instanceof Error ? err.stack : String(err)}`,
+        this.emit(
+          'error',
+          new Error(
+            `Failed loading plugin "${dir}": ${err instanceof Error ? err.stack : String(err)}`,
+          ),
         )
       }
     }
 
-    for (const manifest of loaded) {
-      this.validateDependencies(manifest)
-    }
+    manifests.forEach((m) => this.validateDependencies(m))
   }
 
   async setup(): Promise<void> {
-    const modules = this.getModules()
+    const setupPlugin = async (name: string) => {
+      const plugin = this.getPluginOrThrow(name)
+      plugin.state = 'setting-up'
+
+      try {
+        const settings = await this.buildSettings(plugin)
+        const context = this.buildContext(plugin, settings)
+
+        await plugin.module.setup?.(context)
+        plugin.context = context
+        plugin.state = 'running'
+      } catch (err) {
+        this.failPlugin(plugin, err, 'setup')
+      }
+    }
 
     for (const batch of this.topologicalBatches()) {
-      await Promise.all(
-        batch.map(async (name) => {
-          const plugin = this.plugins.get(name)!
-          plugin.state = 'setting-up'
-          try {
-            let settings
-            if (plugin.module.getSettings != null) {
-              const settingsShape = await plugin.module.getSettings()
-              const pluginNamespace = `plugin:${plugin.manifest.name}`
-              const settingsFilename = `plugin-${this.getPluginBasicName(plugin.manifest.name)}`
-              settings = await modules.SettingsBuilder.defineSettings(
-                pluginNamespace,
-                settingsFilename,
-                settingsShape as Schema,
-              ).init()
-            }
-            await plugin.module.setup?.(modules, plugin.path, settings)
-            plugin.state = 'running'
-          } catch (err) {
-            plugin.state = 'error'
-            plugin.error = err instanceof Error ? err : new Error(String(err))
-            modules.logger.error(
-              `Plugin "${name}" failed during setup: ${plugin.error.stack}`,
-            )
-          }
-        }),
-      )
+      await Promise.all(batch.map(setupPlugin))
     }
   }
 
   async execute(pluginName: string, ...args: unknown[]): Promise<void> {
-    const modules = this.getModules()
-    const plugin = this.plugins.get(pluginName)
-    if (!plugin) {
-      throw new Error(`No plugin found with name "${pluginName}"`)
+    const plugin = this.getPluginOrThrow(pluginName)
+    if (!plugin.context) {
+      throw new Error(`Plugin "${pluginName}" is not initialized`)
     }
     if (!plugin.module.execute) {
       throw new Error(`Plugin "${pluginName}" has no execute method`)
     }
-    await plugin.module.execute(modules, ...args)
+    await plugin.module.execute(plugin.context, ...args)
   }
 
   async destroy(pluginName: string): Promise<void> {
-    const modules = this.getModules()
-    const plugin = this.plugins.get(pluginName)
-    if (!plugin) {
-      throw new Error(`No plugin found with name "${pluginName}"`)
+    const plugin = this.getPluginOrThrow(pluginName)
+    if (!plugin.context) {
+      throw new Error(`Plugin "${pluginName}" is not initialized`)
     }
     if (!plugin.module.destroy) {
       throw new Error(`Plugin "${pluginName}" has no destroy method`)
     }
-    await plugin.module.destroy(modules)
+    await plugin.module.destroy(plugin.context)
+    plugin.state = 'destroyed'
   }
 
   async destroyAll(): Promise<void> {
-    const modules = this.getModules()
+    const destroyPlugin = async (name: string) => {
+      const plugin = this.plugins.get(name)!
+
+      try {
+        await plugin.module.destroy?.(plugin.context!)
+        plugin.state = 'destroyed'
+      } catch (err) {
+        this.emit(
+          'error',
+          new Error(
+            `Plugin "${name}" failed during destroy: ${err instanceof Error ? err.stack : String(err)}`,
+          ),
+        )
+      }
+    }
+
     // Reverse for dependents destroyed before their dependencies
     for (const batch of this.topologicalBatches().reverse()) {
-      await Promise.allSettled(
-        batch.map(async (name) => {
-          const entry = this.plugins.get(name)!
-          try {
-            await entry.module.destroy?.(modules)
-            entry.state = 'destroyed'
-          } catch (err) {
-            modules.logger.error(
-              `Plugin "${name}" failed during destroy: ${err instanceof Error ? err.stack : String(err)}`,
-            )
-          }
-        }),
-      )
+      await Promise.allSettled(batch.map(destroyPlugin))
     }
+  }
+
+  private getPluginOrThrow(name: string) {
+    const plugin = this.plugins.get(name)
+    if (!plugin) throw new Error(`No plugin found with name "${name}"`)
+    return plugin
+  }
+
+  private failPlugin(plugin: PluginEntry, err: unknown, phase: string) {
+    plugin.state = 'error'
+    plugin.error = err instanceof Error ? err : new Error(String(err))
+
+    this.emit(
+      'error',
+      new Error(
+        `Plugin "${plugin.manifest.name}" failed during ${phase}: ${plugin.error.stack}`,
+      ),
+    )
   }
 
   private async loadPlugin(
@@ -167,11 +187,26 @@ export class PluginManager implements IPluginManager {
     return { manifest, module }
   }
 
-  private getModules() {
-    if (!this.modules) {
-      throw new Error(`Modules has not been set in PluginManager`)
+  private async buildSettings(plugin: PluginEntry) {
+    if (!plugin.module.settings) return
+
+    const namespace = `plugin:${plugin.manifest.name}`
+    const filename = `plugin-${this.getPluginBasicName(plugin.manifest.name)}`
+
+    return this.settingsBuilder
+      .defineSettings(namespace, filename, plugin.module.settings as Schema)
+      .init()
+  }
+
+  private buildContext(plugin: PluginEntry, settings?: SettingsInterface) {
+    const permissions = plugin.manifest.permissions ?? []
+
+    return {
+      ...this.permissionRegsitry.buildContext(permissions),
+      pluginName: plugin.manifest.name,
+      pluginDir: plugin.path,
+      settings,
     }
-    return this.modules!
   }
 
   private validateVersion(manifest: PluginManifest, appVersion: string) {
@@ -187,14 +222,13 @@ export class PluginManager implements IPluginManager {
 
   private validateDependencies(manifest: PluginManifest) {
     for (const dep of manifest.dependencies ?? []) {
-      if (!this.plugins.has(dep)) {
-        const entry = this.plugins.get(manifest.name)!
-        entry.state = 'error'
-        entry.error = new Error(
-          `Plugin "${manifest.name}" requires "${dep}" which is not loaded`,
-        )
-        this.getModules().logger.error(entry.error.message)
-      }
+      if (this.plugins.has(dep)) continue
+
+      const plugin = this.plugins.get(manifest.name)!
+      const error = new Error(
+        `Plugin "${manifest.name}" requires "${dep}" which is not loaded`,
+      )
+      this.failPlugin(plugin, error, 'dependency-validation')
     }
   }
 
@@ -238,13 +272,14 @@ export class PluginManager implements IPluginManager {
 
     // Mark cycles
     for (const [name, deg] of inDegree) {
-      if (deg > 0) {
-        const entry = this.plugins.get(name)!
-        entry.state = 'error'
-        entry.error = new Error(
-          `Plugin "${name}" is part of a dependency cycle`,
-        )
-      }
+      if (deg <= 0) continue
+
+      const plugin = this.getPluginOrThrow(name)
+      this.failPlugin(
+        plugin,
+        `Plugin "${name}" is part of a dependency cycle`,
+        'dependency-cycle',
+      )
     }
 
     return batches

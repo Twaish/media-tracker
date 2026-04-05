@@ -7,4 +7,5 @@ export type PluginManifest = {
   repository?: string
   minAppVersion?: string
   dependencies?: string[] // Other plugin names
+  permissions?: string[]
 }
