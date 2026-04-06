@@ -2,7 +2,7 @@ import { describe, it, beforeEach, expect, vi } from 'vitest'
 import { IMediaRepository } from '@/features/media/domain/repositories/IMediaRepository'
 import UpdateMedia from '@/features/media/usecases/updateMedia'
 import { makeMedia } from './utils'
-import { MEDIA_EVENTS } from '@/features/media/usecases/media.events'
+import { MEDIA_EVENTS } from '@/features/media/events/media.events'
 import { IEventBus } from '@/app/events/application/ports/IEventBus'
 import { IStorageService } from '@/app/storage/application/interfaces/IStorageService'
 

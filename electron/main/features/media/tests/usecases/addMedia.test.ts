@@ -3,7 +3,7 @@ import { IMediaRepository } from '@/features/media/domain/repositories/IMediaRep
 import AddMedia from '@/features/media/usecases/addMedia'
 import { makeMedia } from './utils'
 import { IEventBus } from '@/app/events/application/ports/IEventBus'
-import { MEDIA_EVENTS } from '@/features/media/usecases/media.events'
+import { MEDIA_EVENTS } from '@/features/media/events/media.events'
 import { IStorageService } from '@/app/storage/application/interfaces/IStorageService'
 
 describe('AddMedia', () => {

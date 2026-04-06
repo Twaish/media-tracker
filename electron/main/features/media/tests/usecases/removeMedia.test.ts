@@ -3,7 +3,7 @@ import { IMediaRepository } from '@/features/media/domain/repositories/IMediaRep
 import RemoveMedia from '@/features/media/usecases/removeMedia'
 import { IEventBus } from '@/app/events/application/ports/IEventBus'
 import { makeMedia } from './utils'
-import { MEDIA_EVENTS } from '@/features/media/usecases/media.events'
+import { MEDIA_EVENTS } from '@/features/media/events/media.events'
 
 describe('RemoveMedia', () => {
   let usecase: RemoveMedia

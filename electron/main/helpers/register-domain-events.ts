@@ -1,7 +1,7 @@
 import {
   registerMediaEvents,
   subscribeToMediaEvents,
-} from '@/features/media/usecases/media.events'
+} from '@/features/media/events/media.events'
 import { Modules } from '@/helpers/ipc/types'
 
 export function registerDomainEvents(modules: Modules) {
