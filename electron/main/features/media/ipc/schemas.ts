@@ -6,6 +6,7 @@ import {
 } from '../domain/entities/media'
 import { persistedGenreSchema } from '@/features/genres/ipc/schemas'
 import { PersistedMediaProgress } from '../domain/entities/mediaProgress'
+import { PersistedMediaEmbedding } from '../domain/entities/mediaEmbedding'
 
 export const mediaSchema = z.object({
   id: z.number(),
@@ -24,13 +25,17 @@ export const mediaSchema = z.object({
   genres: z.array(persistedGenreSchema),
   deletedAt: z.date().nullish(),
 })
+type _AssertMediaSchema =
+  z.infer<typeof mediaSchema> extends PersistedMedia ? true : never
+const _assert: _AssertMediaSchema = true
 
-export const persistedMediaEmbeddingSchema = z.object({
-  id: z.number(),
-  mediaId: z.number(),
-  embedding: z.array(z.number()),
-  model: z.string(),
-})
+export const persistedMediaEmbeddingSchema: z.ZodType<PersistedMediaEmbedding> =
+  z.object({
+    id: z.number(),
+    mediaId: z.number(),
+    embedding: z.array(z.number()),
+    model: z.string(),
+  })
 
 export const persistedMediaProgress: z.ZodType<PersistedMediaProgress> =
   z.object({
@@ -39,17 +44,6 @@ export const persistedMediaProgress: z.ZodType<PersistedMediaProgress> =
     progress: z.number(),
     previousProgress: z.number().nullish(),
     createdAt: z.date().optional(),
-  })
-
-export const paginationResultSchema = <T>(itemSchema: z.ZodType<T>) =>
-  z.object({
-    data: z.array(itemSchema),
-    pagination: z.object({
-      page: z.number(),
-      limit: z.number(),
-      totalPages: z.number(),
-      totalItems: z.number(),
-    }),
   })
 
 export const addMediaInputSchema = mediaSchema
