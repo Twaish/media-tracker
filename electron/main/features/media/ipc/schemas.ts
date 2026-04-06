@@ -1,6 +1,11 @@
 import z from 'zod'
-import { MEDIA_STATUS, MEDIA_TYPES } from '../domain/entities/media'
+import {
+  MEDIA_STATUS,
+  MEDIA_TYPES,
+  PersistedMedia,
+} from '../domain/entities/media'
 import { persistedGenreSchema } from '@/features/genres/ipc/schemas'
+import { PersistedMediaProgress } from '../domain/entities/mediaProgress'
 
 export const mediaSchema = z.object({
   id: z.number(),
@@ -27,13 +32,14 @@ export const persistedMediaEmbeddingSchema = z.object({
   model: z.string(),
 })
 
-export const persistedMediaProgress = z.object({
-  id: z.number(),
-  mediaId: z.number(),
-  progress: z.number(),
-  previousProgress: z.number().nullish(),
-  createdAt: z.date().nullish(),
-})
+export const persistedMediaProgress: z.ZodType<PersistedMediaProgress> =
+  z.object({
+    id: z.number(),
+    mediaId: z.number(),
+    progress: z.number(),
+    previousProgress: z.number().nullish(),
+    createdAt: z.date().optional(),
+  })
 
 export const paginationResultSchema = <T>(itemSchema: z.ZodType<T>) =>
   z.object({

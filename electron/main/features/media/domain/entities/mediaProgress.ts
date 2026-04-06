@@ -2,7 +2,7 @@ export type MediaProgressProps = {
   mediaId: number
   progress: number
   previousProgress?: number | null
-  createdAt?: Date | null
+  createdAt?: Date
 }
 
 export type PersistedMediaProgress = MediaProgressProps & {
