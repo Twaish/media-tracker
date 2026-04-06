@@ -1,7 +1,4 @@
-import {
-  MediaProgress,
-  PersistedMediaProgress,
-} from '../entities/mediaProgress'
+import { MediaProgress } from '../entities/mediaProgress'
 
 export interface IMediaProgressRepository {
   add(mediaProgress: MediaProgress): Promise<MediaProgress>
