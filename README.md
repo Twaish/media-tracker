@@ -23,7 +23,6 @@ npm run build:release
 
 ## Feature Todo List
 - Create splash screen (Fixes FOUC)
-- Viewing statistics
 - System tray icon UI for quickly updating progress or adding new media
 - Backup/Restore using versioning system (delta-based)
 - Quick action menu
@@ -60,3 +59,4 @@ SearchQuery {
 - Automatically fill information of media by link using AI
 - Settings
 - Plugin system
+- Viewing statistics
