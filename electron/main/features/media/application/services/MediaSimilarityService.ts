@@ -14,19 +14,53 @@ export class MediaSimilarityService implements IMediaSimilarityService {
     private readonly repo: IMediaEmbeddingRepository,
   ) {}
 
+  async findTopKSimilarByMedia(
+    mediaId: number,
+    model: string,
+    k: number,
+    threshold: number,
+  ): Promise<{ item: number; score: number }[]> {
+    const source = await this.repo.getByMediaId(mediaId, model)
+    if (!source) return []
+
+    const inputEmbedding = new Float32Array(source.embedding)
+
+    return this.findTopK(
+      inputEmbedding,
+      model,
+      k,
+      threshold,
+      (row) => row.mediaId !== mediaId,
+    )
+  }
+
   async findTopKSimilar(
     inputText: string,
     model: string,
+    k: number,
+    threshold: number,
+  ): Promise<{ item: number; score: number }[]> {
+    const embedding = await this.aiService.embed(inputText)
+    const inputEmbedding = new Float32Array(normalize(embedding))
+
+    return this.findTopK(inputEmbedding, model, k, threshold)
+  }
+
+  private async findTopK(
+    inputEmbedding: Float32Array,
+    model: string,
     k = 10,
     threshold = 0.8,
+    filter: (row: { mediaId: number; embedding: number[] }) => boolean = () =>
+      true,
   ): Promise<{ item: number; score: number }[]> {
-    const inputEmbedding = normalize(await this.aiService.embed(inputText))
-
     const heap = new TopKHeap<number>(k)
 
     for await (const row of this.repo.streamEmbeddingsByModel(model)) {
+      if (!filter(row)) continue
+
       const similarity = dotProduct(
-        new Float32Array(inputEmbedding),
+        inputEmbedding,
         new Float32Array(row.embedding),
       )
 
