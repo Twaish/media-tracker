@@ -120,3 +120,16 @@ export const fetchFromUrlOutputSchema = addMediaInputSchema
 
 export const getProgressHistoryInputSchema = z.number()
 export const getProgressHistoryOutputSchema = z.array(persistedMediaProgress)
+
+export const findEmbeddingDuplicatesInputSchema = z.object({
+  model: z.string(),
+  k: z.number().optional(),
+  threshold: z.number().optional(),
+})
+export const findEmbeddingDuplicatesOutputSchema = z.array(
+  z.object({
+    a: z.number(),
+    b: z.number(),
+    score: z.number(),
+  }),
+)

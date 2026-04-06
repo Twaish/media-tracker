@@ -11,6 +11,8 @@ import {
   fetchFromUrlOutputSchema,
   findDuplicatesInputSchema,
   findDuplicatesOutputSchema,
+  findEmbeddingDuplicatesInputSchema,
+  findEmbeddingDuplicatesOutputSchema,
   getByIdInputSchema,
   getMediaMissingEmbeddingsInputSchema,
   getMediaMissingEmbeddingsOutputSchema,
@@ -102,5 +104,15 @@ export function createMediaRouters(modules: Modules) {
       .input(getProgressHistoryInputSchema)
       .output(getProgressHistoryOutputSchema)
       .handler(({ input }) => useCases.getMediaProgressHistory.execute(input)),
+    findEmbeddingDuplicates: os
+      .input(findEmbeddingDuplicatesInputSchema)
+      .output(findEmbeddingDuplicatesOutputSchema)
+      .handler(({ input }) =>
+        useCases.findMediaEmbeddingDuplicates.execute(
+          input.model,
+          input.k,
+          input.threshold,
+        ),
+      ),
   }
 }
