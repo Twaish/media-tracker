@@ -64,7 +64,9 @@ import { QueryResolver } from './features/media/application/services/QueryResolv
 import { ExternalLinkResolver } from './features/media/application/services/ExternalLinkResolver'
 import { MediaSimilarityService } from './features/media/application/services/MediaSimilarityService'
 import { MediaRepositoryDrizzle } from './features/media/infrastructure/repositories/mediaRepositoryDrizzle'
+import { MediaProgressRepositoryDrizzle } from './features/media/infrastructure/repositories/mediaProgressRepositoryDrizzle'
 import { MediaEmbeddingRepositoryDrizzle } from './features/media/infrastructure/repositories/mediaEmbeddingRepositoryDrizzle'
+import { subscribeMediaProjections } from './features/media/events/subscribe-media-projections'
 
 import { WatchPlanRepositoryDrizzle } from './features/watchplan/infrastructure/repositories/watchPlanRepositoryDrizzle'
 
@@ -100,6 +102,7 @@ app.whenReady().then(async () => {
     const mediaEmbeddingRepository = new MediaEmbeddingRepositoryDrizzle(
       database,
     )
+    const mediaProgressRepository = new MediaProgressRepositoryDrizzle(database)
     const ruleRepository = new RuleRepositoryDrizzle(database)
     const templateRepository = new TemplateRepositoryDrizzle(database)
 
@@ -199,6 +202,7 @@ app.whenReady().then(async () => {
       ExternalLinkResolver: externalLinkResolver,
       MediaSimilarityService: mediaSimilarityService,
       MediaRepository: mediaRepository,
+      MediaProgressRepository: mediaProgressRepository,
       MediaEmbeddingRepository: mediaEmbeddingRepository,
 
       StorageService: storageService,
@@ -240,6 +244,9 @@ app.whenReady().then(async () => {
     logger.header('oRPC / Protocols / Events')
     logger.info('Registering oRPC handlers')
     registerOrpcHandler(createOrpcRouter(modules))
+
+    logger.info('Subscribing to media projections')
+    subscribeMediaProjections(modules)
 
     logger.info('Registering custom protocols')
     registerProtocols(modules)

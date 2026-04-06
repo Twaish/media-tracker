@@ -31,6 +31,7 @@ import { IQueryResolver } from '@/features/media/application/interfaces/IQueryRe
 import { IExternalLinkResolver } from '@/features/media/application/interfaces/IExternalLinkResolver'
 import { IMediaRepository } from '@/features/media/domain/repositories/IMediaRepository'
 import { IMediaSimilarityService } from '@/features/media/application/interfaces/IMediaSimilarityService'
+import { IMediaProgressRepository } from '@/features/media/domain/repositories/IMediaProgressRepository'
 import { IMediaEmbeddingRepository } from '@/features/media/domain/repositories/IMediaEmbeddingRepository'
 
 import { IWatchPlanRepository } from '@/features/watchplan/domain/repositories/IWatchPlanRepository'
@@ -63,6 +64,7 @@ declare interface Modules {
   ExternalLinkResolver: IExternalLinkResolver
   MediaSimilarityService: IMediaSimilarityService
   MediaRepository: IMediaRepository
+  MediaProgressRepository: IMediaProgressRepository
   MediaEmbeddingRepository: IMediaEmbeddingRepository
 
   StorageService: IStorageService

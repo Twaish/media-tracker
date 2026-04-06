@@ -14,6 +14,8 @@ import {
   getByIdInputSchema,
   getMediaMissingEmbeddingsInputSchema,
   getMediaMissingEmbeddingsOutputSchema,
+  getProgressHistoryInputSchema,
+  getProgressHistoryOutputSchema,
   mediaSchema,
   removeMediaInputSchema,
   removeMediaOutputSchema,
@@ -96,5 +98,9 @@ export function createMediaRouters(modules: Modules) {
       .handler(({ input }) =>
         useCases.fetchMediaFromUrl.execute(input.url, input.model),
       ),
+    getProgressHistory: os
+      .input(getProgressHistoryInputSchema)
+      .output(getProgressHistoryOutputSchema)
+      .handler(({ input }) => useCases.getMediaProgressHistory.execute(input)),
   }
 }

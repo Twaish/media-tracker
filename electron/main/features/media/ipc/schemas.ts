@@ -27,6 +27,14 @@ export const persistedMediaEmbeddingSchema = z.object({
   model: z.string(),
 })
 
+export const persistedMediaProgress = z.object({
+  id: z.number(),
+  mediaId: z.number(),
+  progress: z.number(),
+  previousProgress: z.number().nullish(),
+  createdAt: z.date().nullish(),
+})
+
 export const paginationResultSchema = <T>(itemSchema: z.ZodType<T>) =>
   z.object({
     data: z.array(itemSchema),
@@ -109,3 +117,6 @@ export const fetchFromUrlInputSchema = z.object({
   model: z.string(),
 })
 export const fetchFromUrlOutputSchema = addMediaInputSchema
+
+export const getProgressHistoryInputSchema = z.number()
+export const getProgressHistoryOutputSchema = z.array(persistedMediaProgress)

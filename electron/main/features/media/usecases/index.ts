@@ -13,10 +13,12 @@ import CreateMediaEmbedding from './createMediaEmbedding'
 import SearchMediaEmbeddings from './searchMediaEmbeddings'
 import GetMediaMissingEmbeddings from './getMediaMissingEmbeddings'
 import FetchMediaFromUrl from './fetchMediaFromUrl'
+import GetMediaProgressHistory from './getMediaProgressHistory'
 
 export function createMediaUseCases({
   MediaRepository,
   MediaEmbeddingRepository,
+  MediaProgressRepository,
   MediaSimilarityService,
   AiService,
   StorageService,
@@ -55,5 +57,8 @@ export function createMediaUseCases({
       MediaEmbeddingRepository,
     ),
     fetchMediaFromUrl: new FetchMediaFromUrl(AiService),
+    getMediaProgressHistory: new GetMediaProgressHistory(
+      MediaProgressRepository,
+    ),
   }
 }
