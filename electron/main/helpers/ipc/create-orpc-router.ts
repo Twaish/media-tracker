@@ -6,6 +6,7 @@ import { createWindowRouters } from '../../app/window/ipc'
 import { createEventsRouters } from '../../app/events/ipc'
 import { createStorageRouters } from '../../app/storage/ipc'
 import { createExportingRouters } from '../../app/exporting/ipc'
+import { createVersioningRouters } from '../../app/versioning/ipc'
 
 import { createAiRouters } from '../../features/ai/ipc'
 import { createMediaRouters } from '../../features/media/ipc'
@@ -21,6 +22,7 @@ export function createOrpcRouter(modules: Modules) {
     events: createEventsRouters(modules),
     storage: createStorageRouters(modules),
     exporting: createExportingRouters(modules),
+    versioning: createVersioningRouters(modules),
 
     ai: createAiRouters(modules),
     media: createMediaRouters(modules),
