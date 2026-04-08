@@ -69,6 +69,8 @@ import { MediaEmbeddingRepositoryDrizzle } from './features/media/infrastructure
 import { subscribeMediaProjections } from './features/media/events/subscribe-media-projections'
 
 import { WatchPlanRepositoryDrizzle } from './features/watchplan/infrastructure/repositories/watchPlanRepositoryDrizzle'
+import { DeltaRepositoryDrizzle } from './app/versioning/infrastructure/repositories/deltaRepositoryDrizzle'
+import { registerVersioningEvents } from './helpers/register-versioning-events'
 
 app.whenReady().then(async () => {
   const userData = app.getPath('userData')
@@ -105,6 +107,7 @@ app.whenReady().then(async () => {
     const mediaProgressRepository = new MediaProgressRepositoryDrizzle(database)
     const ruleRepository = new RuleRepositoryDrizzle(database)
     const templateRepository = new TemplateRepositoryDrizzle(database)
+    const deltaRepository = new DeltaRepositoryDrizzle(database)
 
     logger.info('Initializing task service')
     const taskService = new TaskService()
@@ -181,6 +184,8 @@ app.whenReady().then(async () => {
       appInfo,
       SettingsBuilder: settingsBuilder,
 
+      DeltaRepository: deltaRepository,
+
       AiService: ollamaService,
       AiSettingsProvider: ollamaSettings,
 
@@ -253,6 +258,9 @@ app.whenReady().then(async () => {
 
     logger.info('Registering domain events')
     registerDomainEvents(modules)
+
+    logger.info('Registering versioning events')
+    registerVersioningEvents(modules)
 
     logger.info('Registering exporting & importing schemas')
     registerExportSchemas(modules)

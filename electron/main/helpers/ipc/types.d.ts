@@ -35,6 +35,7 @@ import { IMediaProgressRepository } from '@/features/media/domain/repositories/I
 import { IMediaEmbeddingRepository } from '@/features/media/domain/repositories/IMediaEmbeddingRepository'
 
 import { IWatchPlanRepository } from '@/features/watchplan/domain/repositories/IWatchPlanRepository'
+import { IDeltaRepository } from '@/app/versioning/domain/repositories/IDeltaRepository'
 
 declare interface Modules {
   ElectronWindow: ElectronWindow
@@ -42,6 +43,8 @@ declare interface Modules {
   logger: ILogger
   appInfo: AppInfo
   SettingsBuilder: ISettingsBuilder
+
+  DeltaRepository: IDeltaRepository
 
   AiService: IAiService
   AiSettingsProvider: IAiSettingsProvider
