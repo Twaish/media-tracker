@@ -25,12 +25,12 @@ npm run build:release
 ## Features
 ### Core Functionality
 - **DSL Search**: `<title?> [property operator value[, value...]]*`. Supported operators: `=  !=  <  <=  >  >=`. Example:
-  ```json
+  ```js
   // The query:
   // `One Punch Man [genre=Comedy, Fighting][genre!=Thriller][year>=2015]` 
   // would result in:
   // AST Representation
-  SearchQuery {
+  const query = {
     "title": "One Punch Man",
     "filters": [
       { "field": "genre", "op": "=", "values": ["Comedy", "Fighting"] },
@@ -65,3 +65,5 @@ npm run build:release
 - User defined fields with type system
 - CLI
 - Encrypted storage/libraries
+- Add index file support for prefilling anime meta data (https://github.com/manami-project/anime-offline-database)
+- Add more media metadata fields for (https://github.com/manami-project/anime-offline-database)
