@@ -34,6 +34,9 @@ import { PluginManager } from './app/plugins/infrastructure/adapters/PluginManag
 import { PluginRegistry } from './app/plugins/infrastructure/adapters/PluginRegistry'
 import { PermissionRegistry } from './app/plugins/infrastructure/adapters/PermissionRegistry'
 
+import { IndexRegistry } from './app/indexing/infrastructure/adapters/IndexRegistry'
+import { IndexManager } from './app/indexing/infrastructure/adapters/IndexManager'
+
 import { SettingsBuilder } from './app/settings/infrastructure/adapters/SettingsBuilder'
 import { SettingsRegistry } from './app/settings/infrastructure/adapters/SettingsRegistry'
 
@@ -76,6 +79,7 @@ app.whenReady().then(async () => {
   const userData = app.getPath('userData')
   const {
     PLUGINS_DIR,
+    INDEX_PACKAGES_DIR,
     DB_PATH,
     MIGRATIONS_PATH,
     LOG_PATH,
@@ -141,6 +145,11 @@ app.whenReady().then(async () => {
       settingsBuilder,
     )
     pluginManager.on('error', (err) => logger.error(err))
+
+    logger.info('Initializing indexing system')
+    const indexRegistry = new IndexRegistry()
+    const indexManager = new IndexManager(INDEX_PACKAGES_DIR, indexRegistry)
+    indexManager.on('error', (err) => logger.error(err))
 
     logger.info('Initializing AI services')
     const ollamaSettings = new OllamaSettingsProvider(settingsBuilder)
@@ -233,6 +242,11 @@ app.whenReady().then(async () => {
     await pluginManager.load(PLUGINS_DIR, appInfo.version)
     await pluginManager.setup()
     logger.debug(`Plugins: ${JSON.stringify(pluginRegistry.getAll(), null, 2)}`)
+
+    logger.header('Index Packages')
+    logger.info('Loading index packages')
+    await indexManager.load()
+    logger.debug(`packages: ${JSON.stringify(indexRegistry.getAll(), null, 2)}`)
 
     logger.header('Rule Engine Services')
     logger.info('Creating rule engine services')
