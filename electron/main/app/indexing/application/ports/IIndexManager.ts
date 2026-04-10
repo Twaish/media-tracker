@@ -11,7 +11,18 @@ export interface IIndexManager {
 
   /**
    * Import a local index file or a remote source index file by URL
-   *
+   * ```
+   * // Load from remote source
+   * await indexManager.importIndexFile({
+   *   source: 'https://github.com/some-repo/anime-db/releases/download/latest/anime-db.json',
+   *   extraction: { entriesPath: 'data', title: 'title' },
+   * })
+   * // or load from local file
+   * await indexManager.importIndexFile({
+   *   source: 'C:/Users/admin/Downloads/anime-db.json',
+   *   extraction: { entriesPath: 'data', title: 'title' },
+   * })
+   * ```
    * @param source The file source
    * @param extraction The extraction schema
    */
@@ -22,14 +33,15 @@ export interface IIndexManager {
 
   /**
    * Remove a stored index package by its id
-   *
+   * ```
+   * await indexManager.removeIndexPackage('anime-db')
+   * ```
    * @param id The index package id
    */
   removeIndexPackage(id: string): Promise<void>
 
   /**
    * Update the extraction schema for an index package
-   *
    * @param id The index package id
    * @param extraction The new extraction schema
    */
@@ -40,28 +52,33 @@ export interface IIndexManager {
 
   /**
    * Determines whether a remote source index file is outdated
-   *
+   * ```
+   * const isOutdated = await indexManager.isOutdated(targetPackage)
+   * ```
    * @param id The remote source index package id
    */
   isOutdated(id: string): Promise<boolean>
 
   /**
    * Re-downloads remote source index files
-   *
+   * ```
+   * const outdated = await indexManager.isOutdated("anime-db")
+   * if (outdated) {
+   *   await indexManager.refreshIndexFile("anime-db")
+   * }
+   * ```
    * @param id The index package id
    */
   refreshIndexFile(id: string): Promise<IndexFileManifest>
 
   /**
    * Disable an index file excluding it from search
-   *
    * @param id The index package id
    */
   disableIndexFile(id: string): Promise<IndexFileManifest>
 
   /**
    * Enable an index file including it in search
-   *
    * @param id The index package id
    */
   enableIndexFile(id: string): Promise<IndexFileManifest>
