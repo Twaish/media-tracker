@@ -21,6 +21,13 @@ export interface IIndexManager {
   }): Promise<IndexFileManifest>
 
   /**
+   * Remove a stored index package by its id
+   *
+   * @param id The index package id
+   */
+  removeIndexPackage(id: string): Promise<void>
+
+  /**
    * Update the extraction schema for an index package
    *
    * @param id The index package id

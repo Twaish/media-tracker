@@ -106,6 +106,26 @@ export class IndexManager extends EventEmitter implements IIndexManager {
     })
   }
 
+  async removeIndexPackage(id: string): Promise<void> {
+    const manifest = this.indexRegistry.get(id)
+
+    const packageDir = path.dirname(manifest.filePath)
+
+    try {
+      this.indexRegistry.unregister(id)
+
+      await fs.rm(packageDir, { recursive: true })
+    } catch (err) {
+      this.emit(
+        'error',
+        new Error(
+          `Failed to remove index file "${err}": ${err instanceof Error ? err.stack : String(err)}`,
+        ),
+      )
+      throw err
+    }
+  }
+
   async refreshIndexFile(id: string): Promise<IndexFileManifest> {
     const manifest = this.indexRegistry.get(id)
     if (!manifest.source || !this.isUrl(manifest.source)) {
