@@ -66,4 +66,5 @@ npm run build:release
 - CLI
 - Encrypted storage/libraries
 - Add index file support for prefilling anime meta data (https://github.com/manami-project/anime-offline-database)
+- Add catalog showcasing entries in individual index files with pagination
 - Add more media metadata fields for (https://github.com/manami-project/anime-offline-database)
