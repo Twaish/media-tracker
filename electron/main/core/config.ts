@@ -11,6 +11,7 @@ const devUrl = process.env['ELECTRON_RENDERER_URL']
 
 export default {
   PLUGINS_DIR: path.join(userData, 'plugins'),
+  INDEX_PACKAGES_DIR: path.join(userData, 'index_packages'),
   DB_PATH: `file:${path.join(userData, databaseFileName)}`,
   MIGRATIONS_PATH: path.join(appPath, 'drizzle'),
   LOG_PATH: path.join(userData, logFileName),
