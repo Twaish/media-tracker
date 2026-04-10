@@ -3,8 +3,11 @@ import {
   IndexExtractionSchema,
   IndexFileManifest,
 } from '../models/IndexFileManifest'
-import { IIndexRegistry, IndexSearchResult } from '../ports/IIndexRegistry'
-import { IIndexQueryService } from '../interfaces/IIndexQueryService'
+import { IIndexRegistry } from '../ports/IIndexRegistry'
+import {
+  IIndexQueryService,
+  IndexSearchResult,
+} from '../interfaces/IIndexQueryService'
 
 export class IndexQueryService implements IIndexQueryService {
   constructor(private readonly registry: IIndexRegistry) {}
