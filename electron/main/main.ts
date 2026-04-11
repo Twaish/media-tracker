@@ -74,6 +74,7 @@ import { subscribeMediaProjections } from './features/media/events/subscribe-med
 import { WatchPlanRepositoryDrizzle } from './features/watchplan/infrastructure/repositories/watchPlanRepositoryDrizzle'
 import { DeltaRepositoryDrizzle } from './app/versioning/infrastructure/repositories/deltaRepositoryDrizzle'
 import { registerVersioningEvents } from './helpers/register-versioning-events'
+import { IndexQueryService } from './app/indexing/application/services/IndexQueryService'
 
 app.whenReady().then(async () => {
   const userData = app.getPath('userData')
@@ -149,6 +150,7 @@ app.whenReady().then(async () => {
     logger.info('Initializing indexing system')
     const indexRegistry = new IndexRegistry()
     const indexManager = new IndexManager(INDEX_PACKAGES_DIR, indexRegistry)
+    const indexQueryService = new IndexQueryService(indexRegistry)
     indexManager.on('error', (err) => logger.error(err))
 
     logger.info('Initializing AI services')
@@ -192,6 +194,10 @@ app.whenReady().then(async () => {
       logger,
       appInfo,
       SettingsBuilder: settingsBuilder,
+
+      IndexManager: indexManager,
+      IndexRegistry: indexRegistry,
+      IndexQueryService: indexQueryService,
 
       DeltaRepository: deltaRepository,
 

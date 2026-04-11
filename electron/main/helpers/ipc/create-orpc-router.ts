@@ -13,6 +13,7 @@ import { createMediaRouters } from '../../features/media/ipc'
 import { createGenresRouters } from '../../features/genres/ipc'
 import { createWatchPlanRouters } from '../../features/watchplan/ipc'
 import { createAutomationRouters } from '../../features/automation/ipc'
+import { createIndexingRouters } from '@/app/indexing/ipc'
 
 export function createOrpcRouter(modules: Modules) {
   return {
@@ -21,6 +22,7 @@ export function createOrpcRouter(modules: Modules) {
     electronWindow: createWindowRouters(modules),
     events: createEventsRouters(modules),
     storage: createStorageRouters(modules),
+    indexing: createIndexingRouters(modules),
     exporting: createExportingRouters(modules),
     versioning: createVersioningRouters(modules),
 

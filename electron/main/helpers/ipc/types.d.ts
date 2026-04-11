@@ -16,6 +16,10 @@ import { ITaskService } from '@/app/tasks/application/interfaces/ITaskService'
 import { IExportManager } from '@/app/exporting/application/interfaces/IExportManager'
 import { IImportManager } from '@/app/exporting/application/interfaces/IImportManager'
 
+import { IIndexManager } from '@/app/indexing/application/ports/IIndexManager'
+import { IIndexRegistry } from '@/app/indexing/application/ports/IIndexRegistry'
+import { IIndexQueryService } from '@/app/indexing/application/interfaces/IIndexQueryService'
+
 import { IAiService } from '@/features/ai/application/ports/IAiService'
 import { IAiSettingsProvider } from '@/features/ai/application/ports/IAiSettingsProvider'
 
@@ -43,6 +47,10 @@ declare interface Modules {
   logger: ILogger
   appInfo: AppInfo
   SettingsBuilder: ISettingsBuilder
+
+  IndexManager: IIndexManager
+  IndexRegistry: IIndexRegistry
+  IndexQueryService: IIndexQueryService
 
   DeltaRepository: IDeltaRepository
 
