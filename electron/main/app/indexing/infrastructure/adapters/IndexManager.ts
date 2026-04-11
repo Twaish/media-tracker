@@ -59,7 +59,7 @@ export class IndexManager extends EventEmitter implements IIndexManager {
 
   async isOutdated(id: string): Promise<boolean> {
     const manifest = this.indexRegistry.get(id)
-    if (!manifest.source || !this.isUrl(manifest.source)) return false
+    if (!this.isUrl(manifest.source)) return false
 
     const res = await fetch(manifest.source, { method: 'HEAD' })
     if (!res.ok) throw new Error(`Failed to check index: ${res.status}`)
@@ -91,8 +91,12 @@ export class IndexManager extends EventEmitter implements IIndexManager {
     const packageDir = path.join(this.basePath, id)
     await fs.mkdir(packageDir, { recursive: true })
 
-    const filePath = path.join(packageDir, `${id}.json`)
-    const lastModified = await this.downloadOrCopyFile(source, filePath)
+    const filePath = path.join(packageDir, `${id}.jsonl`)
+    const lastModified = await this.downloadOrCopyFile(
+      source,
+      filePath,
+      extraction,
+    )
 
     return await this.persistManifest({
       id,
@@ -128,13 +132,15 @@ export class IndexManager extends EventEmitter implements IIndexManager {
 
   async refreshIndexFile(id: string): Promise<IndexFileManifest> {
     const manifest = this.indexRegistry.get(id)
-    if (!manifest.source || !this.isUrl(manifest.source)) {
-      throw new Error(`Index "${id}" has no remote source to refresh from`)
+
+    if (!(await this.isOutdated(id))) {
+      return manifest
     }
 
     const lastModified = await this.downloadOrCopyFile(
       manifest.source,
       manifest.filePath,
+      manifest.extraction,
     )
 
     return await this.persistManifest({
@@ -145,12 +151,12 @@ export class IndexManager extends EventEmitter implements IIndexManager {
   }
 
   private deriveId(source: string): string {
-    const fileName = source.split(/[\\/]/).pop() ?? source
-    return fileName.replace(/\.[^/.]+$/, '') // remove extension
+    return path.basename(source, path.extname(source))
   }
 
   private isUrl(value: string): boolean {
-    return /^https?:\/\//.test(value)
+    let url = new URL(value)
+    return ['http:', 'https:'].includes(url.protocol)
   }
 
   private findDuplicate(source: string, id: string): IndexFileManifest | null {
@@ -185,17 +191,53 @@ export class IndexManager extends EventEmitter implements IIndexManager {
   private async downloadOrCopyFile(
     source: string,
     destPath: string,
+    extraction: IndexExtractionSchema,
   ): Promise<string | null> {
-    if (this.isUrl(source)) {
+    let lastModified: string | null = null
+    let rawBuffer: Buffer
+
+    const isUrl = this.isUrl(source)
+    if (isUrl) {
       const res = await fetch(source)
       if (!res.ok)
         throw new Error(`Failed to download index file: ${res.status}`)
-      await fs.writeFile(destPath, Buffer.from(await res.arrayBuffer()))
-      return res.headers.get('last-modified')
+      rawBuffer = Buffer.from(await res.arrayBuffer())
+      lastModified = res.headers.get('last-modified')
     } else {
-      await fs.copyFile(source, destPath)
-      return null
+      rawBuffer = await fs.readFile(source)
     }
+
+    const pathname = isUrl ? new URL(source).pathname : source
+    const ext = path.extname(pathname) || '.jsonl'
+    if (ext === '.jsonl') {
+      await fs.writeFile(destPath, rawBuffer)
+    } else {
+      await this.convertJsonToJsonl(
+        rawBuffer.toString('utf-8'),
+        destPath,
+        extraction,
+      )
+    }
+
+    return lastModified
+  }
+
+  private async convertJsonToJsonl(
+    raw: string,
+    destPath: string,
+    extraction: IndexExtractionSchema,
+  ): Promise<void> {
+    const json = JSON.parse(raw)
+    const entries = this.resolvePath(json, extraction.entriesPath!)
+
+    if (!Array.isArray(entries)) {
+      throw new Error(
+        `Invalid entriesPath "${extraction.entriesPath}": resolved value is not an array`,
+      )
+    }
+
+    const lines = entries.map((entry) => JSON.stringify(entry)).join('\n')
+    await fs.writeFile(destPath, lines, 'utf-8')
   }
 
   private async persistManifest(
@@ -209,5 +251,9 @@ export class IndexManager extends EventEmitter implements IIndexManager {
     this.indexRegistry.unregister(manifest.id)
     this.indexRegistry.register(manifest)
     return manifest
+  }
+
+  private resolvePath(obj: any, path: string): unknown {
+    return path.split('.').reduce((acc, key) => acc?.[key], obj)
   }
 }
