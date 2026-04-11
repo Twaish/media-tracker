@@ -6,7 +6,7 @@ export const indexSearchResultSchema = z.object({
 })
 
 export const indexExtractionSchema = z.object({
-  entriesPath: z.string(),
+  entriesPath: z.string().optional(),
   title: z.string().or(z.array(z.string())),
 })
 
@@ -14,7 +14,7 @@ export const indexFileManifestSchema = z.object({
   id: z.string(),
   name: z.string(),
   filePath: z.string(),
-  source: z.string().optional(),
+  source: z.string(),
   version: z.string().optional(),
   importedAt: z.date(),
   lastModified: z.date().optional(),
