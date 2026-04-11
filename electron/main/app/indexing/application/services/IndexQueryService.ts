@@ -1,8 +1,6 @@
-import fs from 'fs/promises'
-import {
-  IndexExtractionSchema,
-  IndexFileManifest,
-} from '../models/IndexFileManifest'
+import fsSync from 'fs'
+import readline from 'readline/promises'
+import { IndexExtractionSchema } from '../models/IndexFileManifest'
 import { IIndexRegistry } from '../ports/IIndexRegistry'
 import {
   IIndexQueryService,
@@ -19,8 +17,11 @@ export class IndexQueryService implements IIndexQueryService {
     const manifest = this.registry.get(id)
     if (!manifest) return null
 
-    const entries = await this.loadEntries(manifest)
-    return entries[index] ?? null
+    for await (const item of this.streamJsonl(manifest.filePath)) {
+      if (item.index === index) return item.entry
+    }
+
+    return null
   }
 
   async search(query: string, ids?: string[]) {
@@ -32,41 +33,45 @@ export class IndexQueryService implements IIndexQueryService {
       const manifest = this.registry.get(id)
       if (!manifest || !manifest.enabled) continue
 
-      const entries = await this.loadEntries(manifest)
       const matches: IndexSearchResult[] = []
-
-      for (let i = 0; i < entries.length; i++) {
-        const entry = entries[i]
+      for await (const { entry, index } of this.streamJsonl(
+        manifest.filePath,
+      )) {
         const titles = this.extractTitles(entry, manifest.extraction)
-
         for (const title of titles) {
           if (!title.toLowerCase().includes(q)) continue
-          matches.push({ title, index: i })
+          matches.push({ title, index })
           break
         }
       }
 
-      if (matches.length) {
-        result[id] = matches
-      }
+      if (matches.length) result[id] = matches
     }
 
     return result
   }
 
-  private async loadEntries(
-    manifest: IndexFileManifest,
-  ): Promise<Record<string, unknown>[]> {
-    const raw = await fs.readFile(manifest.filePath, 'utf-8')
-    const json = JSON.parse(raw)
+  private async *streamJsonl(
+    filePath: string,
+  ): AsyncGenerator<{ entry: Record<string, unknown>; index: number }> {
+    const fileStream = fsSync.createReadStream(filePath, {
+      encoding: 'utf-8',
+    })
+    const rl = readline.createInterface({
+      input: fileStream,
+      crlfDelay: Infinity,
+    })
 
-    const entries = this.resolvePath(json, manifest.extraction.entriesPath)
-
-    if (!Array.isArray(entries)) {
-      throw new Error(`Invalid entriesPath for index "${manifest.id}"`)
+    let index = 0
+    try {
+      for await (const line of rl) {
+        if (!line.trim()) continue
+        yield { entry: JSON.parse(line), index: index++ }
+      }
+    } finally {
+      rl.close()
+      fileStream.destroy()
     }
-
-    return entries
   }
 
   private extractTitles(entry: unknown, schema: IndexExtractionSchema) {
