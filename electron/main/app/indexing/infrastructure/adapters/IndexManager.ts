@@ -174,6 +174,10 @@ export class IndexManager extends EventEmitter implements IIndexManager {
     if (!manifest.filePath) missingError('a required file path')
     if (!manifest.extraction) missingError('a required extraction schema')
     if (!fsSync.existsSync(manifest.filePath)) missingError('the index file')
+    if (manifest.lastModified) {
+      manifest.lastModified = new Date(manifest.lastModified)
+    }
+    manifest.importedAt = new Date(manifest.importedAt)
 
     return manifest
   }
