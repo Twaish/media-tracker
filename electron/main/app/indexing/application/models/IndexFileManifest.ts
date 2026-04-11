@@ -10,7 +10,7 @@ export type IndexFileManifest = {
   source?: string
   version?: string
   importedAt: Date
-  lastModified: Date // source last modified
+  lastModified?: Date // source last modified
   enabled: boolean
 
   extraction: IndexExtractionSchema
