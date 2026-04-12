@@ -6,6 +6,7 @@ import {
   IIndexQueryService,
   IndexSearchResult,
 } from '../interfaces/IIndexQueryService'
+import { Pagination, PaginationResult } from '@shared/types'
 
 export class IndexQueryService implements IIndexQueryService {
   constructor(private readonly registry: IIndexRegistry) {}
@@ -25,6 +26,44 @@ export class IndexQueryService implements IIndexQueryService {
     }
 
     return null
+  }
+
+  async getEntries(
+    id: string,
+    options?: Pagination,
+  ): Promise<PaginationResult<Record<string, unknown>>> {
+    const { page = 1, limit = 10 } = options ?? {}
+    const manifest = this.registry.get(id)
+    if (!manifest)
+      return {
+        data: [],
+        pagination: { page: 0, limit: 0, totalPages: 0, totalItems: 0 },
+      }
+
+    const { totalEntries: totalItems } = manifest
+    const offset = (page - 1) * limit
+    const entries: Record<string, unknown>[] = []
+
+    for await (const { entry, index } of this.streamJsonl({
+      filePath: manifest.filePath,
+      startAtIndex: offset,
+      skipLines: manifest.extraction.skipLines ?? 0,
+    })) {
+      if (index >= offset + limit) break
+      entries.push(entry)
+    }
+
+    const totalPages = Math.ceil(totalItems / limit)
+
+    return {
+      data: entries,
+      pagination: {
+        page,
+        limit,
+        totalPages,
+        totalItems,
+      },
+    }
   }
 
   async search(query: string, ids?: string[]) {

@@ -1,3 +1,5 @@
+import { Pagination, PaginationResult } from '@shared/types'
+
 export type IndexSearchResult = {
   title: string
   index: number
@@ -25,4 +27,15 @@ export interface IIndexQueryService {
    * @param index The index for the entry to retrieve
    */
   getEntry(id: string, index: number): Promise<Record<string, unknown> | null>
+
+  /**
+   * Get paginated entries from an index file by its id
+   * @param id The id for the index file
+   * @param options.page The page number (default 1)
+   * @param options.limit The number of entries per page (default 10)
+   */
+  getEntries(
+    id: string,
+    options?: Pagination,
+  ): Promise<PaginationResult<Record<string, unknown>>>
 }
