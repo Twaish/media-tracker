@@ -1,3 +1,4 @@
+import { paginationResultSchema, paginationSchema } from '@/helpers/ipc/schemas'
 import z from 'zod'
 
 export const indexSearchResultSchema = z.object({
@@ -31,6 +32,15 @@ export const getEntryInputSchema = z.object({
   id: z.string(),
   index: z.number(),
 })
+
+export const getEntriesInputSchema = z.object({
+  id: z.string(),
+  options: paginationSchema.optional(),
+})
+
+export const getEntriesOutputSchema = paginationResultSchema(
+  z.record(z.string(), z.unknown()),
+)
 
 export const getManifestInputSchema = z.string()
 export const getManifestOutputSchema = indexFileManifestSchema

@@ -3,6 +3,8 @@ import { createIndexingUseCases } from '../usecases'
 import { os } from '@orpc/server'
 import {
   getAllManifestsOutputSchema,
+  getEntriesInputSchema,
+  getEntriesOutputSchema,
   getEntryInputSchema,
   getManifestInputSchema,
   getManifestOutputSchema,
@@ -39,6 +41,12 @@ export function createIndexingRouters(modules: Modules) {
       .input(getEntryInputSchema)
       .handler(({ input }) =>
         useCases.getIndexEntry.execute(input.id, input.index),
+      ),
+    getEntries: os
+      .input(getEntriesInputSchema)
+      .output(getEntriesOutputSchema)
+      .handler(({ input }) =>
+        useCases.getIndexEntries.execute(input.id, input.options),
       ),
     getManifest: os
       .input(getManifestInputSchema)
