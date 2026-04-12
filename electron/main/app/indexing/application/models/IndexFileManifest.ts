@@ -20,10 +20,14 @@
  * ```
  * ["One Punch Man", "OPM"]
  * ```
+ * @param entriesPath Key path to list of entries (only used at importing/refresh stage)
+ * @param title Keys for which values to search for every entry (title, alternate titles)
+ * @param skipLines Amount of lines to skip at the beginning of the file
  */
 export type IndexExtractionSchema = {
-  entriesPath?: string // Key path to list of entries (only used at importing/refresh stage)
-  title: string | string[] // Keys for which values to search for every entry (title, alternate titles)
+  entriesPath?: string
+  title: string | string[]
+  skipLines?: number
 }
 
 export type IndexFileManifest = {
@@ -35,6 +39,7 @@ export type IndexFileManifest = {
   importedAt: Date
   lastModified?: Date // source last modified
   enabled: boolean
+  totalEntries: number
 
   extraction: IndexExtractionSchema
 }
