@@ -1,5 +1,6 @@
 import fs from 'fs/promises'
 import fsSync from 'fs'
+import readline from 'readline/promises'
 import path from 'path'
 import { IIndexManager } from '../../application/ports/IIndexManager'
 import { IIndexRegistry } from '../../application/ports/IIndexRegistry'
@@ -97,6 +98,7 @@ export class IndexManager extends EventEmitter implements IIndexManager {
       filePath,
       extraction,
     )
+    const totalEntries = await this.getTotalEntries(filePath)
 
     return await this.persistManifest({
       id,
@@ -107,6 +109,7 @@ export class IndexManager extends EventEmitter implements IIndexManager {
       lastModified: lastModified ? new Date(lastModified) : new Date(),
       enabled: true,
       extraction,
+      totalEntries,
     })
   }
 
@@ -142,11 +145,13 @@ export class IndexManager extends EventEmitter implements IIndexManager {
       manifest.filePath,
       manifest.extraction,
     )
+    const totalEntries = await this.getTotalEntries(manifest.filePath)
 
     return await this.persistManifest({
       ...manifest,
       importedAt: new Date(),
       lastModified: lastModified ? new Date(lastModified) : new Date(),
+      totalEntries,
     })
   }
 
@@ -238,6 +243,25 @@ export class IndexManager extends EventEmitter implements IIndexManager {
 
     const lines = entries.map((entry) => JSON.stringify(entry)).join('\n')
     await fs.writeFile(destPath, lines, 'utf-8')
+  }
+
+  private async getTotalEntries(filePath: string): Promise<number> {
+    const fileStream = fsSync.createReadStream(filePath)
+    const rl = readline.createInterface({
+      input: fileStream,
+      crlfDelay: Infinity,
+    })
+
+    let total = 0
+    try {
+      for await (const line of rl) {
+        if (line.trim()) total++
+      }
+    } finally {
+      rl.close()
+      fileStream.destroy()
+    }
+    return total
   }
 
   private async persistManifest(
