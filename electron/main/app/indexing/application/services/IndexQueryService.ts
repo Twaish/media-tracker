@@ -17,7 +17,10 @@ export class IndexQueryService implements IIndexQueryService {
     const manifest = this.registry.get(id)
     if (!manifest) return null
 
-    for await (const item of this.streamJsonl(manifest.filePath)) {
+    for await (const item of this.streamJsonl({
+      filePath: manifest.filePath,
+      skipLines: manifest.extraction.skipLines ?? 0,
+    })) {
       if (item.index === index) return item.entry
     }
 
@@ -34,9 +37,10 @@ export class IndexQueryService implements IIndexQueryService {
       if (!manifest || !manifest.enabled) continue
 
       const matches: IndexSearchResult[] = []
-      for await (const { entry, index } of this.streamJsonl(
-        manifest.filePath,
-      )) {
+      for await (const { entry, index } of this.streamJsonl({
+        filePath: manifest.filePath,
+        skipLines: manifest.extraction.skipLines ?? 0,
+      })) {
         const titles = this.extractTitles(entry, manifest.extraction)
         for (const title of titles) {
           if (!title.toLowerCase().includes(q)) continue
@@ -51,9 +55,15 @@ export class IndexQueryService implements IIndexQueryService {
     return result
   }
 
-  private async *streamJsonl(
-    filePath: string,
-  ): AsyncGenerator<{ entry: Record<string, unknown>; index: number }> {
+  private async *streamJsonl({
+    filePath,
+    startAtIndex = 0,
+    skipLines = 0,
+  }: {
+    filePath: string
+    startAtIndex?: number
+    skipLines?: number
+  }): AsyncGenerator<{ entry: Record<string, unknown>; index: number }> {
     const fileStream = fsSync.createReadStream(filePath, {
       encoding: 'utf-8',
     })
@@ -63,10 +73,18 @@ export class IndexQueryService implements IIndexQueryService {
     })
 
     let index = 0
+    let skipped = 0
     try {
       for await (const line of rl) {
         if (!line.trim()) continue
-        yield { entry: JSON.parse(line), index: index++ }
+        if (skipped < skipLines) {
+          skipped++
+          continue
+        }
+        if (index >= startAtIndex) {
+          yield { entry: JSON.parse(line), index }
+        }
+        index++
       }
     } finally {
       rl.close()
