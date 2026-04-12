@@ -10,6 +10,7 @@ import RefreshIndexFile from './refreshIndexFile'
 import RemoveIndex from './removeIndex'
 import SearchIndex from './searchIndex'
 import UpdateExtractionSchema from './updateExtractionSchema'
+import GetIndexEntriess from './getIndexEntries'
 
 export function createIndexingUseCases({
   IndexManager,
@@ -21,6 +22,7 @@ export function createIndexingUseCases({
     enableIndexFile: new EnableIndexFile(IndexManager),
     getAllIndexManifests: new GetAllIndexManifests(IndexRegistry),
     getIndexEntry: new GetIndexEntry(IndexQueryService),
+    getIndexEntries: new GetIndexEntriess(IndexQueryService),
     getIndexManifest: new GetIndexManifest(IndexRegistry),
     importIndexFile: new ImportIndexFile(IndexManager),
     checkIndexOutdated: new CheckIndexOutdated(IndexManager),
