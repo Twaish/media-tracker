@@ -160,7 +160,7 @@ export class IndexManager extends EventEmitter implements IIndexManager {
   }
 
   private isUrl(value: string): boolean {
-    let url = new URL(value)
+    const url = new URL(value)
     return ['http:', 'https:'].includes(url.protocol)
   }
 
@@ -232,8 +232,12 @@ export class IndexManager extends EventEmitter implements IIndexManager {
     destPath: string,
     extraction: IndexExtractionSchema,
   ): Promise<void> {
+    if (!extraction.entriesPath) {
+      throw new Error(`Missing required entriesPath`)
+    }
+
     const json = JSON.parse(raw)
-    const entries = this.resolvePath(json, extraction.entriesPath!)
+    const entries = this.resolvePath(json, extraction.entriesPath)
 
     if (!Array.isArray(entries)) {
       throw new Error(
@@ -277,7 +281,12 @@ export class IndexManager extends EventEmitter implements IIndexManager {
     return manifest
   }
 
-  private resolvePath(obj: any, path: string): unknown {
-    return path.split('.').reduce((acc, key) => acc?.[key], obj)
+  private resolvePath<T>(obj: T, path: string): unknown {
+    return path
+      .split('.')
+      .reduce(
+        (acc, key) => (acc as Record<string, unknown>)?.[key],
+        obj as unknown,
+      )
   }
 }

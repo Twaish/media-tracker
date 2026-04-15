@@ -73,7 +73,7 @@ export class IndexQueryService implements IIndexQueryService {
 
     for (const id of ids) {
       const manifest = this.registry.get(id)
-      if (!manifest || !manifest.enabled) continue
+      if (!manifest?.enabled) continue
 
       const matches: IndexSearchResult[] = []
       for await (const { entry, index } of this.streamJsonl({
@@ -151,7 +151,12 @@ export class IndexQueryService implements IIndexQueryService {
     return titles
   }
 
-  private resolvePath(obj: any, path: string): unknown {
-    return path.split('.').reduce((acc, key) => acc?.[key], obj)
+  private resolvePath<T>(obj: T, path: string): unknown {
+    return path
+      .split('.')
+      .reduce(
+        (acc, key) => (acc as Record<string, unknown>)?.[key],
+        obj as unknown,
+      )
   }
 }
