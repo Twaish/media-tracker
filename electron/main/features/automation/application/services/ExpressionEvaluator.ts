@@ -79,7 +79,7 @@ export class ExpressionEvaluator {
       case '==':
         return left === right
       case '!=':
-        return left != right
+        return left !== right
     }
   }
 
