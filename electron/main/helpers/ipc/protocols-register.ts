@@ -6,7 +6,7 @@ function isRemoteUrl(path: string) {
 }
 
 export function registerProtocols({ StorageService }: Modules) {
-  protocol.handle('images', function (request) {
+  protocol.handle('images', (request) => {
     const url = new URL(request.url)
     const remoteUrl = url.searchParams.get('url')
 
