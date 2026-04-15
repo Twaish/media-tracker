@@ -132,10 +132,11 @@ export class PluginManager extends EventEmitter implements IPluginManager {
 
   async destroyAll(): Promise<void> {
     const destroyPlugin = async (name: string) => {
-      const plugin = this.plugins.get(name)!
-
       try {
-        await plugin.module.destroy?.(plugin.context!)
+        const plugin = this.getPluginOrThrow(name)
+        if (!plugin.context) return
+
+        await plugin.module.destroy?.(plugin.context)
         plugin.state = 'destroyed'
       } catch (err) {
         this.emit(
@@ -207,7 +208,8 @@ export class PluginManager extends EventEmitter implements IPluginManager {
     for (const dep of manifest.dependencies ?? []) {
       if (this.plugins.has(dep)) continue
 
-      const plugin = this.plugins.get(manifest.name)!
+      const plugin = this.getPluginOrThrow(manifest.name)
+
       const error = new Error(
         `Plugin "${manifest.name}" requires "${dep}" which is not loaded`,
       )
