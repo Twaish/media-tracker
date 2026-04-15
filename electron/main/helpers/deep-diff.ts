@@ -13,8 +13,8 @@ export function deepDiff(
     const afterValue = after[key]
 
     if (Array.isArray(beforeValue) && Array.isArray(afterValue)) {
-      const beforeIds = beforeValue.map((v: any) => v.id)
-      const afterIds = afterValue.map((v: any) => v.id)
+      const beforeIds = beforeValue.map((v: { id: string }) => v.id)
+      const afterIds = afterValue.map((v: { id: string }) => v.id)
 
       const added = afterIds.filter((id) => !beforeIds.includes(id))
       const removed = beforeIds.filter((id) => !afterIds.includes(id))
