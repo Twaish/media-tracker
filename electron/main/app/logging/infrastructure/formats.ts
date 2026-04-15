@@ -27,13 +27,13 @@ export const consoleFormat = format.printf((info) => {
   const timestamp = info.timestamp
 
   return `${dim}${timestamp}${reset} ${color}[${info.level.toUpperCase()}]${reset} ${info.message}${
-    info.stack ? '\n' + info.stack : ''
+    info.stack ? `\n${info.stack}` : ''
   }`
 })
 
 export const fileFormat = format.printf((info) => {
   const timestamp = info.timestamp
   return `${timestamp} [${info.level.toUpperCase()}] ${info.message}${
-    info.stack ? '\n' + info.stack : ''
+    info.stack ? `\n${info.stack}` : ''
   }`
 })

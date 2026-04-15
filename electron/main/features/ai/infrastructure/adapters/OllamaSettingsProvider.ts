@@ -41,7 +41,7 @@ export class OllamaSettingsProvider
   private normalizeHost(host: string) {
     try {
       const url = new URL(host)
-      return url.origin + '/'
+      return `${url.origin}/`
     } catch {
       throw new Error(`Invalid host URL: ${host}`)
     }
