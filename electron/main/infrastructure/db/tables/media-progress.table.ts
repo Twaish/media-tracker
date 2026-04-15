@@ -1,5 +1,5 @@
 import { sql } from 'drizzle-orm'
-import { int, sqliteTable, text } from 'drizzle-orm/sqlite-core'
+import { int, sqliteTable } from 'drizzle-orm/sqlite-core'
 import { mediaTable } from './media.table'
 import { index } from 'drizzle-orm/sqlite-core'
 
