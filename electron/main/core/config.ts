@@ -7,7 +7,7 @@ const userData = app.getPath('userData')
 const databaseFileName = 'local.db'
 const logFileName = 'app.log'
 
-const devUrl = process.env['ELECTRON_RENDERER_URL']
+const devUrl = process.env.ELECTRON_RENDERER_URL
 
 export default {
   PLUGINS_DIR: path.join(userData, 'plugins'),
