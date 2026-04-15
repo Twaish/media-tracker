@@ -67,8 +67,8 @@ export class StorageService extends EventEmitter implements IStorageService {
       filename,
       fullPath,
       relativePath: path.join(this.basePath, filename),
-      width: info.width!,
-      height: info.height!,
+      width: info.width,
+      height: info.height,
       size: imageBuffer.length,
     }
   }

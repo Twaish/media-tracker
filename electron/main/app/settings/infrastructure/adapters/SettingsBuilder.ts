@@ -116,7 +116,7 @@ export class SettingsBuilder implements ISettingsBuilder {
       const output: { [K in keyof T]?: OnDiskValue<T[K]> } = {}
 
       for (const key of Object.keys(schema) as (keyof T)[]) {
-        const definition = schema[key]!
+        const definition = schema[key]
         const value = data[key]
 
         if (definition.secret && value) {
