@@ -8,6 +8,10 @@ import { router } from './routes/router'
 import { RouterProvider } from '@tanstack/react-router'
 import { updateAppLanguage } from './actions/language'
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
+const queryClient = new QueryClient()
+
 export default function App() {
   const { i18n } = useTranslation()
 
@@ -23,7 +27,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const root = createRoot(document.getElementById('app')!)
   root.render(
     <React.StrictMode>
-      <App />
+      <QueryClientProvider client={queryClient}>
+        <App />
+      </QueryClientProvider>
     </React.StrictMode>,
   )
 })
