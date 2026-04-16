@@ -90,6 +90,7 @@ app.whenReady().then(async () => {
   } = config
 
   const appInfo: AppInfo = {
+    name: app.getName(),
     version: app.getVersion(),
   }
 
