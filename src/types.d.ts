@@ -1,4 +1,4 @@
-import { ipc } from './helpers/ipc'
+import { ipc } from './ipc'
 
 declare global {
   interface Window {

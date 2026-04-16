@@ -1,6 +1,6 @@
 import { consumeEventIterator } from '@orpc/client'
 import { Task, AddTaskDTO } from '@shared/types'
-import { ipc } from './ipc'
+import { ipc } from '@/ipc'
 
 export async function getTasks() {
   return ipc.client.tasks.get()

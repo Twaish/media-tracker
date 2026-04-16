@@ -1,5 +1,5 @@
+import { ipc } from '@/ipc'
 import { ThemeMode } from '@shared/types'
-import { ipc } from './ipc'
 
 const THEME_KEY = 'theme'
 

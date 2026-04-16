@@ -1,4 +1,4 @@
-import { ipc } from './ipc'
+import { ipc } from '@/ipc'
 
 export async function minimizeWindow() {
   await ipc.client.electronWindow.minimize()
