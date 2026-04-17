@@ -18,7 +18,6 @@ export default {
   APP_URL:
     is.dev && devUrl ? devUrl : path.join(__dirname, `../renderer/index.html`),
 
-  // Relative to %userData%
   SETTINGS_DIR: './settings',
   MEDIA_DIR: './media_images',
 }
