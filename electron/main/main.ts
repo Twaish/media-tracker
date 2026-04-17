@@ -196,6 +196,10 @@ app.whenReady().then(async () => {
       appInfo,
       SettingsBuilder: settingsBuilder,
 
+      PermissionRegistry: permissionRegistry,
+      PluginRegistry: pluginRegistry,
+      PluginManager: pluginManager,
+
       IndexManager: indexManager,
       IndexRegistry: indexRegistry,
       IndexQueryService: indexQueryService,

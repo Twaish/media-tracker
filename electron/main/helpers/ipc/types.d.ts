@@ -16,6 +16,10 @@ import { ITaskService } from '@/app/tasks/application/interfaces/ITaskService'
 import { IExportManager } from '@/app/exporting/application/interfaces/IExportManager'
 import { IImportManager } from '@/app/exporting/application/interfaces/IImportManager'
 
+import { IPermissionRegistry } from '@/app/plugins/application/ports/IPermissionRegistry'
+import { IPluginRegistry } from '@/app/plugins/application/ports/IPluginRegistry'
+import { IPluginManager } from '@/app/plugins/application/ports/IPluginManager'
+
 import { IIndexManager } from '@/app/indexing/application/ports/IIndexManager'
 import { IIndexRegistry } from '@/app/indexing/application/ports/IIndexRegistry'
 import { IIndexQueryService } from '@/app/indexing/application/interfaces/IIndexQueryService'
@@ -47,6 +51,10 @@ declare interface Modules {
   logger: ILogger
   appInfo: AppInfo
   SettingsBuilder: ISettingsBuilder
+
+  PermissionRegistry: IPermissionRegistry
+  PluginRegistry: IPluginRegistry
+  PluginManager: IPluginManager
 
   IndexManager: IIndexManager
   IndexRegistry: IIndexRegistry
