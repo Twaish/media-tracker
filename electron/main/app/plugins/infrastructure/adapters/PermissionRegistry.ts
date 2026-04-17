@@ -8,6 +8,10 @@ export class PermissionRegistry implements IPermissionRegistry {
     this.baseContext = context
   }
 
+  getPermissionKeys(): string[] {
+    return Array.from(this.permissions.keys())
+  }
+
   register(
     permission: string,
     contextExtension: Record<string, unknown>,
