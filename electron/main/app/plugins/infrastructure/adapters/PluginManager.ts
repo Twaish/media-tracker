@@ -12,26 +12,15 @@ import path from 'path'
 import semver from 'semver'
 import EventEmitter from 'events'
 import { loadPluginSandboxed } from '../helpers/load-plugin-sandboxed'
+import { PluginEntry } from '../../application/models/PluginEntry'
 
-export type PluginState =
-  | 'unloaded'
-  | 'loaded' // manifest + module imported
-  | 'setting-up'
-  | 'running' // setup() completed
-  | 'error' // failed at any stage
-  | 'destroyed'
-
-type PluginEntry = {
-  path: string
-  manifest: PluginManifest
+type PluginModuleEntry = PluginEntry & {
   module: PluginModule
-  state: PluginState
   context?: PluginContext
-  error?: Error
 }
 
 export class PluginManager extends EventEmitter implements IPluginManager {
-  private plugins: Map<string, PluginEntry> = new Map()
+  private plugins: Map<string, PluginModuleEntry> = new Map()
 
   constructor(
     private readonly pluginRegistry: IPluginRegistry,
@@ -39,6 +28,12 @@ export class PluginManager extends EventEmitter implements IPluginManager {
     private readonly settingsBuilder: ISettingsBuilder,
   ) {
     super()
+  }
+
+  getAll(): PluginEntry[] {
+    return Array.from(
+      this.plugins.values().map(({ module, context, ...entry }) => entry),
+    )
   }
 
   async load(pluginsPath: string, appVersion: string): Promise<void> {
@@ -156,7 +151,7 @@ export class PluginManager extends EventEmitter implements IPluginManager {
     return plugin
   }
 
-  private failPlugin(plugin: PluginEntry, err: unknown, phase: string) {
+  private failPlugin(plugin: PluginModuleEntry, err: unknown, phase: string) {
     plugin.state = 'error'
     plugin.error = err instanceof Error ? err : new Error(String(err))
 
@@ -168,7 +163,7 @@ export class PluginManager extends EventEmitter implements IPluginManager {
     )
   }
 
-  private async buildSettings(plugin: PluginEntry) {
+  private async buildSettings(plugin: PluginModuleEntry) {
     if (!plugin.module.settings) return
 
     const namespace = `plugin:${plugin.manifest.name}`
@@ -179,7 +174,7 @@ export class PluginManager extends EventEmitter implements IPluginManager {
       .init()
   }
 
-  private buildContext(plugin: PluginEntry) {
+  private buildContext(plugin: PluginModuleEntry) {
     const permissions = plugin.manifest.permissions ?? []
 
     return {
