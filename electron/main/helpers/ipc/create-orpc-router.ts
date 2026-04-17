@@ -5,6 +5,7 @@ import { createThemeRouters } from '../../app/theme/ipc'
 import { createTasksRouters } from '../../app/tasks/ipc'
 import { createWindowRouters } from '../../app/window/ipc'
 import { createEventsRouters } from '../../app/events/ipc'
+import { createPluginsRouters } from '../../app/plugins/ipc'
 import { createStorageRouters } from '../../app/storage/ipc'
 import { createIndexingRouters } from '../../app/indexing/ipc'
 import { createExportingRouters } from '../../app/exporting/ipc'
@@ -23,6 +24,7 @@ export function createOrpcRouter(modules: Modules) {
     tasks: createTasksRouters(modules),
     electronWindow: createWindowRouters(modules),
     events: createEventsRouters(modules),
+    plugins: createPluginsRouters(modules),
     storage: createStorageRouters(modules),
     indexing: createIndexingRouters(modules),
     exporting: createExportingRouters(modules),
