@@ -4,7 +4,6 @@
     "outDir": "./out/main",
     "paths": {
       "@/*": ["./electron/main/*"],
-      "@domain/*": ["./electron/main/domain/*"],
       "@shared/*": ["./shared/*"]
     }
   },
