@@ -1,12 +1,12 @@
 import { useEffect, StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { syncThemeWithLocal } from './actions/theme'
+import { syncThemeWithLocal } from './app/theme/actions'
 import { useTranslation } from 'react-i18next'
-import './localization/i18n'
+import './app/language/i18n'
 import './ipc'
 import { router } from './routes/router'
 import { RouterProvider } from '@tanstack/react-router'
-import { updateAppLanguage } from './actions/language'
+import { updateAppLanguage } from './app/language/actions'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 

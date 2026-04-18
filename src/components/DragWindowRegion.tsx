@@ -1,4 +1,8 @@
-import { closeWindow, maximizeWindow, minimizeWindow } from '@/actions/window'
+import {
+  closeWindow,
+  maximizeWindow,
+  minimizeWindow,
+} from '@/app/window/actions'
 import { type ReactNode } from 'react'
 import { Button } from './ui/button'
 

@@ -1,6 +1,6 @@
-import langs from '@/localization/langs'
+import langs from '@/app/language/langs'
 import { useTranslation } from 'react-i18next'
-import { setAppLanguage } from '@/actions/language'
+import { setAppLanguage } from '@/app/language/actions'
 import {
   Select,
   SelectContent,
