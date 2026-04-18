@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect, StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { syncThemeWithLocal } from './actions/theme'
 import { useTranslation } from 'react-i18next'
@@ -26,10 +26,10 @@ export default function App() {
 document.addEventListener('DOMContentLoaded', () => {
   const root = createRoot(document.getElementById('app')!)
   root.render(
-    <React.StrictMode>
+    <StrictMode>
       <QueryClientProvider client={queryClient}>
         <App />
       </QueryClientProvider>
-    </React.StrictMode>,
+    </StrictMode>,
   )
 })

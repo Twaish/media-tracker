@@ -1,6 +1,5 @@
 import { useCountStore } from '@/stores/useCountStore'
 import { Button } from './ui/button'
-import React from 'react'
 
 export default function Counter() {
   const count = useCountStore((s) => s.count)

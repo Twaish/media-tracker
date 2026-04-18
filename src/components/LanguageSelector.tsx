@@ -1,4 +1,3 @@
-import React from 'react'
 import langs from '@/localization/langs'
 import { useTranslation } from 'react-i18next'
 import { setAppLanguage } from '@/actions/language'
