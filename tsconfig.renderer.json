@@ -4,8 +4,9 @@
     "jsx": "react-jsx",
     "paths": {
       "@/*": ["./src/*"],
-      "@shared/*": ["./shared/*"]
+      "@shared/*": ["./shared/*"],
+      "@main/*": ["./electron/main/*"]
     }
   },
-  "include": ["./src/**/*", "./shared/**/*"]
+  "include": ["./src/**/*", "./shared/**/*", "./electron/main/**/*"]
 }

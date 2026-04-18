@@ -1,4 +1,4 @@
-import { PersistedGenre } from '@/features/genres/domain/entities/genre'
+import { PersistedGenre } from '@main/features/genres/domain/entities/genre'
 
 export const MEDIA_TYPES = ['anime', 'manga', 'manhwa', 'manhua'] as const
 export const MEDIA_STATUS = [

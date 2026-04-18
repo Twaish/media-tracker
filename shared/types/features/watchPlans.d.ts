@@ -1,4 +1,4 @@
 export type {
   AddWatchPlanDTO,
   UpdateWatchPlanDTO,
-} from '@/features/watchplan/application/dto/watchPlan.dto'
+} from '@main/features/watchplan/application/dto/watchPlan.dto'

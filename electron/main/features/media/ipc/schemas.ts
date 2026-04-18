@@ -4,7 +4,7 @@ import {
   MEDIA_TYPES,
   PersistedMedia,
 } from '../domain/entities/media'
-import { persistedGenreSchema } from '@/features/genres/ipc/schemas'
+import { persistedGenreSchema } from '@main/features/genres/ipc/schemas'
 import { PersistedMediaProgress } from '../domain/entities/mediaProgress'
 import { PersistedMediaEmbedding } from '../domain/entities/mediaEmbedding'
 

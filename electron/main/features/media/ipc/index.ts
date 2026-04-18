@@ -29,7 +29,10 @@ import {
   setNextMediaInputSchema,
   updateMediaInputSchema,
 } from './schemas'
-import { paginationResultSchema, paginationSchema } from '@/helpers/ipc/schemas'
+import {
+  paginationResultSchema,
+  paginationSchema,
+} from '@main/helpers/ipc/schemas'
 
 export function createMediaRouters(modules: Modules) {
   const useCases = createMediaUseCases(modules)
