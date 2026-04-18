@@ -17,5 +17,11 @@ class IPCManager {
   }
 }
 
+declare global {
+  interface Window {
+    ipc: typeof ipc
+  }
+}
+
 export const ipc = new IPCManager()
 window.ipc = ipc
