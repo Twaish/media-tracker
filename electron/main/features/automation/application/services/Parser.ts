@@ -74,7 +74,7 @@ export class Parser {
       let event = this.expect(TokenType.Identifier).value
 
       while (this.check(TokenType.Operator)) {
-        let separator = this.expect(TokenType.Operator, ':').value
+        const separator = this.expect(TokenType.Operator, ':').value
         const rest = this.expect(TokenType.Identifier).value
         event += separator + rest
       }

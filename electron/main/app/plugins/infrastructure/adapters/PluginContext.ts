@@ -6,4 +6,5 @@ export type BasePluginContext = {
   settings?: SettingsInterface
 }
 
-export type PluginContext<TExtensions = {}> = BasePluginContext & TExtensions
+export type PluginContext<TExtensions = object> = BasePluginContext &
+  TExtensions

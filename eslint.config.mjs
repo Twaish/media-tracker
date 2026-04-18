@@ -15,18 +15,30 @@ const prettierIgnorePath = path.resolve(__dirname, '.prettierignore')
 /** @type {import('eslint').Linter.Config[]} */
 export default [
   includeIgnoreFile(prettierIgnorePath),
+  pluginJs.configs.recommended,
+  pluginReact.configs.flat.recommended,
+  eslintPluginPrettierRecommended,
+  ...tseslint.configs.recommended,
   {
     files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],
     plugins: {
       'react-compiler': reactCompiler,
     },
+    settings: {
+      react: { version: 'detect' },
+    },
     rules: {
       'react-compiler/react-compiler': 'error',
+      'react/react-in-jsx-scope': 'off',
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          ignoreRestSiblings: true,
+          varsIgnorePattern: '^_',
+        },
+      ],
     },
   },
   { languageOptions: { globals: globals.browser } },
-  pluginJs.configs.recommended,
-  pluginReact.configs.flat.recommended,
-  eslintPluginPrettierRecommended,
-  ...tseslint.configs.recommended,
+  { ignores: ['examples/'] },
 ]
