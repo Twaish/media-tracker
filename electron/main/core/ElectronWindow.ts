@@ -11,6 +11,8 @@ export class ElectronWindow extends EventEmitter {
     const mainWindow = new BrowserWindow({
       width: 1145,
       height: 750,
+      minHeight: 600,
+      minWidth: 850,
       show: false,
       autoHideMenuBar: true,
       titleBarStyle: 'hidden',
