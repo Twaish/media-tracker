@@ -2,4 +2,4 @@ export type {
   AddMediaDTO,
   UpdateMediaDTO,
   BulkUpdateMediaDTO,
-} from '@/features/media/application/dto/media.dto'
+} from '@main/features/media/application/dto/media.dto'

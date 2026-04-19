@@ -1,7 +1,5 @@
 export * from './media'
 export * from './theme'
-export * from './genres'
-export * from './storage'
 export * from './tasks'
 export * from './automation'
 export * from './watchPlans'
