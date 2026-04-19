@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 import DragWindowRegion from '@/components/DragWindowRegion'
 import NavigationMenu from '@/components/template/NavigationMenu'
 import { useQuery } from '@tanstack/react-query'
-import { getAppName } from '@/app/app/actions'
+import { getAppName } from '@/app/instance/actions'
 
 export default function BaseLayout({ children }: { children: ReactNode }) {
   const { data: appName } = useQuery({

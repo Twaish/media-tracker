@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import LanguageSelector from '@/components/LanguageSelector'
 import Footer from '@/components/template/Footer'
 import InitialIcons from '@/components/template/InitialIcons'
-import { getAppName } from '@/app/app/actions'
+import { getAppName } from '@/app/instance/actions'
 import { useQuery } from '@tanstack/react-query'
 
 export default function HomePage() {

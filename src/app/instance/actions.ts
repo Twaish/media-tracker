@@ -1,9 +1,9 @@
 import { ipc } from '@/ipc'
 
 export function getAppName() {
-  return ipc.client.app.name()
+  return ipc.client.instance.name()
 }
 
 export function getAppVersion() {
-  return ipc.client.app.version()
+  return ipc.client.instance.version()
 }

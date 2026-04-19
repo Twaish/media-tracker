@@ -1,12 +1,12 @@
 import { Modules } from './types'
 
-import { createAppRouters } from '../../app/app/ipc'
 import { createThemeRouters } from '../../app/theme/ipc'
 import { createTasksRouters } from '../../app/tasks/ipc'
 import { createWindowRouters } from '../../app/window/ipc'
 import { createEventsRouters } from '../../app/events/ipc'
 import { createPluginsRouters } from '../../app/plugins/ipc'
 import { createStorageRouters } from '../../app/storage/ipc'
+import { createInstanceRouters } from '../../app/instance/ipc'
 import { createIndexingRouters } from '../../app/indexing/ipc'
 import { createExportingRouters } from '../../app/exporting/ipc'
 import { createVersioningRouters } from '../../app/versioning/ipc'
@@ -19,13 +19,13 @@ import { createAutomationRouters } from '../../features/automation/ipc'
 
 export function createOrpcRouter(modules: Modules) {
   return {
-    app: createAppRouters(modules),
     themeMode: createThemeRouters(),
     tasks: createTasksRouters(modules),
     electronWindow: createWindowRouters(modules),
     events: createEventsRouters(modules),
     plugins: createPluginsRouters(modules),
     storage: createStorageRouters(modules),
+    instance: createInstanceRouters(modules),
     indexing: createIndexingRouters(modules),
     exporting: createExportingRouters(modules),
     versioning: createVersioningRouters(modules),
