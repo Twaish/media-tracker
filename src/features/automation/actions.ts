@@ -1,17 +1,14 @@
 import { ipc } from '@/ipc'
+import { AddNodeDTO, UpdateNodeDTO } from '@shared/types'
 
 export async function syncEngine() {
   return ipc.client.automation.syncEngine()
 }
 
-export async function addRule(rule: { source: string; enabled?: boolean }) {
+export async function addRule(rule: AddNodeDTO) {
   return ipc.client.automation.addRule(rule)
 }
-export async function updateRule(rule: {
-  id: number
-  source: string
-  enabled?: boolean
-}) {
+export async function updateRule(rule: UpdateNodeDTO) {
   return ipc.client.automation.updateRule(rule)
 }
 export async function removeRules(ids: number[]) {
