@@ -1,6 +1,6 @@
-import ToggleTheme from '@/components/ToggleTheme'
+import ToggleTheme from '@/app/theme/components/ToggleTheme'
 import { useTranslation } from 'react-i18next'
-import LanguageSelector from '@/components/LanguageSelector'
+import LanguageSelector from '@/app/language/components/LanguageSelector'
 import Footer from '@/components/template/Footer'
 import InitialIcons from '@/components/template/InitialIcons'
 import { getAppName } from '@/app/instance/actions'

@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import DragWindowRegion from '@/components/DragWindowRegion'
+import DragWindowRegion from '@/app/window/components/DragWindowRegion'
 import NavigationMenu from '@/components/template/NavigationMenu'
 import { useQuery } from '@tanstack/react-query'
 import { getAppName } from '@/app/instance/actions'

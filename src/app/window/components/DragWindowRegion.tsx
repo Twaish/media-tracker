@@ -4,7 +4,7 @@ import {
   minimizeWindow,
 } from '@/app/window/actions'
 import { type ReactNode } from 'react'
-import { Button } from './ui/button'
+import { Button } from '../../../components/ui/button'
 
 interface DragWindowRegionProps {
   title?: ReactNode
