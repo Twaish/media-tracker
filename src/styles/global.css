@@ -184,3 +184,21 @@
     @apply cursor-pointer;
   }
 }
+
+::-webkit-scrollbar {
+  @apply h-3 w-3;
+}
+
+::-webkit-scrollbar-corner,
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-secondary cursor-default rounded-lg border-3 border-solid border-transparent bg-clip-content;
+}
+
+::-webkit-scrollbar-thumb:active,
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-secondary/80;
+}
