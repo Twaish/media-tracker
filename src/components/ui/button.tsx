@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Slot } from '@radix-ui/react-slot'
+import { Slot as SlotPrimitive } from 'radix-ui'
 import { cva, type VariantProps } from 'class-variance-authority'
 
 import { cn } from '@/utils/tailwind'
@@ -35,7 +35,8 @@ const buttonVariants = cva(
 )
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+  extends
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
 }
@@ -44,7 +45,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, children, ...props }, ref) => {
     const localRef = React.useRef<HTMLButtonElement>(null)
     React.useImperativeHandle(ref, () => localRef.current!)
-    const Comp = asChild ? Slot : 'button'
+    const Comp = asChild ? SlotPrimitive.Slot : 'button'
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
