@@ -3,6 +3,7 @@ import DragWindowRegion from '@/app/window/components/DragWindowRegion'
 import { useQuery } from '@tanstack/react-query'
 import { getAppName } from '@/app/instance/actions'
 import { AppSidebar } from '@/components/template/AppSidebar'
+import { BottomPanel } from '@/components/template/BottomPanel'
 
 export default function BaseLayout({ children }: { children: ReactNode }) {
   const { data: appName } = useQuery({
@@ -19,6 +20,7 @@ export default function BaseLayout({ children }: { children: ReactNode }) {
         <main className="h-full w-full overflow-auto p-2">
           <Suspense>{children}</Suspense>
         </main>
+        <BottomPanel />
       </div>
     </>
   )
