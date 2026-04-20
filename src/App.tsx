@@ -9,6 +9,7 @@ import { RouterProvider } from '@tanstack/react-router'
 import { updateAppLanguage } from './app/language/actions'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { TooltipProvider } from './components/ui/tooltip'
 
 const queryClient = new QueryClient()
 
@@ -28,7 +29,9 @@ document.addEventListener('DOMContentLoaded', () => {
   root.render(
     <StrictMode>
       <QueryClientProvider client={queryClient}>
-        <App />
+        <TooltipProvider>
+          <App />
+        </TooltipProvider>
       </QueryClientProvider>
     </StrictMode>,
   )

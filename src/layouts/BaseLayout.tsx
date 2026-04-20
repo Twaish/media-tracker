@@ -1,8 +1,8 @@
-import { ReactNode } from 'react'
+import { ReactNode, Suspense } from 'react'
 import DragWindowRegion from '@/app/window/components/DragWindowRegion'
-import NavigationMenu from '@/components/template/NavigationMenu'
 import { useQuery } from '@tanstack/react-query'
 import { getAppName } from '@/app/instance/actions'
+import { AppSidebar } from '@/components/template/AppSidebar'
 
 export default function BaseLayout({ children }: { children: ReactNode }) {
   const { data: appName } = useQuery({
@@ -13,9 +13,13 @@ export default function BaseLayout({ children }: { children: ReactNode }) {
 
   return (
     <>
-      <DragWindowRegion title={appName} />
-      <NavigationMenu />
-      <main className="h-screen p-2 pb-20">{children}</main>
+      <AppSidebar />
+      <div className="relative flex flex-[1_1_auto] flex-col">
+        <DragWindowRegion title={appName} />
+        <main className="h-full w-full overflow-auto p-2">
+          <Suspense>{children}</Suspense>
+        </main>
+      </div>
     </>
   )
 }
