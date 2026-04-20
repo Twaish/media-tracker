@@ -180,6 +180,15 @@
     -webkit-app-region: drag;
   }
 
+  .hide-scroll::-webkit-scrollbar {
+    display: none;
+  }
+
+  .hide-scroll {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
   button {
     @apply cursor-pointer;
   }
