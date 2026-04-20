@@ -12,6 +12,7 @@
     "dev": "electron-vite dev",
     "start": "electron-vite dev",
     "build": "electron-vite build",
+    "preview": "electron-vite preview",
     "release": "electron-builder --config electron-builder.config.ts",
     "build:release": "npm run build && npm run release",
     "lint": "eslint .",
@@ -64,7 +65,6 @@
   },
   "dependencies": {
     "@electron-toolkit/utils": "^4.0.0",
-    "@icons-pack/react-simple-icons": "^12.7.0",
     "@libsql/client": "^0.15.15",
     "@orpc/client": "^1.13.13",
     "@orpc/experimental-publisher": "^1.13.13",
