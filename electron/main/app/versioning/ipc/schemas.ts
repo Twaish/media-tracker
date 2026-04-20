@@ -1,4 +1,7 @@
-import { paginationResultSchema, paginationSchema } from '@/helpers/ipc/schemas'
+import {
+  paginationResultSchema,
+  paginationSchema,
+} from '@main/helpers/ipc/schemas'
 import z from 'zod'
 import { DeltaTypes, PersistedDelta } from '../domain/entities/delta'
 
