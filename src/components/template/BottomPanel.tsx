@@ -5,9 +5,10 @@ import {
   X,
   Check,
   TriangleAlert,
+  Logs,
 } from 'lucide-react'
 import { cn } from '@/utils/tailwind'
-import { useState } from 'react'
+import { ComponentProps, useState } from 'react'
 
 type LogType = 'info' | 'success' | 'warning' | 'error'
 
@@ -73,7 +74,7 @@ function randomTime(): string {
   return `${h}:${m}:${s}`
 }
 
-export function generateLogs(n: number): Log[] {
+function generateLogs(n: number): Log[] {
   const types = Object.keys(messages) as LogType[]
 
   return Array.from({ length: n }, () => {
@@ -107,45 +108,27 @@ export function BottomPanel() {
         expanded ? 'h-48 min-h-48' : 'h-8',
       )}
     >
-      <div className="flex h-8 shrink-0 items-center justify-between border-t border-b px-2">
-        <div className="flex items-center gap-1">
-          <button
+      <div className="flex h-8 shrink-0 items-center justify-between border-t border-b">
+        <div className="flex h-full">
+          <PanelButton
+            text={'Logs'}
+            isActive={activeTab === 'logs'}
             onClick={() => setActiveTab('logs')}
-            className={cn(
-              'h-6 rounded px-2 text-[11px] font-medium transition-colors',
-              activeTab === 'logs'
-                ? 'bg-secondary text-foreground'
-                : 'text-muted-foreground hover:text-foreground',
-            )}
-          >
-            Logs
-          </button>
-          <button
+          />
+          <PanelButton
+            text={'Rule Output'}
+            isActive={activeTab === 'rules'}
             onClick={() => setActiveTab('rules')}
-            className={cn(
-              'h-6 rounded px-2 text-[11px] font-medium transition-colors',
-              activeTab === 'rules'
-                ? 'bg-secondary text-foreground'
-                : 'text-muted-foreground hover:text-foreground',
-            )}
-          >
-            Rule Output
-          </button>
-          <button
+          />
+          <PanelButton
+            text={'Console'}
+            isActive={activeTab === 'console'}
             onClick={() => setActiveTab('console')}
-            className={cn(
-              'h-6 rounded px-2 text-[11px] font-medium transition-colors',
-              activeTab === 'console'
-                ? 'bg-secondary text-foreground'
-                : 'text-muted-foreground hover:text-foreground',
-            )}
-          >
-            Console
-          </button>
+          />
         </div>
         <button
           onClick={() => setExpanded(!expanded)}
-          className="text-muted-foreground hover:text-foreground hover:bg-secondary flex h-6 w-6 items-center justify-center rounded transition-colors"
+          className="text-muted-foreground hover:text-foreground hover:bg-secondary flex h-full w-8 items-center justify-center transition-colors"
         >
           {expanded ? (
             <ChevronDown className="h-4 w-4" />
@@ -200,5 +183,29 @@ export function BottomPanel() {
         </div>
       )}
     </div>
+  )
+}
+
+function PanelButton({
+  text,
+  isActive,
+  className,
+  ...rest
+}: ComponentProps<'button'> & {
+  text: string
+  isActive: boolean
+}) {
+  return (
+    <button
+      className={cn(
+        'flex h-full items-center gap-2 px-4 text-[12px] transition-colors',
+        isActive
+          ? 'bg-secondary text-foreground'
+          : 'text-muted-foreground hover:text-foreground',
+      )}
+      {...rest}
+    >
+      {text}
+    </button>
   )
 }
