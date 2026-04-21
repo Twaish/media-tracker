@@ -86,14 +86,22 @@ export function AppSidebar() {
             path={section.path}
           />
         ))}
-        <span
-          className={cn(
-            'text-muted-foreground flex items-center overflow-hidden px-3 text-xs font-bold transition-all duration-200',
-            collapsed ? 'mx-2 my-4 h-0 border-t' : 'mt-4 h-8',
-          )}
-        >
-          {!collapsed && 'Plugins'}
-        </span>
+        <div className="relative h-8">
+          <span
+            className={cn(
+              'text-muted-foreground absolute inset-0 flex items-center px-3 text-xs font-bold transition-opacity duration-200',
+              collapsed ? 'text-[0px] opacity-0' : 'opacity-100',
+            )}
+          >
+            Plugins
+          </span>
+          <hr
+            className={cn(
+              'absolute inset-x-2 top-1/2 -translate-y-1/2 border-t transition-opacity duration-200',
+              collapsed ? 'opacity-100' : 'opacity-0',
+            )}
+          />
+        </div>
         {sections.map((section) => (
           <SidebarItem
             key={section.label}
@@ -152,7 +160,7 @@ function SidebarItem({
   path?: string
 }) {
   const button = (
-    <Link to={path}>
+    <Link to={path} tabIndex={-1} draggable={false}>
       <button
         className={cn(
           'flex h-8 w-full items-center gap-3 px-3 text-sm transition-colors',
