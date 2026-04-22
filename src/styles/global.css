@@ -176,8 +176,10 @@
   }
 
   .draglayer {
-    @apply bg-background;
     -webkit-app-region: drag;
+  }
+  .no-drag {
+    -webkit-app-region: no-drag;
   }
 
   .hide-scroll::-webkit-scrollbar {
