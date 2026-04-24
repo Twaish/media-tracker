@@ -1,9 +1,7 @@
 import { os } from '@orpc/server'
+import { themeModes } from '@shared/constants'
 import { nativeTheme } from 'electron'
 import z from 'zod'
-
-const themeModes = ['dark', 'light', 'system'] as const
-export type ThemeMode = (typeof themeModes)[number]
 
 export function createThemeRouters() {
   return {

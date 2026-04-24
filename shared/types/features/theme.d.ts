@@ -1,1 +1,3 @@
-export type { ThemeMode } from '@main/app/theme/ipc'
+import { themeModes } from '@shared/constants'
+
+export type ThemeMode = (typeof themeModes)[number]

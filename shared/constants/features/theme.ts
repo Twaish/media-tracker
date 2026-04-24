@@ -1,0 +1,1 @@
+export const themeModes = ['dark', 'light', 'system'] as const
