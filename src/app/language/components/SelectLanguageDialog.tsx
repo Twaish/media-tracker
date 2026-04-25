@@ -59,7 +59,7 @@ export function SelectLanguageDialog({
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search languages…"
+            placeholder="Search languages..."
             spellCheck={false}
             className="flex-1 bg-transparent text-xs outline-none"
           />
