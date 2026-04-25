@@ -2,7 +2,7 @@ import { ipc } from '@/ipc'
 import { ThemeMode } from '@shared/types'
 
 const THEME_KEY = 'theme'
-const THEME_RESOLVED_KEY = 'theme-resolved'
+const RESOLVED_THEME_KEY = 'theme-resolved'
 
 export type AppTheme = ThemeMode | (string & {})
 
@@ -49,8 +49,6 @@ export async function syncThemeWithLocal() {
   const { local } = await getCurrentTheme()
   await setTheme(local ?? 'system')
 }
-
-const RESOLVED_THEME_KEY = 'theme-resolved'
 
 function applyThemeClass(resolvedTheme: AppTheme) {
   const previous = localStorage.getItem(RESOLVED_THEME_KEY)
