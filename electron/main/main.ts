@@ -75,6 +75,7 @@ import { WatchPlanRepositoryDrizzle } from './features/watchplan/infrastructure/
 import { DeltaRepositoryDrizzle } from './app/versioning/infrastructure/repositories/deltaRepositoryDrizzle'
 import { registerVersioningEvents } from './helpers/register-versioning-events'
 import { IndexQueryService } from './app/indexing/application/services/IndexQueryService'
+import { installExtensions } from './helpers/install-extensions'
 
 app.whenReady().then(async () => {
   const userData = app.getPath('userData')
@@ -293,6 +294,8 @@ app.whenReady().then(async () => {
 
     logger.info('Registering rules & templates')
     await registerAutomationSchemas(modules)
+
+    await installExtensions()
 
     mainWindow.loadUrl(APP_URL)
 
