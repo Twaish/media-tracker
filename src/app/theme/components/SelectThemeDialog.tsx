@@ -54,7 +54,7 @@ export function SelectThemeDialog({
   const currentTheme = local ?? system
 
   return (
-    <>
+    <div className="flex flex-col gap-2 p-6">
       <DialogHeader>
         <DialogTitle>Select a theme</DialogTitle>
         <DialogDescription>
@@ -110,7 +110,7 @@ export function SelectThemeDialog({
           ))}
         </div>
       </div>
-    </>
+    </div>
   )
 }
 
