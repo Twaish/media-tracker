@@ -28,7 +28,6 @@
     "db:generate": "npx drizzle-kit generate"
   },
   "devDependencies": {
-    "@electron/fuses": "^1.8.0",
     "@eslint/compat": "^1.2.9",
     "@eslint/js": "^9.28.0",
     "@playwright/test": "^1.52.0",
@@ -40,8 +39,8 @@
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
     "@types/semver": "^7.7.1",
-    "drizzle-kit": "^0.31.8",
-    "electron": "^36.4.0",
+    "drizzle-kit": "^0.31.10",
+    "electron": "^41.3.0",
     "electron-builder": "^26.4.0",
     "electron-playwright-helpers": "^1.7.1",
     "electron-vite": "^5.0.0",
@@ -89,7 +88,7 @@
     "semver": "^7.7.4",
     "sharp": "^0.34.5",
     "tailwind-merge": "^3.4.0",
-    "uuid": "^13.0.0",
+    "uuid": "^14.0.0",
     "winston": "^3.19.0",
     "zod": "^3.25.76",
     "zustand": "^5.0.10"
