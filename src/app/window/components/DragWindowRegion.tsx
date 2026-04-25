@@ -4,21 +4,26 @@ import {
   minimizeWindow,
 } from '@/app/window/actions'
 import { type ReactNode } from 'react'
-import { Button } from '../../../components/ui/button'
+import { Button } from '@/components/ui/button'
 
 interface DragWindowRegionProps {
   title?: ReactNode
+  children?: ReactNode
 }
 
-export default function DragWindowRegion({ title }: DragWindowRegionProps) {
+export default function DragWindowRegion({
+  title,
+  children,
+}: DragWindowRegionProps) {
   return (
-    <div className="flex h-8 w-full items-stretch justify-between border-b">
-      <div className="draglayer w-full">
+    <div className="z-50 flex h-8 w-full items-stretch justify-between border-b">
+      <div className="draglayer flex w-full items-center">
         {title && (
-          <div className="flex flex-1 p-2 text-xs whitespace-nowrap opacity-65 select-none">
+          <div className="flex pr-1 pl-2 text-xs whitespace-nowrap opacity-65 select-none">
             {title}
           </div>
         )}
+        {children}
       </div>
       <WindowButtons />
     </div>
