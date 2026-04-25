@@ -16,10 +16,10 @@ export default function DragWindowRegion({
   children,
 }: DragWindowRegionProps) {
   return (
-    <div className="z-50 flex h-8 w-full items-stretch justify-between border-b">
-      <div className="draglayer flex w-full items-center">
+    <div className="z-50 flex h-8 min-h-8 w-full items-stretch justify-between border-b">
+      <div className="draglayer hide-scroll flex flex-1 items-center overflow-x-auto">
         {title && (
-          <div className="flex pr-1 pl-2 text-xs whitespace-nowrap opacity-65 select-none">
+          <div className="mr-auto flex pr-1 pl-2 text-xs whitespace-nowrap opacity-65 select-none">
             {title}
           </div>
         )}
