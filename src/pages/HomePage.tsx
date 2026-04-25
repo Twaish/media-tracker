@@ -1,5 +1,4 @@
 import { useTranslation } from 'react-i18next'
-import LanguageSelector from '@/app/language/components/LanguageSelector'
 import Footer from '@/components/template/Footer'
 import { getAppName } from '@/app/instance/actions'
 import { useQuery } from '@tanstack/react-query'
@@ -36,7 +35,6 @@ export default function HomePage() {
           alt="Macaw Closeup"
           src="images://?url=https://img.freepik.com/free-photo/closeup-scarlet-macaw-from-side-view-scarlet-macaw-closeup-head_488145-3540.jpg"
         />
-        <LanguageSelector />
       </div>
       <Footer />
     </div>
