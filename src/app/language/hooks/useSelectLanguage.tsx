@@ -1,4 +1,4 @@
-import { useModalStore } from '@/stores/useModalStore'
+import { useModalStore } from '@/stores/modal/useModalStore'
 import { useTranslation } from 'react-i18next'
 import { setAppLanguage } from '../actions'
 import { SelectLanguageDialog } from '../components/SelectLanguageDialog'

@@ -10,7 +10,7 @@ import { updateAppLanguage } from './app/language/actions'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { TooltipProvider } from './components/ui/tooltip'
-import { ModalProvider } from './stores/useModalStore'
+import { ModalProvider } from './stores/modal/useModalStore'
 
 export const queryClient = new QueryClient()
 
