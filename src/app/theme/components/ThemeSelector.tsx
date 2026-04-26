@@ -1,11 +1,8 @@
 import { Palette } from 'lucide-react'
 import { useSelectTheme } from '../hooks/useSelectTheme'
-import { setTheme } from '../actions'
 
 export function ThemeSelector() {
-  const { selectTheme } = useSelectTheme({
-    onSelect: (theme) => setTheme(theme),
-  })
+  const { selectTheme } = useSelectTheme()
 
   return (
     <button

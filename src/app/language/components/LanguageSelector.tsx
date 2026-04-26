@@ -1,14 +1,8 @@
-import { useTranslation } from 'react-i18next'
 import { Languages } from 'lucide-react'
 import { useSelectLanguage } from '@/app/language/hooks/useSelectLanguage'
-import { setAppLanguage } from '@/app/language/actions'
 
 export function LanguageSelector() {
-  const { i18n } = useTranslation()
-
-  const { selectLanguage } = useSelectLanguage({
-    onSelect: (language) => setAppLanguage(language.key, i18n),
-  })
+  const { selectLanguage } = useSelectLanguage()
 
   return (
     <button
