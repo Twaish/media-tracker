@@ -24,7 +24,7 @@ export function ModalProvider() {
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && close()}>
-      <DialogContent className="rounded-none p-0">{content}</DialogContent>
+      {content}
     </Dialog>
   )
 }

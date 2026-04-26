@@ -2,6 +2,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
+  DialogContent,
 } from '@/components/ui/dialog'
 import { useTranslation } from 'react-i18next'
 import { Check, Search, X } from 'lucide-react'
@@ -30,7 +31,7 @@ export function SelectLanguageDialog({
   )
 
   return (
-    <div className="flex flex-col">
+    <DialogContent className="flex flex-col gap-0 rounded-none p-0">
       <div className="p-3 pb-0">
         <DialogHeader>
           <DialogTitle className="mb-1 font-mono text-xs leading-none font-bold tracking-[0.08em] uppercase">
@@ -116,6 +117,6 @@ export function SelectLanguageDialog({
       <div className="text-muted-foreground px-4 py-1.5 font-mono text-[11px] tracking-[0.04em]">
         {filtered.length} / {langs.length} languages
       </div>
-    </div>
+    </DialogContent>
   )
 }

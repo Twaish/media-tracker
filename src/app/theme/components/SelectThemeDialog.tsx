@@ -4,6 +4,7 @@ import { Check, Search, X } from 'lucide-react'
 
 import { AppTheme, getCurrentTheme } from '../actions'
 import {
+  DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
@@ -61,7 +62,7 @@ export function SelectThemeDialog({
   const currentTheme = local ?? system
 
   return (
-    <div className="flex flex-col">
+    <DialogContent className="flex flex-col gap-0 rounded-none p-0">
       <div className="p-3">
         <DialogHeader>
           <DialogTitle className="mb-1 font-mono text-xs leading-none font-bold tracking-[0.08em] uppercase">
@@ -122,8 +123,10 @@ export function SelectThemeDialog({
                   key={t.id}
                   onClick={() => onSelect(t.id)}
                   className={cn(
-                    'group border-border relative flex flex-col overflow-hidden border text-left transition-colors',
-                    isActive ? 'border-primary' : 'hover:border-primary',
+                    'group border-border relative flex flex-col overflow-hidden border text-left transition-colors outline-none',
+                    isActive
+                      ? 'border-primary'
+                      : 'hover:border-primary focus-visible:border-primary',
                   )}
                 >
                   {t.id === 'system' ? (
@@ -158,7 +161,7 @@ export function SelectThemeDialog({
       <div className="text-muted-foreground px-4 py-1.5 font-mono text-[11px] tracking-[0.04em]">
         {filtered.length} / {themes.length} themes
       </div>
-    </div>
+    </DialogContent>
   )
 }
 
@@ -202,7 +205,7 @@ function SystemThemePreview() {
   return (
     <div className="relative h-32 w-full overflow-hidden">
       <div
-        className="absolute inset-0 z-50 h-[calc(100%+1px)]"
+        className="absolute inset-0 z-50 h-full"
         style={{
           clipPath: 'polygon(0 0, 50% 0, 50% 100%, 0% 100%)',
         }}
