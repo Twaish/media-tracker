@@ -1,9 +1,9 @@
-import { queryClient } from '@/App'
 import { useModalStore } from '@/stores/modal/useModalStore'
 import { openModal } from '@/stores/modal/modalStore'
 
 import { AppTheme, setTheme, ThemePreferences } from '../actions'
 import { SelectThemeDialog } from '../components/SelectThemeDialog'
+import { queryClient } from '@/core/queryClient'
 
 const createHandleSelect =
   (onSelect?: (theme: AppTheme) => void) => (value: AppTheme) => {
