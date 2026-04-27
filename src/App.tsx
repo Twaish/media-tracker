@@ -8,19 +8,21 @@ import { router } from './routes/router'
 import { RouterProvider } from '@tanstack/react-router'
 import { updateAppLanguage } from './app/language/actions'
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClientProvider } from '@tanstack/react-query'
 import { TooltipProvider } from './components/ui/tooltip'
 import { ModalProvider } from './stores/modal/useModalStore'
-
-export const queryClient = new QueryClient()
+import { queryClient } from './core/queryClient'
 
 export default function App() {
   const { i18n } = useTranslation()
 
   useEffect(() => {
-    syncThemeWithLocal()
     updateAppLanguage(i18n)
   }, [i18n])
+
+  useEffect(() => {
+    syncThemeWithLocal()
+  }, [])
 
   return <RouterProvider router={router} />
 }
