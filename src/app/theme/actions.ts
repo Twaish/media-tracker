@@ -1,5 +1,7 @@
-import { ipc } from '@/ipc'
+import { ipc } from '@/core/ipc'
+import { useModalStore } from '@/stores/modal/modalStore'
 import { ThemeMode } from '@shared/types'
+import { closeSelectTheme, openSelectTheme } from './hooks/useSelectTheme'
 
 const THEME_KEY = 'theme'
 const RESOLVED_THEME_KEY = 'theme-resolved'
@@ -60,4 +62,8 @@ function applyThemeClass(resolvedTheme: AppTheme) {
 
   body.classList.add(resolvedTheme)
   localStorage.setItem(RESOLVED_THEME_KEY, resolvedTheme)
+}
+
+export function toggleSelectTheme() {
+  useModalStore.getState().isOpen ? closeSelectTheme() : openSelectTheme()
 }

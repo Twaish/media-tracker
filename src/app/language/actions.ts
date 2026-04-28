@@ -1,4 +1,9 @@
+import { useModalStore } from '@/stores/modal/modalStore'
 import type { i18n } from 'i18next'
+import {
+  closeSelectLanguage,
+  openSelectLanguage,
+} from './hooks/useSelectLanguage'
 
 const languageLocalStorageKey = 'lang'
 
@@ -16,4 +21,8 @@ export function updateAppLanguage(i18n: i18n) {
 
   i18n.changeLanguage(localLang)
   document.documentElement.lang = localLang
+}
+
+export function toggleSelectLanguage() {
+  useModalStore.getState().isOpen ? closeSelectLanguage() : openSelectLanguage()
 }
