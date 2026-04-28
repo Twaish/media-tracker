@@ -1,10 +1,9 @@
 export type HotkeyHandler = (e: KeyboardEvent) => void
 
 export type Hotkey = {
-  id: string
   keys: string
   handler: HotkeyHandler
-  contexts: string[]
+  contexts?: string[]
 }
 
 export type ParsedHotkey = {
@@ -13,4 +12,9 @@ export type ParsedHotkey = {
   meta: boolean
   shift: boolean
   alt: boolean
+}
+
+export type RegisteredHotkey = Hotkey & {
+  id: string
+  parsed: ParsedHotkey
 }

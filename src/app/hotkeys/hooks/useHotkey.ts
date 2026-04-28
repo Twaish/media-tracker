@@ -13,5 +13,5 @@ export const useHotkey = (hotkey: Hotkey) => {
       ...hotkey,
       handler: (e) => handlerRef.current(e),
     })
-  }, [hotkey.id])
+  }, [])
 }
