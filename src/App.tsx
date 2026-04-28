@@ -9,6 +9,7 @@ import { updateAppLanguage } from './app/language/actions'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { TooltipProvider } from './components/ui/tooltip'
 import { ModalProvider } from './stores/modal/useModalStore'
+import { hotkeyManager } from './app/hotkeys/hotkeyManager'
 import { queryClient } from './core/queryClient'
 
 export default function App() {
@@ -19,7 +20,11 @@ export default function App() {
   }, [i18n])
 
   useEffect(() => {
+    const destroy = hotkeyManager.init()
     syncThemeWithLocal()
+    return () => {
+      destroy?.()
+    }
   }, [])
 
   return <RouterProvider router={router} />
