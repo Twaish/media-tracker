@@ -3,6 +3,7 @@ import { setAppLanguage } from '../actions'
 import { SelectLanguageDialog } from '../components/SelectLanguageDialog'
 import { Language } from '../language'
 import i18n from 'i18next'
+import { closeModal, openModal } from '@/stores/modal/modalStore'
 
 const createHandleSelect =
   (onSelect?: (language: Language) => void) => (value: Language) => {
@@ -14,18 +15,16 @@ interface UseSelectLanguageOptions {
   onSelect?: (lang: Language) => void
 }
 
-export function useSelectLanguage({ onSelect }: UseSelectLanguageOptions = {}) {
-  const open = useModalStore((s) => s.open)
-
-  const selectLanguage = () => {
-    open(<SelectLanguageDialog onSelect={createHandleSelect(onSelect)} />)
-  }
-
-  return { selectLanguage }
+export const openSelectLanguage = ({
+  onSelect,
+}: UseSelectLanguageOptions = {}) => {
+  openModal(<SelectLanguageDialog onSelect={createHandleSelect(onSelect)} />)
 }
 
-export const selectLanguage = ({ onSelect }: UseSelectLanguageOptions = {}) => {
-  useModalStore
-    .getState()
-    .open(<SelectLanguageDialog onSelect={createHandleSelect(onSelect)} />)
+export const closeSelectLanguage = () => {
+  closeModal()
+}
+
+export function useSelectLanguage(props: UseSelectLanguageOptions = {}) {
+  return { selectLanguage: () => openSelectLanguage(props) }
 }

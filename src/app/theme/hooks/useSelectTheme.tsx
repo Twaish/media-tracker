@@ -1,5 +1,5 @@
 import { useModalStore } from '@/stores/modal/useModalStore'
-import { openModal } from '@/stores/modal/modalStore'
+import { closeModal, openModal } from '@/stores/modal/modalStore'
 
 import { AppTheme, setTheme, ThemePreferences } from '../actions'
 import { SelectThemeDialog } from '../components/SelectThemeDialog'
@@ -20,16 +20,14 @@ interface UseSelectThemeOptions {
   onSelect?: (theme: AppTheme) => void
 }
 
-export function useSelectTheme({ onSelect }: UseSelectThemeOptions = {}) {
-  const open = useModalStore((s) => s.open)
-
-  const selectTheme = () => {
-    open(<SelectThemeDialog onSelect={createHandleSelect(onSelect)} />)
-  }
-
-  return { selectTheme }
+export const openSelectTheme = ({ onSelect }: UseSelectThemeOptions = {}) => {
+  openModal(<SelectThemeDialog onSelect={createHandleSelect(onSelect)} />)
 }
 
-export const selectTheme = ({ onSelect }: UseSelectThemeOptions = {}) => {
-  openModal(<SelectThemeDialog onSelect={createHandleSelect(onSelect)} />)
+export const closeSelectTheme = () => {
+  closeModal()
+}
+
+export function useSelectTheme(props: UseSelectThemeOptions = {}) {
+  return { selectTheme: () => openSelectTheme(props) }
 }
