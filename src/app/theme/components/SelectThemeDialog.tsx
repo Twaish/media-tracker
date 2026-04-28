@@ -62,7 +62,7 @@ export function SelectThemeDialog({
   const currentTheme = local ?? system
 
   return (
-    <DialogContent className="flex flex-col gap-0 rounded-none p-0">
+    <DialogContent className="z-99 flex flex-col gap-0 rounded-none p-0">
       <div className="p-3">
         <DialogHeader>
           <DialogTitle className="mb-1 font-mono text-xs leading-none font-bold tracking-[0.08em] uppercase">
