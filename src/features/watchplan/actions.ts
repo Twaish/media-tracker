@@ -1,4 +1,4 @@
-import { ipc } from '@/ipc'
+import { ipc } from '@/core/ipc'
 import { AddWatchPlanDTO, UpdateWatchPlanDTO } from '@shared/types/features'
 
 export async function getWatchPlans() {

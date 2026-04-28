@@ -1,4 +1,4 @@
-import { ipc } from '@/ipc'
+import { ipc } from '@/core/ipc'
 
 export async function getGenres() {
   return ipc.client.genres.get()

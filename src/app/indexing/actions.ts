@@ -1,4 +1,4 @@
-import { ipc } from '@/ipc'
+import { ipc } from '@/core/ipc'
 import { Pagination } from '@shared/types'
 import { IndexExtractionSchema } from '@shared/types/features/indexing'
 

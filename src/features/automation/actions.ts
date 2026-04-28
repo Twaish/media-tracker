@@ -1,4 +1,4 @@
-import { ipc } from '@/ipc'
+import { ipc } from '@/core/ipc'
 import { AddNodeDTO, UpdateNodeDTO } from '@shared/types'
 
 export async function syncEngine() {

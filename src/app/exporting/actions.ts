@@ -1,4 +1,4 @@
-import { ipc } from '@/ipc'
+import { ipc } from '@/core/ipc'
 
 export async function exportLibrary(path: string) {
   return ipc.client.exporting.exportLibrary(path)

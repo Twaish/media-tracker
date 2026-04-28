@@ -1,4 +1,4 @@
-import { ipc } from '@/ipc'
+import { ipc } from '@/core/ipc'
 
 export function getAppName() {
   return ipc.client.instance.name()

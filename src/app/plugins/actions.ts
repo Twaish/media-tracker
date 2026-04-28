@@ -1,4 +1,4 @@
-import { ipc } from '@/ipc'
+import { ipc } from '@/core/ipc'
 
 export async function getPluginPermissionKeys() {
   return ipc.client.plugins.getPermissionKeys()

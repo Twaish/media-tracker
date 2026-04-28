@@ -1,4 +1,4 @@
-import { ipc } from '@/ipc'
+import { ipc } from '@/core/ipc'
 import { Pagination } from '@shared/types'
 
 export async function getDeltas(pagination?: Pagination) {
