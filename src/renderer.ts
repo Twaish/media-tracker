@@ -1,3 +1,6 @@
 import './app/language/i18n'
 import './core/ipc'
+import './helpers/register-commands'
+import './helpers/register-hotkeys'
+import './helpers/register-command-hotkeys'
 import './App'
