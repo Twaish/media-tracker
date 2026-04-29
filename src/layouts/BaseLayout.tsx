@@ -4,10 +4,11 @@ import { useQuery } from '@tanstack/react-query'
 import { getAppName } from '@/app/instance/actions'
 import { AppSidebar } from '@/components/template/AppSidebar'
 import { BottomPanel } from '@/components/template/BottomPanel'
-import { Command, Download, Upload } from 'lucide-react'
+import { Download, Upload } from 'lucide-react'
 import { DSLSearch } from '@/components/DSLSearch'
 import { LanguageSelector } from '@/app/language/components/LanguageSelector'
 import { ThemeSelector } from '@/app/theme/components/ThemeSelector'
+import { CommandPalette } from '@/app/commandpalette/components/CommandPalette'
 
 export default function BaseLayout({ children }: { children: ReactNode }) {
   const { data: appName } = useQuery({
@@ -36,9 +37,7 @@ export default function BaseLayout({ children }: { children: ReactNode }) {
             </button>
 
             <div className="bg-border mx-1 h-4 w-px" />
-            <button className="no-drag text-muted-foreground hover:text-foreground flex h-full min-w-6 items-center justify-center transition-colors duration-200">
-              <Command className="h-3 w-3" />
-            </button>
+            <CommandPalette />
             <LanguageSelector />
             <ThemeSelector />
           </div>
