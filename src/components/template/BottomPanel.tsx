@@ -5,7 +5,6 @@ import {
   X,
   Check,
   TriangleAlert,
-  Logs,
 } from 'lucide-react'
 import { cn } from '@/utils/tailwind'
 import { ComponentProps, useState } from 'react'

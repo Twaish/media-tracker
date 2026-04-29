@@ -18,3 +18,4 @@ export const DialogSearch = forwardRef<
     </div>
   )
 })
+DialogSearch.displayName = 'DialogSearch'

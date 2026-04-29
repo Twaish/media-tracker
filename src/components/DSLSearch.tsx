@@ -1,34 +1,37 @@
-import { useRef, useState } from 'react'
-import { Check, Code2, Command, Copy, Info } from 'lucide-react'
+import {
+  // useRef,
+  useState,
+} from 'react'
+// import { Check, Code2, Command, Copy, Info } from 'lucide-react'
 import { cn } from '@/utils/tailwind'
 
 export function DSLSearch() {
   const [query, setQuery] = useState('title CONTAINS "Steins" AND score > 8.5')
-  const [showAST, setShowAST] = useState(false)
+  // const [showAST, setShowAST] = useState(false)
 
-  const [copied, setCopied] = useState(false)
-  const [clickCount, setClickCount] = useState(0)
-  const timeoutRef = useRef<NodeJS.Timeout>(null)
+  // const [copied, setCopied] = useState(false)
+  // const [clickCount, setClickCount] = useState(0)
+  // const timeoutRef = useRef<NodeJS.Timeout>(null)
 
-  const handleCopy = async () => {
-    const text = JSON.stringify(mockAST, null, 2)
+  // const handleCopy = async () => {
+  //   const text = JSON.stringify(mockAST, null, 2)
 
-    try {
-      await navigator.clipboard.writeText(text)
-    } catch {}
+  //   try {
+  //     await navigator.clipboard.writeText(text)
+  //   } catch {}
 
-    setCopied(true)
-    setClickCount((c) => c + 1)
+  //   setCopied(true)
+  //   setClickCount((c) => c + 1)
 
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current)
-    }
+  //   if (timeoutRef.current) {
+  //     clearTimeout(timeoutRef.current)
+  //   }
 
-    timeoutRef.current = setTimeout(() => {
-      setCopied(false)
-      setClickCount(0)
-    }, 1000)
-  }
+  //   timeoutRef.current = setTimeout(() => {
+  //     setCopied(false)
+  //     setClickCount(0)
+  //   }, 1000)
+  // }
 
   const renderHighlightedQuery = () => {
     const parts = query.split(/(\s+)/)
@@ -76,22 +79,22 @@ export function DSLSearch() {
     })
   }
 
-  const mockAST = {
-    type: 'LogicalExpression',
-    operator: 'AND',
-    left: {
-      type: 'BinaryExpression',
-      left: 'title',
-      operator: 'CONTAINS',
-      right: 'Steins',
-    },
-    right: {
-      type: 'BinaryExpression',
-      left: 'score',
-      operator: '>',
-      right: 8.5,
-    },
-  }
+  // const mockAST = {
+  //   type: 'LogicalExpression',
+  //   operator: 'AND',
+  //   left: {
+  //     type: 'BinaryExpression',
+  //     left: 'title',
+  //     operator: 'CONTAINS',
+  //     right: 'Steins',
+  //   },
+  //   right: {
+  //     type: 'BinaryExpression',
+  //     left: 'score',
+  //     operator: '>',
+  //     right: 8.5,
+  //   },
+  // }
 
   return (
     <div className="no-drag flex h-6 w-full min-w-50 flex-col">

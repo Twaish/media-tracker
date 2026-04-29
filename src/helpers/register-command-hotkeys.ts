@@ -6,6 +6,9 @@ commands.forEach((item) => {
 
   hotkeyManager.register({
     keys: item.hotkey,
-    handler: (_) => item.action?.(),
+    handler: (e) => {
+      e.preventDefault()
+      item.action?.()
+    },
   })
 })

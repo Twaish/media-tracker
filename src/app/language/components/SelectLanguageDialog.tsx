@@ -96,6 +96,7 @@ export function SelectLanguageDialog({
         ) : (
           filtered.map((lang, index) => (
             <SearchItem
+              key={lang.key}
               isFocused={index === focusedClamped}
               query={query}
               onClick={() => onSelect(lang)}

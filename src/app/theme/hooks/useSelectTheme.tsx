@@ -1,4 +1,3 @@
-import { useModalStore } from '@/stores/modal/useModalStore'
 import { closeModal, openModal } from '@/stores/modal/modalStore'
 
 import { AppTheme, setTheme, ThemePreferences } from '../actions'
