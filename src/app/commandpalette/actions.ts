@@ -5,5 +5,9 @@ import {
 } from './hooks/useCommandPalette'
 
 export function toggleCommandPalette() {
-  useModalStore.getState().isOpen ? closeCommandPalette() : openCommandPalette()
+  if (useModalStore.getState().isOpen) {
+    closeCommandPalette()
+  } else {
+    openCommandPalette()
+  }
 }

@@ -65,5 +65,9 @@ function applyThemeClass(resolvedTheme: AppTheme) {
 }
 
 export function toggleSelectTheme() {
-  useModalStore.getState().isOpen ? closeSelectTheme() : openSelectTheme()
+  if (useModalStore.getState().isOpen) {
+    closeSelectTheme()
+  } else {
+    openSelectTheme()
+  }
 }

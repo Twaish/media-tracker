@@ -24,5 +24,9 @@ export function updateAppLanguage(i18n: i18n) {
 }
 
 export function toggleSelectLanguage() {
-  useModalStore.getState().isOpen ? closeSelectLanguage() : openSelectLanguage()
+  if (useModalStore.getState().isOpen) {
+    closeSelectLanguage()
+  } else {
+    openSelectLanguage()
+  }
 }
