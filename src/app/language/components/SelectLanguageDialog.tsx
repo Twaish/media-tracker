@@ -1,15 +1,20 @@
+import { useEffect, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { VisuallyHidden } from 'radix-ui'
+import { Check, ChevronDown, ChevronUp, CornerDownLeft } from 'lucide-react'
 import {
-  DialogHeader,
   DialogTitle,
   DialogDescription,
   DialogContent,
+  DialogFooter,
 } from '@/components/ui/dialog'
-import { useTranslation } from 'react-i18next'
-import { Check, Search, X } from 'lucide-react'
-import { cn } from '@/utils/tailwind'
-import { useMemo, useState } from 'react'
-import langs from '../langs'
+import { SearchItem } from '@/components/SearchItem'
+import { DialogFooterHint } from '@/components/dialog/DialogFooterHint'
+import { DialogSearch } from '@/components/dialog/DialogSearch'
+import { useHotkey } from '@/app/hotkeys/hooks/useHotkey'
 import { Language } from '../language'
+import langs from '../langs'
+import { DialogEmptyIndicator } from '@/components/dialog/DialogEmptyIndicator'
 
 export function SelectLanguageDialog({
   onSelect,
@@ -19,6 +24,7 @@ export function SelectLanguageDialog({
   const { i18n } = useTranslation()
   const currentLang = i18n.language
   const [query, setQuery] = useState('')
+  const [focusedIndex, setFocusedIndex] = useState(0)
 
   const filtered = useMemo(
     () =>
@@ -30,93 +36,102 @@ export function SelectLanguageDialog({
     [query],
   )
 
+  const focusedClamped = Math.min(focusedIndex, filtered.length - 1)
+
+  useEffect(() => setFocusedIndex(0), [query])
+
+  useHotkey({
+    keys: 'ArrowDown',
+    handler(e) {
+      e.preventDefault()
+      if (filtered.length)
+        setFocusedIndex((focusedClamped + 1) % filtered.length)
+    },
+  })
+
+  useHotkey({
+    keys: 'ArrowUp',
+    handler(e) {
+      e.preventDefault()
+      if (filtered.length)
+        setFocusedIndex(
+          (focusedClamped - 1 + filtered.length) % filtered.length,
+        )
+    },
+  })
+
+  useHotkey({
+    keys: 'Enter',
+    handler(e) {
+      e.preventDefault()
+      const lang = filtered[focusedClamped]
+      if (lang) onSelect(lang)
+    },
+  })
+
   return (
-    <DialogContent className="z-99 flex flex-col gap-0 rounded-none p-0">
-      <div className="p-3 pb-0">
-        <DialogHeader>
-          <DialogTitle className="mb-1 font-mono text-xs leading-none font-bold tracking-[0.08em] uppercase">
-            Select Language
-          </DialogTitle>
-          <DialogDescription className="font-mono text-xs leading-[1.4]">
-            Choose your preferred display language.
-          </DialogDescription>
-        </DialogHeader>
-      </div>
+    <DialogContent
+      showCloseButton={false}
+      className="z-99 flex max-h-[70vh] flex-col gap-0 overflow-hidden rounded-none p-0"
+    >
+      <VisuallyHidden.Root asChild>
+        <DialogTitle>Select Language</DialogTitle>
+      </VisuallyHidden.Root>
+      <VisuallyHidden.Root asChild>
+        <DialogDescription>
+          Choose your preferred display language
+        </DialogDescription>
+      </VisuallyHidden.Root>
 
-      <div className="px-2 py-2">
-        <div
-          className={cn(
-            'border-border bg-background flex h-8 items-center gap-1.5 border pl-2',
-            query ? 'pr-1' : 'pr-2',
-          )}
-        >
-          <Search
-            size={13}
-            className="text-muted-foreground shrink-0"
-            strokeWidth={1.75}
-          />
-          <input
-            autoFocus
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search languages..."
-            spellCheck={false}
-            className="flex-1 bg-transparent text-xs outline-none"
-          />
-          {query && (
-            <button
-              onClick={() => setQuery('')}
-              className="text-muted-foreground hover:text-foreground flex h-6 w-6 items-center justify-center"
-            >
-              <X size={12} />
-            </button>
-          )}
-        </div>
-      </div>
+      <DialogSearch
+        autoFocus
+        value={query}
+        placeholder="Search languages..."
+        onChange={(e) => setQuery(e.target.value)}
+      />
 
-      <div className="border-border mx-2 border-t" />
-
-      <div className="max-h-72 overflow-y-auto p-2">
+      <div className="overflow-y-auto">
         {filtered.length === 0 ? (
-          <div className="text-muted-foreground py-6 text-center text-xs">
-            No languages match &ldquo;{query}&rdquo;
-          </div>
+          <DialogEmptyIndicator>No results for this query</DialogEmptyIndicator>
         ) : (
-          <div className="flex flex-col gap-0.5">
-            {filtered.map((lang) => {
-              const isActive = currentLang === lang.key
-
-              return (
-                <button
-                  key={lang.key}
-                  onClick={() => onSelect(lang)}
-                  className={cn(
-                    'flex h-8 w-full items-center justify-between px-2 py-1.5 text-left',
-                    isActive
-                      ? 'bg-primary text-primary-foreground'
-                      : 'hover:bg-accent hover:text-accent-foreground',
-                  )}
-                >
-                  <span className="flex items-center gap-2 text-sm">
-                    <span className="text-sm">{lang.prefix}</span>
-                    <span>{lang.nativeName}</span>
-                  </span>
-
-                  {isActive && (
-                    <Check size={13} strokeWidth={2.5} className="shrink-0" />
-                  )}
-                </button>
-              )
-            })}
-          </div>
+          filtered.map((lang, index) => (
+            <SearchItem
+              isFocused={index === focusedClamped}
+              query={query}
+              onClick={() => onSelect(lang)}
+              onMouseEnter={() => setFocusedIndex(index)}
+            >
+              <SearchItem.Icon>{lang.prefix}</SearchItem.Icon>
+              <SearchItem.Content>
+                <SearchItem.Title text={lang.nativeName} />
+                <SearchItem.Description text={lang.key} />
+              </SearchItem.Content>
+              {currentLang === lang.key && (
+                <Check
+                  size={13}
+                  strokeWidth={2.5}
+                  className="text-muted-foreground shrink-0"
+                />
+              )}
+            </SearchItem>
+          ))
         )}
       </div>
 
-      <div className="border-border border-t" />
-      <div className="text-muted-foreground px-4 py-1.5 font-mono text-[11px] tracking-[0.04em]">
-        {filtered.length} / {langs.length} languages
-      </div>
+      <DialogFooter>
+        <DialogFooterHint text="navigate">
+          <ChevronUp />
+          <ChevronDown />
+        </DialogFooterHint>
+        <DialogFooterHint text="select">
+          <CornerDownLeft />
+        </DialogFooterHint>
+        <DialogFooterHint text="close">Esc</DialogFooterHint>
+        <div className="flex-1" />
+        <span className="text-muted-foreground text-[10px] tracking-widest">
+          {filtered.length} result{filtered.length !== 1 ? 's' : ''}
+        </span>
+      </DialogFooter>
     </DialogContent>
   )
 }
