@@ -6,9 +6,9 @@ export function CommandPaletteBreadcrumbs() {
   const currentFrame = usePalette((s) =>
     isInSteps ? s.stepStack[s.stepStack.length - 1] : null,
   )
-  const currentStep = usePalette((s) =>
-    currentFrame ? currentFrame.command.steps[currentFrame.stepIndex] : null,
-  )
+  const currentStep = currentFrame
+    ? currentFrame.command.steps[currentFrame.stepIndex]
+    : null
 
   const breadcrumbItems = currentFrame
     ? [
