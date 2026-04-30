@@ -1,21 +1,29 @@
 import { ipc } from '@/core/ipc'
 import { useModalStore } from '@/stores/modal/modalStore'
-import { ThemeMode } from '@shared/types'
+import { ThemeId, ThemeMode, ThemeTokenMap } from '@shared/types'
 import { closeSelectTheme, openSelectTheme } from './hooks/useSelectTheme'
+import { darkTheme, lightTheme } from './data/defaultThemes'
+import { themeModes } from '@shared/constants'
 
 const THEME_KEY = 'theme'
-const RESOLVED_THEME_KEY = 'theme-resolved'
+const THEME_CLASS_KEY = 'theme-class'
 
-export type AppTheme = ThemeMode | (string & {})
+export interface Theme {
+  id: ThemeId
+  name: string
+  icon?: string
+  className?: string
+  colors?: ThemeTokenMap
+}
 
 export interface ThemePreferences {
   system: ThemeMode
-  local: AppTheme | null
+  local: ThemeId | null
 }
 
 export async function getCurrentTheme(): Promise<ThemePreferences> {
   const currentTheme = await ipc.client.themeMode.current()
-  const localTheme = localStorage.getItem(THEME_KEY) as AppTheme | null
+  const localTheme = localStorage.getItem(THEME_KEY) as ThemeId | null
 
   return {
     system: currentTheme,
@@ -23,28 +31,37 @@ export async function getCurrentTheme(): Promise<ThemePreferences> {
   }
 }
 
-export async function setTheme(newTheme: AppTheme) {
-  let resolvedTheme = newTheme
+export async function setTheme(themeId: ThemeId) {
+  let resolvedTheme: Theme
 
-  if (newTheme === 'dark') {
+  if (themeId === 'dark') {
     await ipc.client.themeMode.dark()
-  } else if (newTheme === 'light') {
+    resolvedTheme = darkTheme
+  } else if (themeId === 'light') {
     await ipc.client.themeMode.light()
-  } else if (newTheme === 'system') {
+    resolvedTheme = lightTheme
+  } else if (themeId === 'system') {
     const isDarkMode = await ipc.client.themeMode.system()
-    resolvedTheme = isDarkMode ? 'dark' : 'light'
+    resolvedTheme = isDarkMode ? darkTheme : lightTheme
+  } else {
+    try {
+      resolvedTheme = await ipc.client.themeMode.getTheme(themeId)
+    } catch {
+      setTheme('system')
+      return
+    }
   }
 
-  applyThemeClass(resolvedTheme)
-  localStorage.setItem(THEME_KEY, newTheme)
+  applyTheme(resolvedTheme)
+  localStorage.setItem(THEME_KEY, themeId)
 }
 
-export async function toggleTheme() {
-  const isDarkMode = await ipc.client.themeMode.toggle()
-  const newTheme = isDarkMode ? 'dark' : 'light'
+export async function getThemes() {
+  return ipc.client.themeMode.getThemes()
+}
 
-  applyThemeClass(newTheme)
-  localStorage.setItem(THEME_KEY, newTheme)
+export async function getSystemTheme() {
+  return ipc.client.themeMode.getSystemTheme()
 }
 
 export async function syncThemeWithLocal() {
@@ -52,16 +69,64 @@ export async function syncThemeWithLocal() {
   await setTheme(local ?? 'system')
 }
 
-function applyThemeClass(resolvedTheme: AppTheme) {
-  const previous = localStorage.getItem(RESOLVED_THEME_KEY)
+export function isDefaultTheme(themeId: ThemeId): themeId is ThemeMode {
+  return (themeModes as readonly string[]).includes(themeId)
+}
+
+export async function getThemeStyleObject(themeId: ThemeId) {
+  const theme = await ipc.client.themeMode.getTheme(themeId)
+  const tokens = theme.colors
+
+  if (!tokens) return {}
+
+  const style: React.CSSProperties & {
+    [key: `--${string}`]: string
+  } = {}
+
+  for (const [token, value] of Object.entries(tokens)) {
+    style[`--${token}` as any] = value
+  }
+
+  return style
+}
+
+function applyTheme(resolvedTheme: Theme) {
   const body = document.body
 
+  const previous = localStorage.getItem(THEME_CLASS_KEY)
   if (previous) {
     body.classList.remove(previous)
   }
 
-  body.classList.add(resolvedTheme)
-  localStorage.setItem(RESOLVED_THEME_KEY, resolvedTheme)
+  if (resolvedTheme.className) {
+    body.classList.add(resolvedTheme.className)
+    localStorage.setItem(THEME_CLASS_KEY, resolvedTheme.className)
+  } else {
+    localStorage.removeItem(THEME_CLASS_KEY)
+  }
+
+  clearThemeVariables()
+
+  if (resolvedTheme.colors) {
+    applyThemeVariables(resolvedTheme.colors)
+  }
+}
+
+function applyThemeVariables(tokens: ThemeTokenMap) {
+  for (const [token, value] of Object.entries(tokens)) {
+    document.body.style.setProperty(`--${token}`, value)
+  }
+}
+
+function clearThemeVariables() {
+  const style = document.body.style
+
+  for (let i = style.length - 1; i >= 0; i--) {
+    const prop = style[i]
+    if (prop.startsWith('--')) {
+      style.removeProperty(prop)
+    }
+  }
 }
 
 export function toggleSelectTheme() {

@@ -1,11 +1,12 @@
 import { closeModal, openModal } from '@/stores/modal/modalStore'
 
-import { AppTheme, setTheme, ThemePreferences } from '../actions'
+import { setTheme, ThemePreferences } from '../actions'
 import { SelectThemeDialog } from '../components/SelectThemeDialog'
 import { queryClient } from '@/core/queryClient'
+import { ThemeId } from '@shared/types'
 
 const createHandleSelect =
-  (onSelect?: (theme: AppTheme) => void) => (value: AppTheme) => {
+  (onSelect?: (theme: ThemeId) => void) => (value: ThemeId) => {
     setTheme(value)
     onSelect?.(value)
 
@@ -16,7 +17,7 @@ const createHandleSelect =
   }
 
 interface UseSelectThemeOptions {
-  onSelect?: (theme: AppTheme) => void
+  onSelect?: (theme: ThemeId) => void
 }
 
 export const openSelectTheme = ({ onSelect }: UseSelectThemeOptions = {}) => {
