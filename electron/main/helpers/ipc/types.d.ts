@@ -19,6 +19,8 @@ import { IImportManager } from '@/app/exporting/application/interfaces/IImportMa
 import { IPermissionRegistry } from '@/app/plugins/application/ports/IPermissionRegistry'
 import { IPluginRegistry } from '@/app/plugins/application/ports/IPluginRegistry'
 import { IPluginManager } from '@/app/plugins/application/ports/IPluginManager'
+import { IThemeRegistry } from '@/app/theme/application/ports/IThemeRegistry'
+import { IThemeManager } from '@/app/theme/application/ports/IThemeManager'
 
 import { IIndexManager } from '@/app/indexing/application/ports/IIndexManager'
 import { IIndexRegistry } from '@/app/indexing/application/ports/IIndexRegistry'
@@ -55,6 +57,8 @@ declare interface Modules {
   PermissionRegistry: IPermissionRegistry
   PluginRegistry: IPluginRegistry
   PluginManager: IPluginManager
+  ThemeRegistry: IThemeRegistry
+  ThemeManager: IThemeManager
 
   IndexManager: IIndexManager
   IndexRegistry: IIndexRegistry

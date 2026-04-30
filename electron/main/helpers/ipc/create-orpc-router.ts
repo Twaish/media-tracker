@@ -19,7 +19,7 @@ import { createAutomationRouters } from '../../features/automation/ipc'
 
 export function createOrpcRouter(modules: Modules) {
   return {
-    themeMode: createThemeRouters(),
+    themeMode: createThemeRouters(modules),
     tasks: createTasksRouters(modules),
     electronWindow: createWindowRouters(modules),
     events: createEventsRouters(modules),
