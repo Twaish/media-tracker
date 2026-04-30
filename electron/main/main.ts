@@ -33,6 +33,8 @@ import { WinstonLogger } from './app/logging/infrastructure/adapters/WinstonLogg
 import { PluginManager } from './app/plugins/infrastructure/adapters/PluginManager'
 import { PluginRegistry } from './app/plugins/infrastructure/adapters/PluginRegistry'
 import { PermissionRegistry } from './app/plugins/infrastructure/adapters/PermissionRegistry'
+import { ThemeRegistry } from './app/theme/infrastructure/adapters/ThemeRegistry'
+import { ThemeManager } from './app/theme/infrastructure/adapters/ThemeManager'
 
 import { IndexRegistry } from './app/indexing/infrastructure/adapters/IndexRegistry'
 import { IndexManager } from './app/indexing/infrastructure/adapters/IndexManager'
@@ -81,6 +83,7 @@ app.whenReady().then(async () => {
   const userData = app.getPath('userData')
   const {
     PLUGINS_DIR,
+    THEMES_DIR,
     INDEX_PACKAGES_DIR,
     DB_PATH,
     MIGRATIONS_PATH,
@@ -149,6 +152,11 @@ app.whenReady().then(async () => {
     )
     pluginManager.on('error', (err) => logger.error(err))
 
+    logger.info('Initializing theme system')
+    const themeRegistry = new ThemeRegistry()
+    const themeManager = new ThemeManager(themeRegistry)
+    themeManager.on('error', (err) => logger.error(err))
+
     logger.info('Initializing indexing system')
     const indexRegistry = new IndexRegistry()
     const indexManager = new IndexManager(INDEX_PACKAGES_DIR, indexRegistry)
@@ -200,6 +208,8 @@ app.whenReady().then(async () => {
       PermissionRegistry: permissionRegistry,
       PluginRegistry: pluginRegistry,
       PluginManager: pluginManager,
+      ThemeRegistry: themeRegistry,
+      ThemeManager: themeManager,
 
       IndexManager: indexManager,
       IndexRegistry: indexRegistry,
@@ -255,6 +265,13 @@ app.whenReady().then(async () => {
     await pluginManager.setup()
     logger.debug(`Plugins: ${JSON.stringify(pluginRegistry.getAll(), null, 2)}`)
 
+    logger.header('Themes')
+    logger.info('Loading themes')
+    await themeManager.load(THEMES_DIR)
+    logger.debug(
+      `Themes: ${JSON.stringify(themeRegistry.getAllSummaries(), null, 2)}`,
+    )
+
     logger.header('Index Packages')
     logger.info('Loading index packages')
     await indexManager.load()
@@ -280,7 +297,10 @@ app.whenReady().then(async () => {
     subscribeMediaProjections(modules)
 
     logger.info('Registering custom protocols')
-    registerProtocols(modules)
+    registerProtocols({
+      resolveMediaThumbnail: storageService.resolve.bind(storageService),
+      resolveThemeIcon: themeRegistry.getIconPath.bind(themeRegistry),
+    })
 
     logger.info('Registering domain events')
     registerDomainEvents(modules)
