@@ -33,7 +33,7 @@ export default function HomePage() {
           width={150}
           height={100}
           alt="Macaw Closeup"
-          src="images://?url=https://img.freepik.com/free-photo/closeup-scarlet-macaw-from-side-view-scarlet-macaw-closeup-head_488145-3540.jpg"
+          src="remoteimage://fetch?url=https://img.freepik.com/free-photo/closeup-scarlet-macaw-from-side-view-scarlet-macaw-closeup-head_488145-3540.jpg"
         />
       </div>
       <Footer />
