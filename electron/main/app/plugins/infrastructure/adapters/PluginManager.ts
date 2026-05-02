@@ -44,29 +44,30 @@ export class PluginManager extends EventEmitter implements IPluginManager {
     )
   }
 
-  async enable(pluginName: string): Promise<void> {
-    const plugin = this.getPluginOrThrow(pluginName)
+  async enable(id: string): Promise<void> {
+    const plugin = this.getPluginOrThrow(id)
 
     if (plugin.enabled) return
 
     plugin.enabled = true
 
-    await this.setupPlugin(pluginName)
+    await this.setupPlugin(id)
 
     const existingSettings = this.settings.get('enabledPlugins')
     this.settings.set('enabledPlugins', {
       ...existingSettings,
-      [pluginName]: true,
+      [id]: true,
     })
   }
 
-  async disable(pluginName: string): Promise<void> {
-    const plugin = this.getPluginOrThrow(pluginName)
+  // TODO: Disable other plugins that depends on the disabled plugin
+  async disable(id: string): Promise<void> {
+    const plugin = this.getPluginOrThrow(id)
 
     if (!plugin.enabled) return
 
     if (plugin.context) {
-      await this.destroy(pluginName)
+      await this.destroy(id)
     }
 
     plugin.enabled = false
@@ -75,7 +76,7 @@ export class PluginManager extends EventEmitter implements IPluginManager {
     const existingSettings = this.settings.get('enabledPlugins')
     this.settings.set('enabledPlugins', {
       ...existingSettings,
-      [pluginName]: false,
+      [id]: false,
     })
   }
 
@@ -94,6 +95,8 @@ export class PluginManager extends EventEmitter implements IPluginManager {
 
     const manifests: PluginManifest[] = []
 
+    // TODO: If a plugin has any dependencies that are not enabled
+    // skip trying to enable the plugin entirely
     for (const dir of dirs) {
       const pluginDir = path.join(pluginsPath, dir)
 
@@ -106,12 +109,12 @@ export class PluginManager extends EventEmitter implements IPluginManager {
           manifest.icon = path.join(pluginDir, manifest.icon)
         }
 
-        this.pluginRegistry.register(manifest.name, manifest)
+        this.pluginRegistry.register(manifest.id, manifest)
 
         const isEnabled =
-          this.settings.get('enabledPlugins')[manifest.name] ?? true
+          this.settings.get('enabledPlugins')[manifest.id] ?? true
 
-        this.plugins.set(manifest.name, {
+        this.plugins.set(manifest.id, {
           path: pluginDir,
           manifest,
           module,
@@ -133,8 +136,8 @@ export class PluginManager extends EventEmitter implements IPluginManager {
     manifests.forEach((m) => this.validateDependencies(m))
   }
 
-  async setupPlugin(name: string) {
-    const plugin = this.getPluginOrThrow(name)
+  async setupPlugin(id: string) {
+    const plugin = this.getPluginOrThrow(id)
 
     if (!plugin.enabled) {
       plugin.state = 'unloaded'
@@ -164,38 +167,38 @@ export class PluginManager extends EventEmitter implements IPluginManager {
     }
   }
 
-  async execute(pluginName: string, ...args: unknown[]): Promise<void> {
-    const plugin = this.getPluginOrThrow(pluginName)
+  async execute(id: string, ...args: unknown[]): Promise<void> {
+    const plugin = this.getPluginOrThrow(id)
     if (!plugin.context) {
-      throw new Error(`Plugin "${pluginName}" is not initialized`)
+      throw new Error(`Plugin with id "${id}" is not initialized`)
     }
     if (!plugin.module.execute) {
-      throw new Error(`Plugin "${pluginName}" has no execute method`)
+      throw new Error(`Plugin with id "${id}" has no execute method`)
     }
     await plugin.module.execute(plugin.context, ...args)
   }
 
-  async destroy(pluginName: string): Promise<void> {
-    const plugin = this.getPluginOrThrow(pluginName)
+  async destroy(id: string): Promise<void> {
+    const plugin = this.getPluginOrThrow(id)
     if (!plugin.context) {
-      throw new Error(`Plugin "${pluginName}" is not initialized`)
+      throw new Error(`Plugin with id "${id}" is not initialized`)
     }
     if (!plugin.module.destroy) {
-      throw new Error(`Plugin "${pluginName}" has no destroy method`)
+      throw new Error(`Plugin with id "${id}" has no destroy method`)
     }
     await plugin.module.destroy(plugin.context)
     plugin.state = 'destroyed'
   }
 
   async destroyAll(): Promise<void> {
-    const destroyPlugin = async (name: string) => {
+    const destroyPlugin = async (id: string) => {
       try {
-        this.destroy(name)
+        this.destroy(id)
       } catch (err) {
         this.emit(
           'error',
           new Error(
-            `Plugin "${name}" failed during destroy: ${err instanceof Error ? err.stack : String(err)}`,
+            `Plugin with id "${id}" failed during destroy: ${err instanceof Error ? err.stack : String(err)}`,
           ),
         )
       }
@@ -207,9 +210,9 @@ export class PluginManager extends EventEmitter implements IPluginManager {
     }
   }
 
-  private getPluginOrThrow(name: string) {
-    const plugin = this.plugins.get(name)
-    if (!plugin) throw new Error(`No plugin found with name "${name}"`)
+  private getPluginOrThrow(id: string) {
+    const plugin = this.plugins.get(id)
+    if (!plugin) throw new Error(`No plugin found with id "${id}"`)
     return plugin
   }
 
@@ -228,8 +231,8 @@ export class PluginManager extends EventEmitter implements IPluginManager {
   private async buildSettings(plugin: PluginModuleEntry) {
     if (!plugin.module.settings) return
 
-    const namespace = `plugin:${plugin.manifest.name}`
-    const filename = `plugin-${this.getPluginBasicName(plugin.manifest.name)}`
+    const namespace = `plugin:${plugin.manifest.id}`
+    const filename = `plugin-${this.getPluginBasicName(plugin.manifest.id)}`
 
     return this.settingsBuilder
       .defineSettings(namespace, filename, plugin.module.settings)
@@ -243,6 +246,7 @@ export class PluginManager extends EventEmitter implements IPluginManager {
       ...this.permissionRegsitry.buildContext(permissions),
       pluginName: plugin.manifest.name,
       pluginDir: plugin.path,
+      pluginId: plugin.manifest.id,
     }
   }
 
@@ -252,7 +256,7 @@ export class PluginManager extends EventEmitter implements IPluginManager {
       semver.gt(manifest.minAppVersion, appVersion)
     ) {
       throw new Error(
-        `Plugin "${manifest.name}" requires app version ${manifest.minAppVersion}+ (current: ${appVersion}) `,
+        `Plugin with id "${manifest.id}" requires app version ${manifest.minAppVersion}+ (current: ${appVersion}) `,
       )
     }
   }
@@ -261,32 +265,32 @@ export class PluginManager extends EventEmitter implements IPluginManager {
     for (const dep of manifest.dependencies ?? []) {
       if (this.plugins.has(dep)) continue
 
-      const plugin = this.getPluginOrThrow(manifest.name)
+      const plugin = this.getPluginOrThrow(manifest.id)
 
       const error = new Error(
-        `Plugin "${manifest.name}" requires "${dep}" which is not loaded`,
+        `Plugin with id "${manifest.id}" requires "${dep}" which is not loaded`,
       )
       this.failPlugin(plugin, error, 'dependency-validation')
     }
   }
 
-  private getPluginBasicName(pluginName: string) {
-    return pluginName.toLowerCase().replaceAll(' ', '-')
+  private getPluginBasicName(id: string) {
+    return id.toLowerCase().replaceAll(' ', '-')
   }
 
   topologicalBatches(): string[][] {
     const inDegree = new Map<string, number>()
     const adj = new Map<string, string[]>()
 
-    for (const [name] of this.plugins) {
-      inDegree.set(name, 0)
-      adj.set(name, [])
+    for (const [id] of this.plugins) {
+      inDegree.set(id, 0)
+      adj.set(id, [])
     }
-    for (const [name, entry] of this.plugins) {
+    for (const [id, entry] of this.plugins) {
       for (const dep of entry.manifest.dependencies ?? []) {
-        if (dep === name) continue // Ignore self dependency
-        adj.get(dep)?.push(name)
-        inDegree.set(name, (inDegree.get(name) ?? 0) + 1)
+        if (dep === id) continue // Ignore self dependency
+        adj.get(dep)?.push(id)
+        inDegree.set(id, (inDegree.get(id) ?? 0) + 1)
       }
     }
 
@@ -298,8 +302,8 @@ export class PluginManager extends EventEmitter implements IPluginManager {
     while (ready.length > 0) {
       batches.push(ready)
       const next: string[] = []
-      for (const name of ready) {
-        for (const dep of adj.get(name) ?? []) {
+      for (const id of ready) {
+        for (const dep of adj.get(id) ?? []) {
           const deg = (inDegree.get(dep) ?? 0) - 1
           inDegree.set(dep, deg)
           if (deg === 0) next.push(dep)
@@ -309,13 +313,13 @@ export class PluginManager extends EventEmitter implements IPluginManager {
     }
 
     // Mark cycles
-    for (const [name, deg] of inDegree) {
+    for (const [id, deg] of inDegree) {
       if (deg <= 0) continue
 
-      const plugin = this.getPluginOrThrow(name)
+      const plugin = this.getPluginOrThrow(id)
       this.failPlugin(
         plugin,
-        `Plugin "${name}" is part of a dependency cycle`,
+        `Plugin with id "${id}" is part of a dependency cycle`,
         'dependency-cycle',
       )
     }

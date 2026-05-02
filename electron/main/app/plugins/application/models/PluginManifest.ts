@@ -1,4 +1,5 @@
 export type PluginManifest = {
+  id: string
   name: string
   description?: string
   version?: string

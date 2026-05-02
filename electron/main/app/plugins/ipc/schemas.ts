@@ -3,6 +3,7 @@ import { PluginManifest } from '../application/models/PluginManifest'
 import { PLUGIN_STATES } from '../application/models/PluginEntry'
 
 export const pluginManifestSchema: z.ZodType<PluginManifest> = z.object({
+  id: z.string(),
   name: z.string(),
   description: z.string().optional(),
   version: z.string().optional(),

@@ -4,18 +4,18 @@ import { PluginManifest } from '../../application/models/PluginManifest'
 export class PluginRegistry implements IPluginRegistry {
   private manifests: Map<string, PluginManifest> = new Map()
 
-  register(pluginName: string, manifest: PluginManifest): void {
-    if (this.manifests.has(pluginName)) {
-      throw new Error(`Plugin "${pluginName}" is already registered`)
+  register(id: string, manifest: PluginManifest): void {
+    if (this.manifests.has(id)) {
+      throw new Error(`Plugin "${id}" is already registered`)
     }
-    this.manifests.set(pluginName, manifest)
+    this.manifests.set(id, manifest)
   }
 
-  get(pluginName: string): PluginManifest {
-    const manifest = this.manifests.get(pluginName)
+  get(id: string): PluginManifest {
+    const manifest = this.manifests.get(id)
 
     if (manifest == null) {
-      throw new Error(`Plugin "${pluginName}" is not registered`)
+      throw new Error(`Plugin "${id}" is not registered`)
     }
 
     return manifest
