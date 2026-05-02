@@ -19,6 +19,7 @@ export const pluginEntrySchema = z.object({
   manifest: pluginManifestSchema,
   state: z.enum(PLUGIN_STATES),
   error: z.string().nullish(),
+  enabled: z.boolean(),
 })
 
 export const getPermissionKeysOutputSchema = z.array(z.string())
@@ -29,3 +30,7 @@ export const getManifestInputSchema = z.string()
 export const getManifestOutputSchema = pluginManifestSchema
 
 export const getEntriesOutputSchema = z.array(pluginEntrySchema)
+
+export const disablePluginInputSchema = z.string()
+
+export const enablePluginInputSchema = z.string()

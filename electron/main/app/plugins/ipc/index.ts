@@ -2,6 +2,8 @@ import { Modules } from '@/helpers/ipc/types'
 import { os } from '@orpc/server'
 import { createPluginsUseCases } from '../usecases'
 import {
+  disablePluginInputSchema,
+  enablePluginInputSchema,
   getEntriesOutputSchema,
   getManifestInputSchema,
   getManifestOutputSchema,
@@ -26,5 +28,11 @@ export function createPluginsRouters(modules: Modules) {
     getEntries: os
       .output(getEntriesOutputSchema)
       .handler(() => useCases.getPluginEntries.execute()),
+    disable: os
+      .input(disablePluginInputSchema)
+      .handler(({ input }) => useCases.disablePlugin.execute(input)),
+    enable: os
+      .input(enablePluginInputSchema)
+      .handler(({ input }) => useCases.enablePlugin.execute(input)),
   }
 }
