@@ -5,7 +5,11 @@ import { PluginManifest } from '../../application/models/PluginManifest'
 import { IPermissionRegistry } from '../../application/ports/IPermissionRegistry'
 import { PluginContext } from './PluginContext'
 
-import { ISettingsBuilder } from '@/app/settings/application/ports/ISettingsBuilder'
+import {
+  ISettingsBuilder,
+  Schema,
+  SettingsInterface,
+} from '@/app/settings/application/ports/ISettingsBuilder'
 
 import fs from 'fs/promises'
 import path from 'path'
@@ -19,8 +23,13 @@ type PluginModuleEntry = PluginEntry & {
   context?: PluginContext
 }
 
+const pluginManagerSchema = {
+  enabledPlugins: { default: {} as Record<string, boolean> },
+} satisfies Schema
+
 export class PluginManager extends EventEmitter implements IPluginManager {
   private plugins: Map<string, PluginModuleEntry> = new Map()
+  private settings: SettingsInterface<typeof pluginManagerSchema>
 
   constructor(
     private readonly pluginRegistry: IPluginRegistry,
@@ -28,12 +37,55 @@ export class PluginManager extends EventEmitter implements IPluginManager {
     private readonly settingsBuilder: ISettingsBuilder,
   ) {
     super()
+    this.settings = this.settingsBuilder.defineSettings(
+      'plugins',
+      'plugins',
+      pluginManagerSchema,
+    )
+  }
+
+  async enable(pluginName: string): Promise<void> {
+    const plugin = this.getPluginOrThrow(pluginName)
+
+    if (plugin.enabled) return
+
+    plugin.enabled = true
+
+    await this.setupPlugin(pluginName)
+
+    const existingSettings = this.settings.get('enabledPlugins')
+    this.settings.set('enabledPlugins', {
+      ...existingSettings,
+      [pluginName]: true,
+    })
+  }
+
+  async disable(pluginName: string): Promise<void> {
+    const plugin = this.getPluginOrThrow(pluginName)
+
+    if (!plugin.enabled) return
+
+    if (plugin.context) {
+      await this.destroy(pluginName)
+    }
+
+    plugin.enabled = false
+    plugin.state = 'unloaded'
+
+    const existingSettings = this.settings.get('enabledPlugins')
+    this.settings.set('enabledPlugins', {
+      ...existingSettings,
+      [pluginName]: false,
+    })
   }
 
   getAll(): PluginEntry[] {
     return Array.from(
       this.plugins.values().map(({ module, context, ...entry }) => entry),
     )
+  }
+  async init() {
+    await this.settings.init()
   }
 
   async load(pluginsPath: string, appVersion: string): Promise<void> {
@@ -56,11 +108,15 @@ export class PluginManager extends EventEmitter implements IPluginManager {
 
         this.pluginRegistry.register(manifest.name, manifest)
 
+        const isEnabled =
+          this.settings.get('enabledPlugins')[manifest.name] ?? true
+
         this.plugins.set(manifest.name, {
           path: pluginDir,
           manifest,
           module,
           state: 'loaded',
+          enabled: isEnabled,
         })
 
         manifests.push(manifest)
@@ -77,28 +133,34 @@ export class PluginManager extends EventEmitter implements IPluginManager {
     manifests.forEach((m) => this.validateDependencies(m))
   }
 
-  async setup(): Promise<void> {
-    const setupPlugin = async (name: string) => {
-      const plugin = this.getPluginOrThrow(name)
-      plugin.state = 'setting-up'
+  async setupPlugin(name: string) {
+    const plugin = this.getPluginOrThrow(name)
 
-      try {
-        const settings = await this.buildSettings(plugin)
-        const context = {
-          ...this.buildContext(plugin),
-          settings,
-        }
-
-        await plugin.module.setup?.(context)
-        plugin.context = context
-        plugin.state = 'running'
-      } catch (err) {
-        this.failPlugin(plugin, err, 'setup')
-      }
+    if (!plugin.enabled) {
+      plugin.state = 'unloaded'
+      return
     }
 
+    plugin.state = 'setting-up'
+
+    try {
+      const settings = await this.buildSettings(plugin)
+      const context = {
+        ...this.buildContext(plugin),
+        settings,
+      }
+
+      await plugin.module.setup?.(context)
+      plugin.context = context
+      plugin.state = 'running'
+    } catch (err) {
+      this.failPlugin(plugin, err, 'setup')
+    }
+  }
+
+  async setup(): Promise<void> {
     for (const batch of this.topologicalBatches()) {
-      await Promise.all(batch.map(setupPlugin))
+      await Promise.all(batch.map(this.setupPlugin.bind(this)))
     }
   }
 

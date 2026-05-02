@@ -16,4 +16,5 @@ export type PluginEntry = {
   manifest: PluginManifest
   state: PluginState
   error?: Error
+  enabled: boolean
 }
