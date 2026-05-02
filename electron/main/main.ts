@@ -261,21 +261,38 @@ app.whenReady().then(async () => {
     logger.header('Plugins')
     logger.info('Initializing plugins')
     registerPluginPermissions(modules, permissionRegistry)
+    await pluginManager.init()
     await pluginManager.load(PLUGINS_DIR, appInfo.version)
     await pluginManager.setup()
-    logger.debug(`Plugins: ${JSON.stringify(pluginRegistry.getAll(), null, 2)}`)
+    logger.debug(
+      `Plugins: ${JSON.stringify(
+        pluginRegistry.getAll().map((p) => p.name),
+        null,
+        2,
+      )}`,
+    )
 
     logger.header('Themes')
     logger.info('Loading themes')
     await themeManager.load(THEMES_DIR)
     logger.debug(
-      `Themes: ${JSON.stringify(themeRegistry.getAllSummaries(), null, 2)}`,
+      `Themes: ${JSON.stringify(
+        themeRegistry.getAllSummaries().map((t) => t.name),
+        null,
+        2,
+      )}`,
     )
 
     logger.header('Index Packages')
     logger.info('Loading index packages')
     await indexManager.load()
-    logger.debug(`packages: ${JSON.stringify(indexRegistry.getAll(), null, 2)}`)
+    logger.debug(
+      `packages: ${JSON.stringify(
+        indexRegistry.getAll().map((i) => i.name),
+        null,
+        2,
+      )}`,
+    )
 
     logger.header('Rule Engine Services')
     logger.info('Creating rule engine services')
