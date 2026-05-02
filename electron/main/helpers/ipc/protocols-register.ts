@@ -11,7 +11,7 @@ const createProtocolHandler =
     validate,
     toFetchUrl = (v) => pathToFileURL(v).toString(),
   }: {
-    resolve: (url: URL) => string | null
+    resolve: (url: URL) => string | null | undefined
     validate?: (url: URL) => boolean
     toFetchUrl?: (resolved: string) => string
   }) =>
@@ -39,6 +39,10 @@ protocol.registerSchemesAsPrivileged([
     privileges: { secure: true, standard: true, supportFetchAPI: true },
   },
   {
+    scheme: 'pluginicon',
+    privileges: { secure: true, standard: true, supportFetchAPI: true },
+  },
+  {
     scheme: 'remoteimage',
     privileges: {
       secure: true,
@@ -51,10 +55,12 @@ protocol.registerSchemesAsPrivileged([
 
 export function registerProtocols({
   resolveMediaThumbnail,
+  resolvePluginIcon,
   resolveThemeIcon,
 }: {
-  resolveMediaThumbnail: (path: string) => string | null
-  resolveThemeIcon: (path: string) => string | null
+  resolveMediaThumbnail: (path: string) => string | null | undefined
+  resolvePluginIcon: (path: string) => string | null | undefined
+  resolveThemeIcon: (path: string) => string | null | undefined
 }) {
   protocol.handle(
     'images',
@@ -66,6 +72,15 @@ export function registerProtocols({
     'themeicon',
     createProtocolHandler({
       resolve: (url) => resolveThemeIcon(url.hostname),
+    }),
+  )
+  protocol.handle(
+    'pluginicon',
+    createProtocolHandler({
+      resolve: (url) => {
+        console.log(url)
+        return resolvePluginIcon(url.hostname)
+      },
     }),
   )
   protocol.handle(

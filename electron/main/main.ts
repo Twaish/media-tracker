@@ -316,6 +316,7 @@ app.whenReady().then(async () => {
     logger.info('Registering custom protocols')
     registerProtocols({
       resolveMediaThumbnail: storageService.resolve.bind(storageService),
+      resolvePluginIcon: (id) => pluginRegistry.get(id).icon,
       resolveThemeIcon: themeRegistry.getIconPath.bind(themeRegistry),
     })
 
