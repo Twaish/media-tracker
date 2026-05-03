@@ -8,6 +8,7 @@ import { createPluginsRouters } from '../../app/plugins/ipc'
 import { createStorageRouters } from '../../app/storage/ipc'
 import { createInstanceRouters } from '../../app/instance/ipc'
 import { createIndexingRouters } from '../../app/indexing/ipc'
+import { createSettingsRouters } from '../../app/settings/ipc'
 import { createExportingRouters } from '../../app/exporting/ipc'
 import { createVersioningRouters } from '../../app/versioning/ipc'
 
@@ -27,6 +28,7 @@ export function createOrpcRouter(modules: Modules) {
     storage: createStorageRouters(modules),
     instance: createInstanceRouters(modules),
     indexing: createIndexingRouters(modules),
+    settings: createSettingsRouters(modules),
     exporting: createExportingRouters(modules),
     versioning: createVersioningRouters(modules),
 

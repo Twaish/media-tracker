@@ -4,7 +4,9 @@ import { AppInfo } from '@/core/types'
 import { ElectronWindow } from '@/core/ElectronWindow'
 
 import { ILogger } from '@/app/logging/application/ports/ILogger'
+
 import { ISettingsBuilder } from '@/app/settings/application/ports/ISettingsBuilder'
+import { ISettingsRegistry } from '@/app/settings/application/ports/ISettingsRegistry'
 
 import { IEventBus } from '@/app/events/application/ports/IEventBus'
 import { IEventRegistry } from '@/app/events/application/ports/IEventRegistry'
@@ -53,6 +55,7 @@ declare interface Modules {
   logger: ILogger
   appInfo: AppInfo
   SettingsBuilder: ISettingsBuilder
+  SettingsRegistry: ISettingsRegistry
 
   PermissionRegistry: IPermissionRegistry
   PluginRegistry: IPluginRegistry
