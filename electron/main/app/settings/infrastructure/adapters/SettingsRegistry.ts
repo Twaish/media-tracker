@@ -1,5 +1,6 @@
 import {
   RuntimeSchema,
+  Schema,
   SettingsInterface,
 } from '../../application/ports/ISettingsBuilder'
 import { ISettingsRegistry } from '../../application/ports/ISettingsRegistry'
@@ -19,12 +20,23 @@ export class SettingsRegistry implements ISettingsRegistry {
     this.providers.set(namespace, provider)
   }
 
+  getSchema(namespace: string): Schema {
+    return this.getProvider(namespace).schema
+  }
+
   get(
     namespace: string,
     key: keyof RuntimeSchema,
   ): RuntimeSchema[keyof RuntimeSchema] {
-    const provider = this.getProvider(namespace)
-    return provider.get(key)
+    return this.getProvider(namespace).get(key)
+  }
+
+  set(
+    namespace: string,
+    key: keyof RuntimeSchema,
+    value: RuntimeSchema[keyof RuntimeSchema],
+  ): void {
+    this.getProvider(namespace).set(key, value)
   }
 
   getSecret(namespace: string, key: string): string {
