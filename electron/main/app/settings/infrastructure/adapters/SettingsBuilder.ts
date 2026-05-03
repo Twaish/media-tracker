@@ -143,6 +143,7 @@ export class SettingsBuilder implements ISettingsBuilder {
 
     const settingsProvider = {
       namespace,
+      schema,
       async init() {
         if (!cache) await load()
         return this
