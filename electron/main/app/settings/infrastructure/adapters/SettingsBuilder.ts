@@ -86,7 +86,10 @@ export class SettingsBuilder implements ISettingsBuilder {
 
         function isSecretDefinition(
           definition: Schema[keyof Schema],
-        ): definition is { secret: true; default?: RuntimeValue } {
+        ): definition is Omit<Schema[keyof Schema], 'secret' | 'default'> & {
+          secret: true
+          default?: RuntimeValue
+        } {
           return (
             typeof definition === 'object' &&
             definition !== null &&
@@ -155,6 +158,7 @@ export class SettingsBuilder implements ISettingsBuilder {
       set<K extends keyof T>(key: K, value: RuntimeSchema<T>[K]) {
         const cache = getCache()
 
+        if (schema[key].readonly) return
         if (cache[key] === value) return
 
         cache[key] = value

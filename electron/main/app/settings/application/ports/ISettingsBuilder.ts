@@ -1,4 +1,14 @@
-export type Schema = Record<string, { default?: unknown; secret?: boolean }>
+export type Schema = Record<
+  string,
+  {
+    name: string
+    description: string
+    default?: unknown
+    secret?: boolean
+    visible?: boolean
+    readonly?: boolean
+  }
+>
 
 export type OnDiskValue<T> = 'default' extends keyof T
   ? T['default']
