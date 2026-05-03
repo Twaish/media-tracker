@@ -77,10 +77,7 @@ export function registerProtocols({
   protocol.handle(
     'pluginicon',
     createProtocolHandler({
-      resolve: (url) => {
-        console.log(url)
-        return resolvePluginIcon(url.hostname)
-      },
+      resolve: (url) => resolvePluginIcon(url.hostname),
     }),
   )
   protocol.handle(
