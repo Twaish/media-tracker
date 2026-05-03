@@ -203,7 +203,9 @@ app.whenReady().then(async () => {
       window: mainWindow.window,
       logger,
       appInfo,
+
       SettingsBuilder: settingsBuilder,
+      SettingsRegistry: settingsRegistry,
 
       PermissionRegistry: permissionRegistry,
       PluginRegistry: pluginRegistry,
