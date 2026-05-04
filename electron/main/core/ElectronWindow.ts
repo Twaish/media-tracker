@@ -9,8 +9,8 @@ export class ElectronWindow extends EventEmitter {
     super()
     const preload = path.join(__dirname, '../preload/index.js')
     const mainWindow = new BrowserWindow({
-      width: 1145,
-      height: 750,
+      width: 1500,
+      height: 900,
       minHeight: 600,
       minWidth: 850,
       show: false,
