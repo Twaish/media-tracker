@@ -18,8 +18,9 @@ import { DialogFooterHint } from '@/components/dialog/DialogFooterHint'
 import { setSettingValue } from '@/app/settings/actions'
 import { openFolder, openLink } from '@/app/instance/actions'
 import { PluginItem, usePluginItem } from './PluginItem'
-import { PluginSettings, usePluginSettingsStore } from './PluginSettings'
+import { PluginSettings } from './PluginSettings'
 import { queryClient } from '@/core/queryClient'
+import { usePluginSettingsStore } from '../stores/usePluginSettingsStore'
 
 export function PluginDialog() {
   const { plugin, manifest } = usePluginItem()
