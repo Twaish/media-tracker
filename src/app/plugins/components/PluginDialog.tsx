@@ -17,10 +17,11 @@ import { Button } from '@/components/ui/button'
 import { DialogFooterHint } from '@/components/dialog/DialogFooterHint'
 import { setSettingValue } from '@/app/settings/actions'
 import { openFolder, openLink } from '@/app/instance/actions'
-import { PluginItem, usePluginItem } from './PluginItem'
+import { PluginItem } from './PluginItem'
 import { PluginSettings } from './PluginSettings'
 import { queryClient } from '@/core/queryClient'
 import { usePluginSettingsStore } from '../stores/usePluginSettingsStore'
+import { usePluginItem } from '../stores/usePluginItem'
 
 export function PluginDialog() {
   const { plugin, manifest } = usePluginItem()

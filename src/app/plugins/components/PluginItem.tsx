@@ -1,31 +1,11 @@
-import { ComponentProps, createContext, ReactNode, useContext } from 'react'
+import { ComponentProps, ReactNode } from 'react'
 
 import { cn } from '@/utils/tailwind'
-import { PluginEntry, PluginManifest } from '@shared/types/features'
 import { disablePlugin, enablePlugin } from '../actions'
 import { Switch } from '@/components/ui/switch'
-import { openFolder, openLink } from '@/app/instance/actions'
 import { PluginDialog } from './PluginDialog'
-
-type Plugin = Omit<PluginEntry, 'error'> & { error?: string | null }
-
-type PluginItemContextType = {
-  plugin: Plugin
-  manifest: PluginManifest
-  namespace: string
-}
-
-const PluginItemContext = createContext<PluginItemContextType | null>(null)
-
-export function usePluginItem() {
-  const ctx = useContext(PluginItemContext)
-  if (!ctx) {
-    throw new Error(
-      'PluginItem compound components must be used inside PluginItem',
-    )
-  }
-  return ctx
-}
+import { Plugin } from '../stores/usePluginStore'
+import { PluginItemContext, usePluginItem } from '../stores/usePluginItem'
 
 export function PluginItem({ plugin }: { plugin: Plugin }) {
   const manifest = plugin.manifest

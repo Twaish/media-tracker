@@ -4,11 +4,11 @@ import { useQuery } from '@tanstack/react-query'
 
 import { Schema } from '@shared/types/features'
 import { getSettingsSchema, getSettingValue } from '@/app/settings/actions'
-import { usePluginItem } from './PluginItem'
 import {
   SettingValue,
   usePluginSettingsStore,
 } from '../stores/usePluginSettingsStore'
+import { usePluginItem } from '../stores/usePluginItem'
 
 export function PluginSettings() {
   const { manifest, namespace } = usePluginItem()
