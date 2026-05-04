@@ -11,9 +11,11 @@ import { TooltipProvider } from './components/ui/tooltip'
 import { ModalProvider } from './stores/modal/useModalStore'
 import { hotkeyManager } from './app/hotkeys/hotkeyManager'
 import { queryClient } from './core/queryClient'
+import { usePluginStore } from './app/plugins/stores/usePluginStore'
 
 export default function App() {
   const { i18n } = useTranslation()
+  const initPluginStore = usePluginStore((s) => s.init)
 
   useEffect(() => {
     updateAppLanguage(i18n)
@@ -22,6 +24,7 @@ export default function App() {
   useEffect(() => {
     const destroy = hotkeyManager.init()
     syncThemeWithLocal()
+    initPluginStore()
     return () => {
       destroy?.()
     }
