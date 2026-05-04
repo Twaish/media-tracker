@@ -165,7 +165,7 @@ function ThemeItem({
 
   return (
     <SearchItem {...rest}>
-      <SearchItem.Icon>
+      <SearchItem.Icon className="h-8 w-8">
         {theme.icon ? <img src={`themeicon://${theme.id}`} /> : ':)'}
       </SearchItem.Icon>
       <SearchItem.Content>
