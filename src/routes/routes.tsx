@@ -1,7 +1,8 @@
 import { createRoute } from '@tanstack/react-router'
 import { RootRoute } from './__root'
-import HomePage from '../pages/HomePage'
+import HomePage from '@/pages/HomePage'
 import CounterPage from '@/pages/CounterPage'
+import PluginsPage from '@/pages/PluginsPage'
 
 // TODO: Steps to add a new route:
 // 1. Create a new page component in the '../pages/' directory (e.g., NewPage.tsx)
@@ -34,4 +35,14 @@ export const CounterPageRoute = createRoute({
   component: CounterPage,
 })
 
-export const rootTree = RootRoute.addChildren([HomeRoute, CounterPageRoute])
+export const PluginsPageRoute = createRoute({
+  getParentRoute: () => RootRoute,
+  path: '/plugins',
+  component: PluginsPage,
+})
+
+export const rootTree = RootRoute.addChildren([
+  HomeRoute,
+  CounterPageRoute,
+  PluginsPageRoute,
+])
