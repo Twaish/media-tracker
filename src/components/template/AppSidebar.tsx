@@ -17,6 +17,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '../ui/tooltip'
 import { Link, useRouterState } from '@tanstack/react-router'
 import { ComponentProps, ElementType, useState } from 'react'
 import { useCountStore } from '@/stores/useCountStore'
+import { usePluginStore } from '@/app/plugins/stores/usePluginStore'
 
 const sections = [
   { id: 'home', label: 'Home', icon: House, path: '/' },
@@ -29,7 +30,7 @@ const sections = [
     path: '',
   },
   { id: 'automation', label: 'Automation', icon: Zap, path: '' },
-  { id: 'plugins', label: 'Plugins', icon: Blocks, path: '' },
+  { id: 'plugins', label: 'Plugins', icon: Blocks, path: '/plugins' },
   { id: 'statistics', label: 'Statistics', icon: BarChart3, path: '' },
   { id: 'history', label: 'History', icon: History, path: '' },
 ]
@@ -40,13 +41,14 @@ export function AppSidebar() {
     select: (state) => state.location.pathname,
   })
   const count = useCountStore((s) => s.count)
+  const pluginCount = usePluginStore((s) => s.plugins.length)
 
   const sectionCounts: Record<string, number | undefined> = {
     counter: count,
     library: 1247,
     watchplans: 12,
     automation: 8,
-    plugins: 5,
+    plugins: pluginCount,
   }
 
   return (
