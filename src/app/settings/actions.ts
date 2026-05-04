@@ -9,7 +9,9 @@ export async function getSettingsSchema(namespace: string) {
 }
 
 export async function getSettingValue(namespace: string, key: string) {
-  return ipc.client.settings.get({ namespace, key })
+  const data = await ipc.client.settings.get({ namespace, key })
+  if (data == null) return null
+  return data
 }
 
 export async function setSettingValue(
