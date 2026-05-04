@@ -4,6 +4,7 @@ import {
   OnDiskValue,
   RuntimeSchema,
   Schema,
+  SettingsInterface,
 } from '../../application/ports/ISettingsBuilder'
 import { ISettingsRegistry } from '../../application/ports/ISettingsRegistry'
 import { JsonStore } from '@/core/JsonStore'
@@ -178,7 +179,57 @@ export class SettingsBuilder implements ISettingsBuilder {
         await flushNow()
       },
     }
-    this.registry.register(namespace, settingsProvider)
-    return settingsProvider
+    const proxy = new Proxy(
+      settingsProvider as unknown as SettingsInterface<T>,
+      {
+        get(target, prop, receiver) {
+          if (prop in target) {
+            return Reflect.get(target, prop, receiver)
+          }
+
+          if (typeof prop === 'string' && prop in schema) {
+            return target.get(prop as keyof T)
+          }
+
+          return undefined
+        },
+
+        set(target, prop, value, receiver) {
+          if (typeof prop === 'string' && prop in schema) {
+            target.set(prop as keyof T, value)
+            return true
+          }
+
+          return Reflect.set(target, prop, value, receiver)
+        },
+
+        has(target, prop) {
+          return prop in target || prop in schema
+        },
+
+        ownKeys(target) {
+          return [...Reflect.ownKeys(target), ...Object.keys(schema)]
+        },
+
+        getOwnPropertyDescriptor(target, prop) {
+          if (prop in target) {
+            return Object.getOwnPropertyDescriptor(target, prop)
+          }
+
+          if (typeof prop === 'string' && prop in schema) {
+            return {
+              configurable: true,
+              enumerable: true,
+              writable: true,
+              value: target.get(prop as keyof T),
+            }
+          }
+
+          return undefined
+        },
+      },
+    )
+    this.registry.register(namespace, proxy)
+    return proxy
   }
 }

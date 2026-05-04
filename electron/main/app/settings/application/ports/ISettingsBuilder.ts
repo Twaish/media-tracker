@@ -1,8 +1,8 @@
 export type Schema = Record<
   string,
   {
-    name: string
-    description: string
+    name?: string
+    description?: string
     default?: unknown
     secret?: boolean
     visible?: boolean
@@ -39,6 +39,8 @@ export type SettingsInterface<T extends Schema = Schema> = {
   getAll(): RuntimeSchema<T>
   isSecret(key: keyof T): boolean
   flushNow(): Promise<void>
+} & {
+  [P in keyof T as P]: RuntimeSchema<T>[P]
 }
 
 export interface ISettingsBuilder {
