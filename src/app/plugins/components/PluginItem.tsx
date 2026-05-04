@@ -1,32 +1,23 @@
-import { VisuallyHidden } from 'radix-ui'
-import { Code2, FolderOpen, Settings } from 'lucide-react'
 import { ComponentProps, createContext, ReactNode, useContext } from 'react'
-import { useQuery } from '@tanstack/react-query'
 
-import { Switch } from '@/components/ui/switch'
 import { cn } from '@/utils/tailwind'
 import { PluginEntry, PluginManifest } from '@shared/types/features'
 import { disablePlugin, enablePlugin } from '../actions'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
-import { getSettingsSchema } from '@/app/settings/actions'
+import { Switch } from '@/components/ui/switch'
+import { openFolder, openLink } from '@/app/instance/actions'
+import { PluginDialog } from './PluginDialog'
 
 type Plugin = Omit<PluginEntry, 'error'> & { error?: string | null }
 
 type PluginItemContextType = {
   plugin: Plugin
   manifest: PluginManifest
+  namespace: string
 }
 
 const PluginItemContext = createContext<PluginItemContextType | null>(null)
 
-function usePluginItem() {
+export function usePluginItem() {
   const ctx = useContext(PluginItemContext)
   if (!ctx) {
     throw new Error(
@@ -47,16 +38,14 @@ export function PluginItem({ plugin }: { plugin: Plugin }) {
     }
   }
 
-  const handleOpenLocation = () => {
-    console.log('OPEN ', plugin.path)
-  }
-
-  const handleOpenSource = () => {
-    console.log('SOURCE ', manifest.repository)
-  }
-
   return (
-    <PluginItemContext.Provider value={{ plugin, manifest: plugin.manifest }}>
+    <PluginItemContext.Provider
+      value={{
+        plugin,
+        manifest: plugin.manifest,
+        namespace: `plugin:${manifest.id}`,
+      }}
+    >
       <div className="bg-card border p-2">
         <PluginItem.Header>
           <PluginItem.Icon />
@@ -64,47 +53,7 @@ export function PluginItem({ plugin }: { plugin: Plugin }) {
             <PluginItem.Title />
             <PluginItem.Author />
           </PluginItem.Details>
-          <PluginDialog>
-            <PluginItem.Header className="mb-0 max-h-12 p-2">
-              <PluginItem.Icon />
-              <PluginItem.Details>
-                <PluginItem.Title>
-                  <button
-                    onClick={handleOpenLocation}
-                    className="opacity-50 transition-opacity duration-100 hover:opacity-100"
-                  >
-                    <FolderOpen className="h-4 w-4" />
-                  </button>
-                  {manifest.repository && (
-                    <button
-                      onClick={handleOpenSource}
-                      className="opacity-50 transition-opacity duration-100 hover:opacity-100"
-                    >
-                      <Code2 className="h-4 w-4" />
-                    </button>
-                  )}
-                  <div className="text-muted-foreground mr-12 ml-auto font-mono text-[10px]">
-                    ID: {manifest.id}
-                  </div>
-                </PluginItem.Title>
-                <PluginItem.Author />
-              </PluginItem.Details>
-            </PluginItem.Header>
-
-            <PluginSettings />
-
-            <DialogFooter>
-              {manifest.minAppVersion && (
-                <div className="text-muted-foreground/70 font-mono text-[10px] tracking-widest uppercase">
-                  min. app version:{' '}
-                  <span className="lowercase">v{manifest.minAppVersion}</span>
-                </div>
-              )}
-              <button className="bg-secondary hover:bg-secondary/50 ml-auto border px-2 py-1 text-xs transition duration-100">
-                Save
-              </button>
-            </DialogFooter>
-          </PluginDialog>
+          <PluginDialog />
           <Switch
             className="self-start"
             title={plugin.enabled ? 'enabled' : 'disabled'}
@@ -159,7 +108,7 @@ PluginItem.Icon = function Icon() {
   )
 }
 PluginItem.Details = function Details({ children }: { children?: ReactNode }) {
-  return <div className="flex-1">{children}</div>
+  return <div className="flex-1 overflow-hidden">{children}</div>
 }
 PluginItem.Title = function Title({ children }: { children?: ReactNode }) {
   const { manifest } = usePluginItem()
@@ -182,7 +131,13 @@ PluginItem.Author = function Author({
 }: ComponentProps<'p'> & { children?: ReactNode }) {
   const { manifest } = usePluginItem()
   return (
-    <p className={cn('text-muted-foreground text-[10px]', className)} {...rest}>
+    <p
+      className={cn(
+        'text-muted-foreground text-[10px] whitespace-pre',
+        className,
+      )}
+      {...rest}
+    >
       <span>by {manifest.author ?? 'Unknown'}</span>
       {children}
     </p>
@@ -203,57 +158,5 @@ PluginItem.Permission = function Permission({
     >
       {children}
     </div>
-  )
-}
-
-function PluginDialog({
-  children,
-  className,
-  ...rest
-}: ComponentProps<typeof DialogContent> & { children?: ReactNode }) {
-  const { manifest } = usePluginItem()
-  return (
-    <Dialog>
-      <VisuallyHidden.Root>
-        <DialogTitle>{manifest.name} settings</DialogTitle>
-      </VisuallyHidden.Root>
-      <VisuallyHidden.Root>
-        <DialogDescription>
-          Modify settings for {manifest.name}
-        </DialogDescription>
-      </VisuallyHidden.Root>
-      <DialogTrigger asChild>
-        <button
-          title="Settings"
-          className="self-start opacity-50 transition-opacity duration-100 hover:opacity-200"
-        >
-          <Settings className="h-4 w-4" />
-        </button>
-      </DialogTrigger>
-      <DialogContent
-        className={cn('gap-0 rounded-none p-0', className)}
-        {...rest}
-      >
-        {children}
-      </DialogContent>
-    </Dialog>
-  )
-}
-
-function PluginSettings() {
-  const { manifest } = usePluginItem()
-
-  const { data: settings } = useQuery({
-    queryKey: [`settings:${manifest.id}`],
-    queryFn: () => getSettingsSchema(`plugin:${manifest.id}`),
-  })
-
-  // TODO: Dynamically create fields for plugin settings
-  if (!Object.keys(settings ?? {}).length) return null
-
-  return (
-    <pre className="text-muted-foreground bg-secondary/40 m-2 mt-0 overflow-auto border p-2 font-mono text-xs">
-      {JSON.stringify(settings, null, 2)}
-    </pre>
   )
 }
