@@ -1,6 +1,6 @@
 import { VisuallyHidden } from 'radix-ui'
 import { FolderOpen, Link, Settings } from 'lucide-react'
-import { ComponentProps, ReactNode } from 'react'
+import { ComponentProps, ReactNode, useState } from 'react'
 
 import { cn } from '@/utils/tailwind'
 import {
@@ -15,13 +15,12 @@ import {
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { DialogFooterHint } from '@/components/dialog/DialogFooterHint'
-import { setSettingValue } from '@/app/settings/actions'
 import { openFolder, openLink } from '@/app/instance/actions'
 import { PluginItem } from './PluginItem'
 import { PluginSettings } from './PluginSettings'
-import { queryClient } from '@/core/queryClient'
-import { usePluginSettingsStore } from '../stores/usePluginSettingsStore'
 import { usePluginItem } from '../stores/usePluginItem'
+import { PluginDependencies } from './PluginDependencies'
+import { usePluginSettings } from '../hooks/usePluginSettings'
 
 export function PluginDialog() {
   const { plugin, manifest } = usePluginItem()
@@ -81,14 +80,10 @@ export function PluginDialog() {
                     <DialogFooterHint text="close">Esc</DialogFooterHint>
                     <div className="flex-1"></div>
                     <DialogClose asChild>
-                      <Button className="text-xs" variant={'secondary'}>
-                        cancel
-                      </Button>
+                      <Button variant={'secondary'}>cancel</Button>
                     </DialogClose>
                     <DialogClose asChild>
-                      <Button onClick={handleOpenSource} className="text-xs">
-                        Open
-                      </Button>
+                      <Button onClick={handleOpenSource}>Open</Button>
                     </DialogClose>
                   </DialogFooter>
                 </DialogContent>
@@ -101,6 +96,7 @@ export function PluginDialog() {
           <PluginItem.Author />
         </PluginItem.Details>
       </PluginItem.Header>
+      <PluginDependencies />
 
       <PluginSettings />
 
@@ -114,70 +110,93 @@ PluginDialog.Content = function Content({
   className,
   ...rest
 }: ComponentProps<typeof DialogContent> & { children?: ReactNode }) {
-  const { manifest } = usePluginItem()
-  const reset = usePluginSettingsStore((s) => s.reset)
+  const { manifest, namespace } = usePluginItem()
+  const [open, setOpen] = useState(false)
+  const [confirmOpen, setConfirmOpen] = useState(false)
+  const { isDirty, save, discard } = usePluginSettings(manifest.id, namespace)
 
-  const handleOpenChange = (open: boolean) => {
-    if (!open) reset(manifest.id)
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (!nextOpen && isDirty) {
+      setConfirmOpen(true)
+      return
+    }
+    if (isDirty) return
+    if (!nextOpen) discard()
+    setOpen(nextOpen)
+  }
+
+  const handleDiscard = () => {
+    discard()
+    setConfirmOpen(false)
+    setOpen(false)
+  }
+
+  const handleCancel = () => {
+    setConfirmOpen(false)
+  }
+
+  const handleSave = () => {
+    save()
+    setConfirmOpen(false)
+    setOpen(false)
   }
 
   return (
-    <Dialog onOpenChange={handleOpenChange}>
-      <VisuallyHidden.Root>
-        <DialogTitle>{manifest.name} settings</DialogTitle>
-      </VisuallyHidden.Root>
-      <VisuallyHidden.Root>
-        <DialogDescription>
-          Modify settings for {manifest.name}
-        </DialogDescription>
-      </VisuallyHidden.Root>
-      <DialogTrigger asChild>
-        <button
-          title="Settings"
-          className="self-start opacity-50 transition-opacity duration-100 hover:opacity-200"
+    <>
+      <Dialog onOpenChange={handleOpenChange} open={open}>
+        <VisuallyHidden.Root>
+          <DialogTitle>{manifest.name} settings</DialogTitle>
+        </VisuallyHidden.Root>
+        <VisuallyHidden.Root>
+          <DialogDescription>
+            Modify settings for {manifest.name}
+          </DialogDescription>
+        </VisuallyHidden.Root>
+        <DialogTrigger asChild>
+          <button
+            title="Settings"
+            className="self-start opacity-50 transition-opacity duration-100 hover:opacity-200"
+          >
+            <Settings className="h-4 w-4" />
+          </button>
+        </DialogTrigger>
+        <DialogContent
+          className={cn('gap-0 rounded-none p-0', className)}
+          {...rest}
         >
-          <Settings className="h-4 w-4" />
-        </button>
-      </DialogTrigger>
-      <DialogContent
-        className={cn('gap-0 rounded-none p-0', className)}
-        {...rest}
-      >
-        {children}
-      </DialogContent>
-    </Dialog>
+          {children}
+        </DialogContent>
+      </Dialog>
+      <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <DialogContent className="gap-0 rounded-none p-0">
+          <DialogHeader className="p-2">
+            <DialogTitle>Unsaved changes</DialogTitle>
+            <DialogDescription>
+              You have unsaved changes. What do you want to do?
+            </DialogDescription>
+          </DialogHeader>
+
+          <DialogFooter className="max-h-8 gap-1 pr-1">
+            <Button className="ml-auto" variant={'link'} onClick={handleCancel}>
+              cancel
+            </Button>
+            <Button variant={'secondary'} onClick={handleDiscard}>
+              Discard
+            </Button>
+            <Button onClick={handleSave}>Save</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }
 
 PluginDialog.Footer = function Footer() {
   const { manifest, namespace } = usePluginItem()
-  const pending = usePluginSettingsStore((s) => s.pending[manifest.id])
-  const original = usePluginSettingsStore((s) => s.original[manifest.id])
-  const isDirty = usePluginSettingsStore((s) => s.isDirty(manifest.id))
-  const reset = usePluginSettingsStore((s) => s.reset)
-  const commit = usePluginSettingsStore((s) => s.commit)
-
-  const handleSave = () => {
-    if (!pending) return
-
-    Object.entries(pending).forEach(([fieldId, value]) => {
-      if (original?.[fieldId] !== value) {
-        setSettingValue(namespace, fieldId, value)
-        queryClient.invalidateQueries({
-          queryKey: ['setting', manifest.id, fieldId],
-        })
-      }
-    })
-
-    commit(manifest.id)
-  }
-
-  const handleReset = () => {
-    reset(manifest.id)
-  }
+  const { isDirty, save, discard } = usePluginSettings(manifest.id, namespace)
 
   return (
-    <DialogFooter>
+    <DialogFooter className="max-h-8 pr-1">
       {manifest.minAppVersion && (
         <div className="text-muted-foreground/70 font-mono text-[10px] tracking-widest uppercase">
           min. app version:{' '}
@@ -185,19 +204,17 @@ PluginDialog.Footer = function Footer() {
         </div>
       )}
 
-      <div className="ml-auto flex items-center gap-3">
+      <div className="ml-auto flex items-center">
         {isDirty && (
           <>
             <Button
-              onClick={handleReset}
+              onClick={discard}
               variant={'link'}
-              className="text-muted-foreground text-xs"
+              className="text-muted-foreground"
             >
               reset changes
             </Button>
-            <Button onClick={handleSave} className="text-xs">
-              Save
-            </Button>
+            <Button onClick={save}>Save</Button>
           </>
         )}
       </div>
