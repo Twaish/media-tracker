@@ -44,6 +44,7 @@ function PluginSetting({
   id: string
   setting: Schema[keyof Schema]
 }) {
+  if (setting.visible === false) return null
   const [visible, setVisible] = useState(false)
   const { manifest, namespace } = usePluginItem()
 
