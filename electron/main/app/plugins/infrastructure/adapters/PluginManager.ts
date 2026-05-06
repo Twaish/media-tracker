@@ -217,10 +217,13 @@ export class PluginManager extends EventEmitter implements IPluginManager {
 
   async destroy(id: string): Promise<void> {
     const plugin = this.getPluginOrThrow(id)
-    if (!plugin.enabled) return
     if (!plugin.context) return
 
-    await plugin.module.destroy?.(plugin.context)
+    try {
+      await plugin.module.destroy?.(plugin.context)
+    } catch (err) {
+      this.failPlugin(plugin, err, 'destroy')
+    }
     plugin.context = undefined
   }
 
