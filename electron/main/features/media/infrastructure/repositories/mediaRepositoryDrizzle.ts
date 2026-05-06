@@ -121,7 +121,10 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
       if (Object.keys(mediaUpdates).length > 0) {
         await tx
           .update(mediaTable)
-          .set(mediaUpdates)
+          .set({
+            ...mediaUpdates,
+            lastUpdated: new Date(),
+          })
           .where(eq(mediaTable.id, id))
       }
 
@@ -155,7 +158,7 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
       if (update && Object.keys(update).length > 0) {
         await tx
           .update(mediaTable)
-          .set(update)
+          .set({ ...update, lastUpdated: new Date() })
           .where(and(inArray(mediaTable.id, ids), isNull(mediaTable.deletedAt)))
       }
 
