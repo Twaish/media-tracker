@@ -16,13 +16,20 @@ export default class UpdateMedia {
       const stored = await this.storage.storeImage({
         imagePath: media.thumbnail,
       })
-      const thumbnail = stored.relativePath
-      media = {
-        ...media,
-        thumbnail,
+      media.thumbnail = stored.relativePath
+    }
+
+    const mediaToUpdate = await this.repo.getById(media.id)
+    if (media.currentEpisode != null) {
+      media.currentEpisode = Math.max(media.currentEpisode, 0)
+
+      if (mediaToUpdate.maxEpisodes != null) {
+        media.currentEpisode = Math.min(
+          media.currentEpisode,
+          mediaToUpdate.maxEpisodes,
+        )
       }
     }
-    const mediaToUpdate = await this.repo.getById(media.id)
     const updatedMedia = await this.repo.update(media)
 
     this.eventBus.publish<MediaUpdatedPayload>(MEDIA_EVENTS.MEDIA_UPDATED, {
