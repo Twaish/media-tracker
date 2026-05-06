@@ -22,13 +22,17 @@ export function PluginSettings() {
   if (!Object.keys(settings ?? {}).length) return null
 
   return (
-    <div className="flex flex-col gap-1 overflow-auto p-1 font-mono text-xs">
-      <>
+    <div className="bg-card flex flex-col overflow-auto pb-1">
+      <div className="text-muted-foreground mb-1 ml-2 font-mono text-[10px] tracking-widest uppercase">
+        Settings
+      </div>
+
+      <div className="flex flex-col gap-1 overflow-auto font-mono text-xs">
         {settings &&
           Object.entries(settings as Schema).map(([key, setting]) => {
             return <PluginSetting key={key} id={key} setting={setting} />
           })}
-      </>
+      </div>
     </div>
   )
 }
@@ -64,12 +68,17 @@ function PluginSetting({
   }
 
   return (
-    <div className="bg-secondary/30 flex min-h-max justify-between overflow-hidden border p-2">
-      <div className="flex max-w-[50%] flex-col overflow-hidden">
-        <div className="text-xs">{setting.name}</div>
-        <div className="text-muted-foreground text-[11px]">
-          {setting.description}
+    <div className="focus-within:bg-secondary/30 flex min-h-max justify-between overflow-hidden py-1 pr-2 pl-3">
+      <div className="flex max-w-[50%] flex-col justify-center overflow-hidden">
+        <div className="text-xs">
+          {displayValue !== value && '~ '}
+          {setting.name ?? id}
         </div>
+        {setting.description && (
+          <div className="text-muted-foreground text-[11px]">
+            {setting.description}
+          </div>
+        )}
       </div>
       <div className="flex items-center">
         {isLoading ? (
@@ -81,7 +90,7 @@ function PluginSetting({
             <input
               type={setting.secret && !visible ? 'password' : valueType}
               className="flex-1 border px-2 py-1 outline-0"
-              value={displayValue}
+              value={displayValue ?? ''}
               onChange={(e) => handleChange(e.target.value)}
               inputMode={
                 setting.secret && valueType === 'number' ? 'numeric' : undefined
