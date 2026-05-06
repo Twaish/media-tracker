@@ -18,8 +18,8 @@ export function CommandPaletteInput() {
 
   const placeholder =
     isInSteps && currentStep
-      ? (currentStep.placeholder ?? 'Search…')
-      : 'Type a command or search…'
+      ? (currentStep.placeholder ?? 'Search')
+      : 'Type a command or search'
 
   useEffect(() => {
     inputRef.current?.focus()

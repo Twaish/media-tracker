@@ -12,7 +12,7 @@ export function PluginDependencies() {
         Dependencies
       </div>
 
-      <div className="flex flex-wrap">
+      <div className="flex flex-wrap gap-1">
         {manifest.dependencies.map((dep) => (
           <Dependency key={dep} pluginName={dep} />
         ))}
@@ -30,7 +30,7 @@ function Dependency({ pluginName }: { pluginName: string }) {
   const manifest = plugin.manifest
 
   return (
-    <div className="hover:bg-muted/50 flex max-w-full min-w-max cursor-default items-center gap-1 overflow-hidden p-1 whitespace-pre">
+    <div className="hover:bg-muted/50 bg-muted/40 flex max-w-full min-w-max cursor-default items-center gap-1 overflow-hidden rounded-sm p-1 whitespace-pre">
       {manifest.icon ? (
         <img className="h-4 w-4" src={`pluginicon://${manifest.id}`} />
       ) : (

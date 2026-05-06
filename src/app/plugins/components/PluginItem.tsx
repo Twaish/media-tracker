@@ -1,4 +1,4 @@
-import { ComponentProps, ReactNode, useState } from 'react'
+import { ComponentProps, ReactNode } from 'react'
 
 import { cn } from '@/utils/tailwind'
 import { disablePlugin, enablePlugin } from '../actions'
@@ -35,7 +35,7 @@ export function PluginItem({ plugin }: { plugin: Plugin }) {
         namespace: `plugin:${manifest.id}`,
       }}
     >
-      <div className="bg-card border p-2">
+      <div className="bg-card flex-1 border p-2">
         <PluginItem.Header>
           <PluginItem.Icon />
           <PluginItem.Details>
@@ -66,7 +66,7 @@ export function PluginItem({ plugin }: { plugin: Plugin }) {
               <Tooltip>
                 <TooltipTrigger asChild>
                   <span className="text-accent-foreground cursor-pointer text-[10px]">
-                    +{manifest.permissions.length - 3}
+                    +{manifest.permissions.length - 3} more
                   </span>
                 </TooltipTrigger>
                 <TooltipContent className="flex flex-col gap-1">
@@ -93,7 +93,7 @@ PluginItem.Header = function Header({
   return (
     <div
       className={cn(
-        'bg-card mb-2 flex max-h-8 items-center justify-between gap-2',
+        'mb-2 flex max-h-8 items-center justify-between gap-2',
         className,
       )}
       {...rest}

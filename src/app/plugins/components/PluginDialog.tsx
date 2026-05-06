@@ -1,5 +1,5 @@
 import { VisuallyHidden } from 'radix-ui'
-import { FolderOpen, Link, Settings } from 'lucide-react'
+import { AlertTriangle, FolderOpen, Link, Settings } from 'lucide-react'
 import { ComponentProps, ReactNode, useState } from 'react'
 
 import { cn } from '@/utils/tailwind'
@@ -56,17 +56,18 @@ export function PluginDialog() {
                     <Link className="h-3.5 w-3.5" />
                   </button>
                 </DialogTrigger>
-                <DialogContent className="gap-0 rounded-none p-0">
-                  <DialogHeader className="gap-0">
-                    <DialogTitle className="flex h-12 items-center border-b p-2 px-4 text-sm">
-                      Open this link?
-                    </DialogTitle>
-                    <VisuallyHidden.Root>
-                      <DialogDescription className="p-2">
-                        Are you sure you want to open {manifest.repository}
-                      </DialogDescription>
-                    </VisuallyHidden.Root>
-                    <div className="m-2 flex max-h-12 flex-col gap-0.5 border px-2 py-1">
+                <DialogContent className="gap-0 p-0">
+                  <DialogHeader className="px-4 py-3">
+                    <div className="flex items-center gap-2">
+                      <AlertTriangle className="h-3.5 w-3.5" />
+                      <DialogTitle className="text-sm font-semibold">
+                        Open this link?
+                      </DialogTitle>
+                    </div>
+                    <DialogDescription className="text-muted-foreground mt-1">
+                      Are you sure you want to open
+                    </DialogDescription>
+                    <div className="flex max-h-12 flex-col gap-0.5 rounded-sm border px-2 py-1">
                       <div className="text-muted-foreground/70 font-mono text-[10px] font-semibold tracking-widest uppercase">
                         Link
                       </div>
@@ -83,7 +84,7 @@ export function PluginDialog() {
                       <Button variant={'secondary'}>cancel</Button>
                     </DialogClose>
                     <DialogClose asChild>
-                      <Button onClick={handleOpenSource}>Open</Button>
+                      <Button onClick={handleOpenSource}>open</Button>
                     </DialogClose>
                   </DialogFooter>
                 </DialogContent>
@@ -160,30 +161,40 @@ PluginDialog.Content = function Content({
             <Settings className="h-4 w-4" />
           </button>
         </DialogTrigger>
-        <DialogContent
-          className={cn('gap-0 rounded-none p-0', className)}
-          {...rest}
-        >
+        <DialogContent className={cn('gap-0 p-0', className)} {...rest}>
           {children}
         </DialogContent>
       </Dialog>
+
       <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
-        <DialogContent className="gap-0 rounded-none p-0">
-          <DialogHeader className="p-2">
-            <DialogTitle>Unsaved changes</DialogTitle>
-            <DialogDescription>
+        <DialogContent className="gap-0 p-0">
+          <DialogHeader className="px-4 py-3">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="h-3.5 w-3.5" />
+              <DialogTitle className="text-sm font-semibold">
+                Unsaved changes
+              </DialogTitle>
+            </div>
+            <DialogDescription className="text-muted-foreground mt-1">
               You have unsaved changes. What do you want to do?
             </DialogDescription>
           </DialogHeader>
-
-          <DialogFooter className="max-h-8 gap-1 pr-1">
-            <Button className="ml-auto" variant={'link'} onClick={handleCancel}>
+          <DialogFooter className="flex items-center gap-1.5 px-3">
+            <Button
+              variant={'ghost'}
+              onClick={handleCancel}
+              className="text-muted-foreground/70 hover:text-muted-foreground px-3"
+            >
               cancel
             </Button>
-            <Button variant={'secondary'} onClick={handleDiscard}>
-              Discard
+            <Button
+              variant={'ghost'}
+              onClick={handleDiscard}
+              className="text-secondary-foreground/80 hover:text-secondary-foreground px-3"
+            >
+              discard
             </Button>
-            <Button onClick={handleSave}>Save</Button>
+            <Button onClick={handleSave}>save</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -196,28 +207,31 @@ PluginDialog.Footer = function Footer() {
   const { isDirty, save, discard } = usePluginSettings(manifest.id, namespace)
 
   return (
-    <DialogFooter className="max-h-8 pr-1">
-      {manifest.minAppVersion && (
-        <div className="text-muted-foreground/70 font-mono text-[10px] tracking-widest uppercase">
-          min. app version:{' '}
-          <span className="lowercase">v{manifest.minAppVersion}</span>
-        </div>
-      )}
-
-      <div className="ml-auto flex items-center">
-        {isDirty && (
-          <>
-            <Button
-              onClick={discard}
-              variant={'link'}
-              className="text-muted-foreground"
-            >
-              reset changes
-            </Button>
-            <Button onClick={save}>Save</Button>
-          </>
+    <>
+      <DialogFooter className="h-8 max-h-8 p-0">
+        {manifest.minAppVersion && (
+          <div className="text-muted-foreground/70 h-full p-2 font-mono text-[10px] tracking-widest uppercase">
+            min. app version:{' '}
+            <span className="lowercase">v{manifest.minAppVersion}</span>
+          </div>
         )}
-      </div>
-    </DialogFooter>
+
+        <div className="ml-auto flex h-full items-center">
+          {isDirty && (
+            <>
+              <button
+                onClick={discard}
+                className="text-muted-foreground hover:text-secondary-foreground mr-2 h-full text-xs"
+              >
+                reset
+              </button>
+              <Button variant={'link'} className="mr-1" onClick={save}>
+                Save
+              </Button>
+            </>
+          )}
+        </div>
+      </DialogFooter>
+    </>
   )
 }
