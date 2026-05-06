@@ -32,10 +32,10 @@ export class MediaProgress {
   }
 
   static create(props: MediaProgressProps) {
-    if (!props.mediaId) {
+    if (props.mediaId == null) {
       throw new Error(`Media progress must have a dedicated media`)
     }
-    if (!props.progress) {
+    if (props.progress == null) {
       throw new Error(`Media progress must have progress`)
     }
     const mediaProgressProps: MediaProgressProps = {
