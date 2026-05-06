@@ -1,20 +1,29 @@
-import { ComponentProps, ReactNode } from 'react'
+import { ComponentProps, ReactNode, useState } from 'react'
 
 import { cn } from '@/utils/tailwind'
 import { disablePlugin, enablePlugin } from '../actions'
 import { Switch } from '@/components/ui/switch'
 import { PluginDialog } from './PluginDialog'
-import { Plugin } from '../stores/usePluginStore'
+import { Plugin, usePluginStore } from '../stores/usePluginStore'
 import { PluginItemContext, usePluginItem } from '../stores/usePluginItem'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
+import { TriangleAlert } from 'lucide-react'
 
 export function PluginItem({ plugin }: { plugin: Plugin }) {
   const manifest = plugin.manifest
+  const refresh = usePluginStore((s) => s.refresh)
 
-  const handleCheckedChange = (shouldEnable: boolean) => {
+  const handleCheckedChange = async (shouldEnable: boolean) => {
     if (shouldEnable) {
-      enablePlugin(manifest.id)
+      await enablePlugin(manifest.id)
+      refresh()
     } else {
-      disablePlugin(manifest.id)
+      await disablePlugin(manifest.id)
+      refresh()
     }
   }
 
@@ -30,14 +39,17 @@ export function PluginItem({ plugin }: { plugin: Plugin }) {
         <PluginItem.Header>
           <PluginItem.Icon />
           <PluginItem.Details>
-            <PluginItem.Title />
+            <PluginItem.Title>
+              <PluginItem.Error />
+            </PluginItem.Title>
             <PluginItem.Author />
           </PluginItem.Details>
           <PluginDialog />
           <Switch
             className="self-start"
             title={plugin.enabled ? 'enabled' : 'disabled'}
-            defaultChecked={plugin.enabled}
+            checked={plugin.enabled}
+            disabled={plugin.error != null}
             onCheckedChange={handleCheckedChange}
           />
         </PluginItem.Header>
@@ -51,9 +63,20 @@ export function PluginItem({ plugin }: { plugin: Plugin }) {
               <PluginItem.Permission key={perm}>{perm}</PluginItem.Permission>
             ))}
             {manifest.permissions.length > 3 && (
-              <span className="text-muted-foreground text-[10px]">
-                +{manifest.permissions.length - 3}
-              </span>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="text-accent-foreground cursor-pointer text-[10px]">
+                    +{manifest.permissions.length - 3}
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent className="flex flex-col gap-1">
+                  {manifest.permissions.slice(3).map((perm) => (
+                    <span key={perm} className="text-xs">
+                      {perm}
+                    </span>
+                  ))}
+                </TooltipContent>
+              </Tooltip>
             )}
           </div>
         )}
@@ -138,5 +161,29 @@ PluginItem.Permission = function Permission({
     >
       {children}
     </div>
+  )
+}
+PluginItem.Error = function Error({
+  className,
+  children,
+  ...rest
+}: ComponentProps<'svg'>) {
+  const { plugin } = usePluginItem()
+
+  if (plugin.error == null) return null
+
+  return (
+    <Tooltip>
+      <TooltipTrigger>
+        <TriangleAlert
+          className={cn(
+            'text-destructive-foreground flex h-3.5 w-3.5 items-center justify-center self-start',
+            className,
+          )}
+          {...rest}
+        />
+      </TooltipTrigger>
+      <TooltipContent>{plugin.error}</TooltipContent>
+    </Tooltip>
   )
 }
