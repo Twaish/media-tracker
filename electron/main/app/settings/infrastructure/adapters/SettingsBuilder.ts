@@ -159,7 +159,6 @@ export class SettingsBuilder implements ISettingsBuilder {
       set<K extends keyof T>(key: K, value: RuntimeSchema<T>[K]) {
         const cache = getCache()
 
-        if (schema[key].readonly) return
         if (cache[key] === value) return
 
         cache[key] = value

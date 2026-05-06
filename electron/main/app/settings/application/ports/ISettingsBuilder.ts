@@ -6,7 +6,6 @@ export type Schema = Record<
     default?: unknown
     secret?: boolean
     visible?: boolean
-    readonly?: boolean
   }
 >
 
