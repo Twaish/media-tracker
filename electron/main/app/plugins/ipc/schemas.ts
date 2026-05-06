@@ -1,6 +1,5 @@
 import z from 'zod'
 import { PluginManifest } from '../application/models/PluginManifest'
-import { PLUGIN_STATES } from '../application/models/PluginEntry'
 
 export const pluginManifestSchema: z.ZodType<PluginManifest> = z.object({
   id: z.string(),
@@ -18,7 +17,6 @@ export const pluginManifestSchema: z.ZodType<PluginManifest> = z.object({
 export const pluginEntrySchema = z.object({
   path: z.string(),
   manifest: pluginManifestSchema,
-  state: z.enum(PLUGIN_STATES),
   error: z.string().nullish(),
   enabled: z.boolean(),
 })

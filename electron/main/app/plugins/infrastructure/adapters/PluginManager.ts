@@ -33,7 +33,7 @@ export class PluginManager extends EventEmitter implements IPluginManager {
 
   constructor(
     private readonly pluginRegistry: IPluginRegistry,
-    private readonly permissionRegsitry: IPermissionRegistry,
+    private readonly permissionRegistry: IPermissionRegistry,
     private readonly settingsBuilder: ISettingsBuilder,
   ) {
     super()
@@ -44,59 +44,15 @@ export class PluginManager extends EventEmitter implements IPluginManager {
     )
   }
 
-  async enable(id: string): Promise<void> {
-    const plugin = this.getPluginOrThrow(id)
-
-    if (plugin.enabled) return
-
-    plugin.enabled = true
-
-    await this.setupPlugin(id)
-
-    const existingSettings = this.settings.get('enabledPlugins')
-    this.settings.set('enabledPlugins', {
-      ...existingSettings,
-      [id]: true,
-    })
-  }
-
-  // TODO: Disable other plugins that depends on the disabled plugin
-  async disable(id: string): Promise<void> {
-    const plugin = this.getPluginOrThrow(id)
-
-    if (!plugin.enabled) return
-
-    if (plugin.context) {
-      await this.destroy(id)
-    }
-
-    plugin.enabled = false
-    plugin.state = 'unloaded'
-
-    const existingSettings = this.settings.get('enabledPlugins')
-    this.settings.set('enabledPlugins', {
-      ...existingSettings,
-      [id]: false,
-    })
-  }
-
-  getAll(): PluginEntry[] {
-    return Array.from(
-      this.plugins.values().map(({ module, context, ...entry }) => entry),
-    )
-  }
-  async init() {
+  async init(): Promise<void> {
     await this.settings.init()
   }
 
   async load(pluginsPath: string, appVersion: string): Promise<void> {
     await fs.mkdir(pluginsPath, { recursive: true })
     const dirs = await fs.readdir(pluginsPath)
-
     const manifests: PluginManifest[] = []
 
-    // TODO: If a plugin has any dependencies that are not enabled
-    // skip trying to enable the plugin entirely
     for (const dir of dirs) {
       const pluginDir = path.join(pluginsPath, dir)
 
@@ -108,18 +64,19 @@ export class PluginManager extends EventEmitter implements IPluginManager {
         if (manifest.icon) {
           manifest.icon = path.join(pluginDir, manifest.icon)
         }
+        if (manifest.dependencies) {
+          manifest.dependencies = manifest.dependencies.filter(
+            (dep) => dep !== manifest.id,
+          )
+        }
 
         this.pluginRegistry.register(manifest.id, manifest)
-
-        const isEnabled =
-          this.settings.get('enabledPlugins')[manifest.id] ?? true
 
         this.plugins.set(manifest.id, {
           path: pluginDir,
           manifest,
           module,
-          state: 'loaded',
-          enabled: isEnabled,
+          enabled: !!this.settings.enabledPlugins[manifest.id],
         })
 
         manifests.push(manifest)
@@ -133,32 +90,96 @@ export class PluginManager extends EventEmitter implements IPluginManager {
       }
     }
 
-    manifests.forEach((m) => this.validateDependencies(m))
+    for (const manifest of manifests) {
+      this.validateDependencies(manifest)
+    }
+
+    // Disable plugins whose dependencies are not enabled
+    for (const manifest of manifests) {
+      const plugin = this.plugins.get(manifest.id)
+      if (!plugin?.enabled) continue
+
+      const hasDisabledDep = (manifest.dependencies ?? []).some((dep) => {
+        const depPlugin = this.plugins.get(dep)
+        return depPlugin && !depPlugin.enabled
+      })
+
+      if (!hasDisabledDep) continue
+
+      plugin.enabled = false
+      this.emit(
+        'error',
+        new Error(`Plugin "${manifest.id}" has disabled dependencies`),
+      )
+    }
   }
 
-  async setupPlugin(id: string) {
+  async enable(id: string): Promise<void> {
     const plugin = this.getPluginOrThrow(id)
+    if (plugin.enabled) return
+    plugin.enabled = true
 
-    if (!plugin.enabled) {
-      plugin.state = 'unloaded'
-      return
-    }
+    const enableDependencies = async (dependencies: string[] = []) => {
+      for (const dependencyId of dependencies) {
+        const dependency = this.getPluginOrThrow(dependencyId)
+        if (dependency.enabled || dependency.error != null) continue
 
-    plugin.state = 'setting-up'
+        const dependencyDeps = dependency.manifest.dependencies ?? []
+        const allDepsReady = dependencyDeps.every((dep) => {
+          if (dep === dependencyId) return true
 
-    try {
-      const settings = await this.buildSettings(plugin)
-      const context = {
-        ...this.buildContext(plugin),
-        settings,
+          return this.getPluginOrThrow(dep).enabled
+        })
+
+        let successful = allDepsReady
+        if (!allDepsReady) {
+          successful = await enableDependencies(dependencyDeps)
+        }
+
+        if (successful) {
+          await this.enable(dependencyId)
+        } else {
+          return false
+        }
       }
-
-      await plugin.module.setup?.(context)
-      plugin.context = context
-      plugin.state = 'running'
-    } catch (err) {
-      this.failPlugin(plugin, err, 'setup')
+      return true
     }
+    await enableDependencies(plugin.manifest.dependencies)
+
+    await this.setupPlugin(id)
+
+    if (plugin.error == null) {
+      this.settings.enabledPlugins = {
+        ...this.settings.enabledPlugins,
+        [id]: true,
+      }
+    }
+  }
+
+  async disable(id: string): Promise<void> {
+    const plugin = this.getPluginOrThrow(id)
+    if (!plugin.enabled) return
+    plugin.enabled = false
+
+    const dependants = this.getDependents(id)
+    for (const dependant of dependants) {
+      this.disable(dependant)
+    }
+
+    if (plugin.context) {
+      await this.destroy(id)
+    }
+
+    this.settings.enabledPlugins = {
+      ...this.settings.enabledPlugins,
+      [id]: false,
+    }
+  }
+
+  getAll(): PluginEntry[] {
+    return Array.from(
+      this.plugins.values().map(({ module, context, ...entry }) => entry),
+    )
   }
 
   async setup(): Promise<void> {
@@ -167,47 +188,61 @@ export class PluginManager extends EventEmitter implements IPluginManager {
     }
   }
 
+  async setupPlugin(id: string): Promise<void> {
+    const plugin = this.getPluginOrThrow(id)
+    const settings = await this.buildSettings(plugin)
+
+    if (!plugin.enabled) return
+
+    try {
+      const context = {
+        ...this.buildContext(plugin),
+        settings,
+      }
+
+      await plugin.module.setup?.(context)
+      plugin.context = context
+    } catch (err) {
+      this.failPlugin(plugin, err, 'setup')
+    }
+  }
+
   async execute(id: string, ...args: unknown[]): Promise<void> {
     const plugin = this.getPluginOrThrow(id)
-    if (!plugin.context) {
-      throw new Error(`Plugin with id "${id}" is not initialized`)
-    }
-    if (!plugin.module.execute) {
-      throw new Error(`Plugin with id "${id}" has no execute method`)
-    }
-    await plugin.module.execute(plugin.context, ...args)
+    if (!plugin.enabled) return
+    if (!plugin.context) return
+
+    await plugin.module.execute?.(plugin.context, ...args)
   }
 
   async destroy(id: string): Promise<void> {
     const plugin = this.getPluginOrThrow(id)
-    if (!plugin.context) {
-      throw new Error(`Plugin with id "${id}" is not initialized`)
-    }
-    if (!plugin.module.destroy) {
-      throw new Error(`Plugin with id "${id}" has no destroy method`)
-    }
-    await plugin.module.destroy(plugin.context)
-    plugin.state = 'destroyed'
+    if (!plugin.enabled) return
+    if (!plugin.context) return
+
+    await plugin.module.destroy?.(plugin.context)
+    plugin.context = undefined
   }
 
   async destroyAll(): Promise<void> {
-    const destroyPlugin = async (id: string) => {
-      try {
-        this.destroy(id)
-      } catch (err) {
-        this.emit(
-          'error',
-          new Error(
-            `Plugin with id "${id}" failed during destroy: ${err instanceof Error ? err.stack : String(err)}`,
-          ),
-        )
+    // Reverse for dependents destroyed before their dependencies
+    for (const batch of this.topologicalBatches().reverse()) {
+      await Promise.allSettled(batch.map(this.destroy))
+    }
+  }
+
+  private getDependents(id: string): string[] {
+    const dependents: string[] = []
+
+    for (const [otherId, entry] of this.plugins) {
+      if (otherId === id) continue
+      if ((entry.manifest.dependencies ?? []).includes(id)) {
+        dependents.push(otherId)
+        dependents.push(...this.getDependents(otherId))
       }
     }
 
-    // Reverse for dependents destroyed before their dependencies
-    for (const batch of this.topologicalBatches().reverse()) {
-      await Promise.allSettled(batch.map(destroyPlugin))
-    }
+    return [...new Set(dependents)]
   }
 
   private getPluginOrThrow(id: string) {
@@ -217,7 +252,7 @@ export class PluginManager extends EventEmitter implements IPluginManager {
   }
 
   private failPlugin(plugin: PluginModuleEntry, err: unknown, phase: string) {
-    plugin.state = 'error'
+    plugin.enabled = false
     plugin.error = err instanceof Error ? err : new Error(String(err))
 
     this.emit(
@@ -231,6 +266,9 @@ export class PluginManager extends EventEmitter implements IPluginManager {
   private async buildSettings(plugin: PluginModuleEntry) {
     if (!plugin.module.settings) return
 
+    const existingSettings = plugin.context?.settings
+    if (existingSettings) return existingSettings
+
     const namespace = `plugin:${plugin.manifest.id}`
     const filename = `plugin-${this.getPluginBasicName(plugin.manifest.id)}`
 
@@ -243,7 +281,7 @@ export class PluginManager extends EventEmitter implements IPluginManager {
     const permissions = plugin.manifest.permissions ?? []
 
     return {
-      ...this.permissionRegsitry.buildContext(permissions),
+      ...this.permissionRegistry.buildContext(permissions),
       pluginName: plugin.manifest.name,
       pluginDir: plugin.path,
       pluginId: plugin.manifest.id,
@@ -262,15 +300,19 @@ export class PluginManager extends EventEmitter implements IPluginManager {
   }
 
   private validateDependencies(manifest: PluginManifest) {
-    for (const dep of manifest.dependencies ?? []) {
+    if (!manifest.dependencies) return
+
+    for (const dep of manifest.dependencies) {
       if (this.plugins.has(dep)) continue
 
       const plugin = this.getPluginOrThrow(manifest.id)
-
-      const error = new Error(
-        `Plugin with id "${manifest.id}" requires "${dep}" which is not loaded`,
+      this.failPlugin(
+        plugin,
+        new Error(
+          `Plugin with id "${manifest.id}" requires "${dep}" which is not loaded`,
+        ),
+        'dependency-validation',
       )
-      this.failPlugin(plugin, error, 'dependency-validation')
     }
   }
 
