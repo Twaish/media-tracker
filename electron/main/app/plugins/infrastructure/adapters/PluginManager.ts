@@ -19,7 +19,7 @@ import { loadPluginSandboxed } from '../helpers/load-plugin-sandboxed'
 import { PluginEntry } from '../../application/models/PluginEntry'
 
 type PluginModuleEntry = PluginEntry & {
-  module: PluginModule
+  module?: PluginModule
   context?: PluginContext
 }
 
@@ -54,28 +54,17 @@ export class PluginManager extends EventEmitter implements IPluginManager {
     const manifests: PluginManifest[] = []
 
     for (const dir of dirs) {
-      const pluginDir = path.join(pluginsPath, dir)
-
       try {
-        const { manifest, module } = await loadPluginSandboxed(pluginDir)
+        const pluginDir = path.join(pluginsPath, dir)
+        const manifest = await this.loadManifest(pluginDir)
 
         this.validateVersion(manifest, appVersion)
-
-        if (manifest.icon) {
-          manifest.icon = path.join(pluginDir, manifest.icon)
-        }
-        if (manifest.dependencies) {
-          manifest.dependencies = manifest.dependencies.filter(
-            (dep) => dep !== manifest.id,
-          )
-        }
 
         this.pluginRegistry.register(manifest.id, manifest)
 
         this.plugins.set(manifest.id, {
           path: pluginDir,
           manifest,
-          module,
           enabled: !!this.settings.enabledPlugins[manifest.id],
         })
 
@@ -91,7 +80,7 @@ export class PluginManager extends EventEmitter implements IPluginManager {
     }
 
     for (const manifest of manifests) {
-      this.validateDependencies(manifest)
+      this.validateDependenciesExists(manifest)
     }
 
     // Disable plugins whose dependencies are not enabled
@@ -111,6 +100,40 @@ export class PluginManager extends EventEmitter implements IPluginManager {
         'error',
         new Error(`Plugin "${manifest.id}" has disabled dependencies`),
       )
+    }
+  }
+
+  async loadManifest(dir: string): Promise<PluginManifest> {
+    const manifest = JSON.parse(
+      await fs.readFile(path.join(dir, 'manifest.json'), 'utf-8'),
+    ) as PluginManifest
+
+    if (manifest.name == null) {
+      throw new Error(`Plugin at ${dir} is missing a required name`)
+    }
+
+    if (manifest.icon) {
+      // Resolve icon relative to plugin dir
+      manifest.icon = path.join(dir, manifest.icon)
+    }
+
+    if (manifest.dependencies) {
+      // Remove self dependencies
+      manifest.dependencies = manifest.dependencies.filter(
+        (dep) => dep !== manifest.id,
+      )
+    }
+    return manifest
+  }
+
+  async loadSettings(dir: string): Promise<Schema> {
+    try {
+      const settings = JSON.parse(
+        await fs.readFile(path.join(dir, 'settings.json'), 'utf-8'),
+      ) as Schema
+      return settings
+    } catch {
+      return {}
     }
   }
 
@@ -195,13 +218,13 @@ export class PluginManager extends EventEmitter implements IPluginManager {
     if (!plugin.enabled) return
 
     try {
-      const context = {
+      plugin.context ??= {
         ...this.buildContext(plugin),
         settings,
       }
+      plugin.module ??= await loadPluginSandboxed(plugin)
 
-      await plugin.module.setup?.(context)
-      plugin.context = context
+      await plugin.module.setup?.(plugin.context)
     } catch (err) {
       this.failPlugin(plugin, err, 'setup')
     }
@@ -212,7 +235,7 @@ export class PluginManager extends EventEmitter implements IPluginManager {
     if (!plugin.enabled) return
     if (!plugin.context) return
 
-    await plugin.module.execute?.(plugin.context, ...args)
+    await plugin.module?.execute?.(plugin.context, ...args)
   }
 
   async destroy(id: string): Promise<void> {
@@ -220,10 +243,16 @@ export class PluginManager extends EventEmitter implements IPluginManager {
     if (!plugin.context) return
 
     try {
-      await plugin.module.destroy?.(plugin.context)
+      await plugin.module?.destroy?.(plugin.context)
     } catch (err) {
-      this.failPlugin(plugin, err, 'destroy')
+      this.emit(
+        'error',
+        new Error(
+          `Plugin ${plugin.manifest.name} errored during .destroy() call, ${(err as Error).stack}`,
+        ),
+      )
     }
+    plugin.module = undefined
     plugin.context = undefined
   }
 
@@ -267,16 +296,15 @@ export class PluginManager extends EventEmitter implements IPluginManager {
   }
 
   private async buildSettings(plugin: PluginModuleEntry) {
-    if (!plugin.module.settings) return
-
     const existingSettings = plugin.context?.settings
     if (existingSettings) return existingSettings
 
     const namespace = `plugin:${plugin.manifest.id}`
     const filename = `plugin-${this.getPluginBasicName(plugin.manifest.id)}`
+    const schema = await this.loadSettings(plugin.path)
 
     return this.settingsBuilder
-      .defineSettings(namespace, filename, plugin.module.settings)
+      .defineSettings(namespace, filename, schema)
       .init()
   }
 
@@ -302,7 +330,7 @@ export class PluginManager extends EventEmitter implements IPluginManager {
     }
   }
 
-  private validateDependencies(manifest: PluginManifest) {
+  private validateDependenciesExists(manifest: PluginManifest) {
     if (!manifest.dependencies) return
 
     for (const dep of manifest.dependencies) {

@@ -5,6 +5,7 @@ import { createRequire } from 'module'
 import { PluginManifest } from '../../application/models/PluginManifest'
 import { PluginModule } from '../adapters/PluginModule'
 import { Stats } from 'fs'
+import { PluginEntry } from '@shared/types'
 
 const BLOCKED_MODULES = new Set([
   'electron',
@@ -99,16 +100,9 @@ function createPluginRequire(pluginDir: string) {
 }
 
 export async function loadPluginSandboxed(
-  dir: string,
-): Promise<{ manifest: PluginManifest; module: PluginModule }> {
-  const manifest = JSON.parse(
-    await fs.readFile(path.join(dir, 'manifest.json'), 'utf-8'),
-  ) as PluginManifest
-
-  if (manifest.name == null) {
-    throw new Error(`Plugin at ${dir} is missing a required name`)
-  }
-
+  plugin: PluginEntry,
+): Promise<PluginModule> {
+  const { path: dir, manifest } = plugin
   const indexPath = path.join(dir, 'index.js')
   const code = await fs.readFile(indexPath, 'utf-8')
 
@@ -176,5 +170,5 @@ export async function loadPluginSandboxed(
 
   const pluginModule = sandbox.module.exports.default ?? sandbox.module.exports
 
-  return { manifest, module: pluginModule as PluginModule }
+  return pluginModule as PluginModule
 }
