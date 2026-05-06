@@ -1,12 +1,9 @@
 import z from 'zod'
-import {
-  MEDIA_STATUS,
-  MEDIA_TYPES,
-  PersistedMedia,
-} from '../domain/entities/media'
+import { PersistedMedia } from '../domain/entities/media'
 import { persistedGenreSchema } from '@main/features/genres/ipc/schemas'
 import { PersistedMediaProgress } from '../domain/entities/mediaProgress'
 import { PersistedMediaEmbedding } from '../domain/entities/mediaEmbedding'
+import { MEDIA_STATUS, MEDIA_TYPES } from '@shared/constants/features/media'
 
 export const mediaSchema = z.object({
   id: z.number(),

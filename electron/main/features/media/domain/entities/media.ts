@@ -1,13 +1,5 @@
 import { PersistedGenre } from '@main/features/genres/domain/entities/genre'
-
-export const MEDIA_TYPES = ['anime', 'manga', 'manhwa', 'manhua'] as const
-export const MEDIA_STATUS = [
-  'watching',
-  'completed',
-  'on-hold',
-  'dropped',
-  'plan-to-watch',
-] as const
+import { MEDIA_STATUS, MEDIA_TYPES } from '@shared/constants/features/media'
 
 export type MediaType = (typeof MEDIA_TYPES)[number]
 export type MediaStatus = (typeof MEDIA_STATUS)[number]
