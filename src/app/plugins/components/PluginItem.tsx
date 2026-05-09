@@ -5,7 +5,7 @@ import { disablePlugin, enablePlugin } from '../actions'
 import { Switch } from '@/components/ui/switch'
 import { PluginDialog } from './PluginDialog'
 import { Plugin, usePluginStore } from '../stores/usePluginStore'
-import { PluginItemContext, usePluginItem } from '../stores/usePluginItem'
+import { PluginItemContext, usePluginItem } from '../hooks/usePluginItem'
 import {
   Tooltip,
   TooltipContent,

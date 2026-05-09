@@ -1,4 +1,4 @@
-import { usePluginItem } from '../stores/usePluginItem'
+import { usePluginItem } from '../hooks/usePluginItem'
 import { usePluginStore } from '../stores/usePluginStore'
 
 export function PluginDependencies() {

@@ -8,7 +8,7 @@ import {
   SettingValue,
   usePluginSettingsStore,
 } from '../stores/usePluginSettingsStore'
-import { usePluginItem } from '../stores/usePluginItem'
+import { usePluginItem } from '../hooks/usePluginItem'
 
 export function PluginSettings() {
   const { manifest, namespace } = usePluginItem()

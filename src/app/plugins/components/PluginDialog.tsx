@@ -18,7 +18,7 @@ import { DialogFooterHint } from '@/components/dialog/DialogFooterHint'
 import { openFolder, openLink } from '@/app/instance/actions'
 import { PluginItem } from './PluginItem'
 import { PluginSettings } from './PluginSettings'
-import { usePluginItem } from '../stores/usePluginItem'
+import { usePluginItem } from '../hooks/usePluginItem'
 import { PluginDependencies } from './PluginDependencies'
 import { usePluginSettings } from '../hooks/usePluginSettings'
 
