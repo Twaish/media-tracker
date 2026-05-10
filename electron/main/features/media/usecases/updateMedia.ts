@@ -16,7 +16,7 @@ export default class UpdateMedia {
       const stored = await this.storage.storeImage({
         imagePath: media.thumbnail,
       })
-      media.thumbnail = stored.relativePath
+      media.thumbnail = stored.filename
     }
 
     const mediaToUpdate = await this.repo.getById(media.id)

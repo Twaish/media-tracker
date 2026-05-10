@@ -18,7 +18,7 @@ export default class AddMedia {
       const stored = await this.storage.storeImage({
         imagePath: media.thumbnail,
       })
-      thumbnail = stored.relativePath
+      thumbnail = stored.filename
     }
 
     const mediaToAdd = {

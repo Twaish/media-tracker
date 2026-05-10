@@ -39,7 +39,11 @@ export function createMediaUseCases({
     ),
     searchMedia: new SearchMedia(MediaRepository, QueryResolver),
     getMediaById: new GetMediaById(MediaRepository),
-    bulkUpdateMedia: new BulkUpdateMedia(MediaRepository, EventBus),
+    bulkUpdateMedia: new BulkUpdateMedia(
+      MediaRepository,
+      StorageService,
+      EventBus,
+    ),
     findMediaDuplicates: new FindMediaDuplicates(
       MediaRepository,
       StorageService,
