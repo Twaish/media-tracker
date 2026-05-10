@@ -5,7 +5,6 @@ import { Modules } from '@/helpers/ipc/types'
 import {
   nameOutputSchema,
   openFolderInputSchema,
-  openLinkInputSchema,
   versionOutputSchema,
 } from './schemas'
 
@@ -17,9 +16,6 @@ export function createInstanceRouters({ appInfo }: Modules) {
       if (fs.existsSync(input)) {
         shell.openPath(input)
       }
-    }),
-    openLink: os.input(openLinkInputSchema).handler(({ input }) => {
-      shell.openExternal(input)
     }),
   }
 }

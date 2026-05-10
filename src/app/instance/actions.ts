@@ -13,5 +13,5 @@ export function openFolder(path: string) {
 }
 
 export function openLink(link: string) {
-  return ipc.client.instance.openLink(link)
+  window.open(link, '_blank')
 }
