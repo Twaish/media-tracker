@@ -30,6 +30,11 @@ export function resolveExternalMediaLink(id: number) {
   return ipc.client.media.resolveExternalLink(id)
 }
 
+export async function openMediaLink(id: number) {
+  const link = await resolveExternalMediaLink(id)
+  if (link) window.open(link, '_blank')
+}
+
 export function searchMedia(query: string) {
   return ipc.client.media.search(query)
 }
