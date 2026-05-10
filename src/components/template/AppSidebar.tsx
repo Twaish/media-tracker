@@ -22,7 +22,7 @@ import { usePluginStore } from '@/app/plugins/stores/usePluginStore'
 const sections = [
   { id: 'home', label: 'Home', icon: House, path: '/' },
   { id: 'counter', label: 'Counter', icon: Box, path: '/counter-page' },
-  { id: 'library', label: 'Library', icon: Library, path: '' },
+  { id: 'library', label: 'Library', icon: Library, path: '/library' },
   {
     id: 'watchplans',
     label: 'Watch Plans',

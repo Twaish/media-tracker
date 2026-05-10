@@ -3,6 +3,7 @@ import { RootRoute } from './__root'
 import HomePage from '@/pages/HomePage'
 import CounterPage from '@/pages/CounterPage'
 import PluginsPage from '@/pages/PluginsPage'
+import LibraryPage from '@/pages/LibraryPage'
 
 // TODO: Steps to add a new route:
 // 1. Create a new page component in the '../pages/' directory (e.g., NewPage.tsx)
@@ -41,8 +42,15 @@ export const PluginsPageRoute = createRoute({
   component: PluginsPage,
 })
 
+export const LibraryPageRoute = createRoute({
+  getParentRoute: () => RootRoute,
+  path: '/library',
+  component: LibraryPage,
+})
+
 export const rootTree = RootRoute.addChildren([
   HomeRoute,
   CounterPageRoute,
   PluginsPageRoute,
+  LibraryPageRoute,
 ])
