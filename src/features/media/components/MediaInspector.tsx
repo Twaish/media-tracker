@@ -1,5 +1,5 @@
 import { ComponentProps } from 'react'
-import { ArrowRight, Plus, SquareArrowOutUpRight, X } from 'lucide-react'
+import { ArrowRight, SquareArrowOutUpRight, X } from 'lucide-react'
 import { cn } from '@/utils/tailwind'
 import { MediaInfoContext, useMediaInfo } from '../contexts/useMediaInfo'
 import { selectMedia, useMediaStore } from '../stores/mediaStore'
@@ -8,11 +8,12 @@ import { openMediaLink, resolveExternalMediaLink } from '../actions'
 import { MediaFavoriteButton } from './MediaFavoriteButton'
 import { MediaStatusSelector } from './MediaStatusSelector'
 import { MediaTypeSelector } from './MediaTypeSelector'
-import { MediaGenreBadge } from './MediaGenreBadge'
 import { MediaIconButton } from './MediaIconButton'
 import { MediaThumbnail } from './MediaThumbnail'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { useQuery } from '@tanstack/react-query'
+import { MediaGenreSelector } from './MediaGenreSelector'
 
 export const MediaInspector = () => {
   const selectedMedia = useMediaInspectorStore((s) => s.selectedMedia)
@@ -240,23 +241,21 @@ MediaInspector.Genres = function Genres() {
   const { id } = useMediaInfo()
   const genres = useMediaStore((s) => selectMedia(id)(s).genres)
 
-  // TODO: Implement add functioality
   return (
     <div className="flex flex-col gap-0.5">
       <FieldTitle>Genres</FieldTitle>
       <div className="flex flex-wrap gap-1">
         {genres.length > 0 &&
           genres.map((g) => (
-            <MediaGenreBadge
+            <Badge
               key={g.id}
+              variant={'outline'}
               className="border-secondary text-[unset]"
             >
               {g.name}
-            </MediaGenreBadge>
+            </Badge>
           ))}
-        <MediaGenreBadge className="border-secondary text-[unset]">
-          <Plus /> Add
-        </MediaGenreBadge>
+        <MediaGenreSelector />
       </div>
     </div>
   )

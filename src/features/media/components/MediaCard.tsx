@@ -26,12 +26,10 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { PersistedMedia } from '@shared/types'
-import { openMediaLink, resolveExternalMediaLink } from '../actions'
+import { openMediaLink } from '../actions'
 import { MEDIA_STATUS } from '@shared/constants/features/media'
 import { useMediaStore, selectMedia } from '../stores/mediaStore'
 import { MediaInfoContext, useMediaInfo } from '../contexts/useMediaInfo'
-import defaultImage from '@/assets/images/default.jpg'
-import { MediaGenreBadge } from './MediaGenreBadge'
 import { MediaFavoriteButton } from './MediaFavoriteButton'
 import { MediaStatusSelector } from './MediaStatusSelector'
 import { MediaThumbnail } from './MediaThumbnail'
@@ -156,10 +154,21 @@ MediaCard.Genres = function Genres() {
   return (
     <div className="mb-3 flex flex-wrap gap-1">
       {visibleGenres.map((genre) => (
-        <MediaGenreBadge key={genre.id}>{genre.name}</MediaGenreBadge>
+        <Badge
+          variant={'outline'}
+          className="border-white/20 text-white backdrop-blur-xs"
+          key={genre.id}
+        >
+          {genre.name}
+        </Badge>
       ))}
       {remainingGenres > 0 && (
-        <MediaGenreBadge>+{remainingGenres} more</MediaGenreBadge>
+        <Badge
+          variant={'outline'}
+          className="border-white/20 text-white backdrop-blur-xs"
+        >
+          +{remainingGenres} more
+        </Badge>
       )}
     </div>
   )
