@@ -47,3 +47,8 @@ export const useMediaStore = create<MediaState>()(
 
 export const selectMedia = (id: number) => (state: MediaState) =>
   state.media[id]
+
+export const selectProp =
+  <K extends keyof PersistedMedia>(id: number, property: K) =>
+  (state: MediaState): PersistedMedia[K] =>
+    state.media[id][property]
