@@ -2,7 +2,7 @@ import { ComponentProps } from 'react'
 import { ArrowRight, SquareArrowOutUpRight, X } from 'lucide-react'
 import { cn } from '@/utils/tailwind'
 import { MediaInfoContext, useMediaInfo } from '../contexts/useMediaInfo'
-import { selectMedia, useMediaStore } from '../stores/mediaStore'
+import { selectMedia, selectProp, useMediaStore } from '../stores/mediaStore'
 import { useMediaInspectorStore } from '../stores/mediaInspectorStore'
 import { openMediaLink, resolveExternalMediaLink } from '../actions'
 import { MediaFavoriteButton } from './MediaFavoriteButton'
@@ -11,9 +11,11 @@ import { MediaTypeSelector } from './MediaTypeSelector'
 import { MediaIconButton } from './MediaIconButton'
 import { MediaThumbnail } from './MediaThumbnail'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { useQuery } from '@tanstack/react-query'
 import { MediaGenreSelector } from './MediaGenreSelector'
+import { MediaGenres } from './MediaGenres'
+import { PersistedMedia } from '@shared/types'
+import { MediaPreview } from './MediaPreview'
 
 export const MediaInspector = () => {
   const selectedMedia = useMediaInspectorStore((s) => s.selectedMedia)
@@ -35,7 +37,7 @@ export const MediaInspector = () => {
           <div className="absolute inset-x-0 top-0 flex items-start justify-between p-2">
             <div className="flex items-center gap-1">
               <MediaInspector.IdDisplay className={overlayStyles} />
-              <MediaStatusSelector className="bg-black/40!" />
+              <MediaInspector.StatusSelector />
             </div>
             <div className="flex items-center gap-1">
               <MediaFavoriteButton className={overlayStyles} />
@@ -44,7 +46,7 @@ export const MediaInspector = () => {
           </div>
           <div className="absolute inset-x-0 bottom-0 flex flex-col gap-1 p-3">
             <div className="flex flex-wrap gap-1 pt-1">
-              <MediaTypeSelector className="bg-black/40!" />
+              <MediaInspector.TypeSelector />
               <MediaInspector.EpisodeDisplay className={overlayStyles} />
             </div>
           </div>
@@ -78,45 +80,22 @@ function FieldTitle({ children, className, ...props }: ComponentProps<'span'>) {
 
 MediaInspector.NextPreview = function NextPreview() {
   const selectedMedia = useMediaInspectorStore((s) => s.selectedMedia)!
-  const nextMedia = useMediaStore((s) => {
-    const nextMediaId = selectMedia(selectedMedia)(s).watchAfter
-    return nextMediaId ? selectMedia(nextMediaId)(s) : null
-  })
-  if (!nextMedia) return null
+  const nextMediaId = useMediaStore(selectProp(selectedMedia, 'watchAfter'))
+  if (!nextMediaId) return null
 
   return (
-    <div className={cn('flex gap-2')}>
-      <MediaThumbnail
-        className="h-20 w-14 rounded-md"
-        src={nextMedia.thumbnail}
-      />
-      <div className="flex min-w-0 flex-1 flex-col">
-        <div className="flex items-start justify-between gap-2">
-          <div className="line-clamp-2 text-sm leading-tight font-medium">
-            {nextMedia.title}
-          </div>
-        </div>
-        <div className="text-muted-foreground flex text-xs">
-          EP {nextMedia.currentEpisode}{' '}
-          {nextMedia.maxEpisodes && `/ ${nextMedia.maxEpisodes}`}
-        </div>
-
-        <Button
-          size="sm"
-          variant={'outline'}
-          className="mt-auto h-7 w-min px-3"
-        >
-          <ArrowRight className="mr-1 h-3 w-3" />
-          Next
-        </Button>
-      </div>
-    </div>
+    <MediaPreview mediaId={nextMediaId}>
+      <Button size="sm" variant={'outline'} className="mt-auto h-7 w-min px-3">
+        <ArrowRight className="mr-1 h-3 w-3" />
+        Next
+      </Button>
+    </MediaPreview>
   )
 }
 
 MediaInspector.Thumbnail = function Thumbnail() {
   const { id } = useMediaInfo()
-  const thumbnail = useMediaStore((s) => selectMedia(id)(s).thumbnail)
+  const thumbnail = useMediaStore(selectProp(id, 'thumbnail'))
 
   return <MediaThumbnail src={thumbnail} className="w-full select-none" />
 }
@@ -156,8 +135,9 @@ MediaInspector.EpisodeDisplay = function EpisodeDisplay({
   ...props
 }: ComponentProps<'div'>) {
   const { id } = useMediaInfo()
-  const currentEpisode = useMediaStore((s) => selectMedia(id)(s).currentEpisode)
-  const maxEpisodes = useMediaStore((s) => selectMedia(id)(s).maxEpisodes)
+  const currentEpisode = useMediaStore(selectProp(id, 'currentEpisode'))
+  const maxEpisodes = useMediaStore(selectProp(id, 'maxEpisodes'))
+
   // TODO: Implement episode input and inc, dec button
   return (
     <div
@@ -173,9 +153,45 @@ MediaInspector.EpisodeDisplay = function EpisodeDisplay({
   )
 }
 
+MediaInspector.TypeSelector = function TypeSelector() {
+  const { id } = useMediaInfo()
+  const type = useMediaStore((s) => selectMedia(id)(s).type)
+  const updateMedia = useMediaStore((s) => s.updateMedia)
+
+  const handleChange = (type: PersistedMedia['type']) => {
+    updateMedia(id, { type })
+  }
+
+  return (
+    <MediaTypeSelector
+      className="bg-black/40!"
+      value={type}
+      onChange={handleChange}
+    />
+  )
+}
+
+MediaInspector.StatusSelector = function StatusSelector() {
+  const { id } = useMediaInfo()
+  const status = useMediaStore((s) => selectMedia(id)(s).status)
+  const updateMedia = useMediaStore((s) => s.updateMedia)
+
+  const handleChange = (status: PersistedMedia['status']) => {
+    updateMedia(id, { status })
+  }
+
+  return (
+    <MediaStatusSelector
+      className="bg-black/40!"
+      value={status}
+      onChange={handleChange}
+    />
+  )
+}
+
 MediaInspector.Title = function Title() {
   const { id } = useMediaInfo()
-  const title = useMediaStore((s) => selectMedia(id)(s).title)
+  const title = useMediaStore(selectProp(id, 'title'))
   return (
     <div className="flex flex-col">
       <FieldTitle>Title</FieldTitle>
@@ -186,9 +202,7 @@ MediaInspector.Title = function Title() {
 
 MediaInspector.AlternateTitles = function AlternateTitles() {
   const { id } = useMediaInfo()
-  const alternateTitles = useMediaStore(
-    (s) => selectMedia(id)(s).alternateTitles,
-  )
+  const alternateTitles = useMediaStore(selectProp(id, 'alternateTitles'))
   if (!alternateTitles) return null
 
   return (
@@ -201,7 +215,7 @@ MediaInspector.AlternateTitles = function AlternateTitles() {
 
 MediaInspector.ExternalLink = function ExternalLink() {
   const { id } = useMediaInfo()
-  const externalLink = useMediaStore((s) => selectMedia(id)(s).externalLink)
+  const externalLink = useMediaStore(selectProp(id, 'externalLink'))
   const { data: resolvedLink, isLoading } = useQuery({
     queryKey: [id, 'resolvedLink'],
     queryFn: () => resolveExternalMediaLink(id),
@@ -226,7 +240,7 @@ MediaInspector.ExternalLink = function ExternalLink() {
 
 MediaInspector.WatchAfter = function WatchAfter() {
   const { id } = useMediaInfo()
-  const watchAfter = useMediaStore((s) => selectMedia(id)(s).watchAfter)
+  const watchAfter = useMediaStore(selectProp(id, 'watchAfter'))
   if (watchAfter == null) return null
 
   return (
@@ -239,24 +253,15 @@ MediaInspector.WatchAfter = function WatchAfter() {
 
 MediaInspector.Genres = function Genres() {
   const { id } = useMediaInfo()
-  const genres = useMediaStore((s) => selectMedia(id)(s).genres)
+  const genres = useMediaStore(selectProp(id, 'genres'))
 
   return (
     <div className="flex flex-col gap-0.5">
       <FieldTitle>Genres</FieldTitle>
-      <div className="flex flex-wrap gap-1">
-        {genres.length > 0 &&
-          genres.map((g) => (
-            <Badge
-              key={g.id}
-              variant={'outline'}
-              className="border-secondary text-[unset]"
-            >
-              {g.name}
-            </Badge>
-          ))}
+      <MediaGenres genres={genres}>
+        <MediaGenres.Badges />
         <MediaGenreSelector />
-      </div>
+      </MediaGenres>
     </div>
   )
 }
@@ -266,8 +271,8 @@ MediaInspector.DateDisplay = function DateDisplay({
   ...props
 }: ComponentProps<'div'>) {
   const { id } = useMediaInfo()
-  const createdAt = useMediaStore((s) => selectMedia(id)(s).createdAt)
-  const lastUpdated = useMediaStore((s) => selectMedia(id)(s).lastUpdated)
+  const createdAt = useMediaStore(selectProp(id, 'createdAt'))
+  const lastUpdated = useMediaStore(selectProp(id, 'lastUpdated'))
 
   return (
     <div className={cn('grid grid-cols-2 gap-3', className)} {...props}>
