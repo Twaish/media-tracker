@@ -15,7 +15,7 @@ describe('UpdateMedia', () => {
   const imageResult = {
     relativePath: '/images/thumb.jpg',
     hash: '',
-    filename: '',
+    filename: 'thumb.jpg',
     fullPath: '',
     width: 480,
     height: 480,
@@ -43,14 +43,14 @@ describe('UpdateMedia', () => {
     const input = {
       id: 1,
       title: 'Movie',
-      thumbnail: 'image/path',
+      thumbnail: 'image/path/thumb.jpg',
       genres: [],
     }
 
     const previousMedia = makeMedia({ ...input })
     const updatedMedia = makeMedia({
       ...input,
-      thumbnail: 'fullpath/images/thumb.jpg',
+      thumbnail: 'thumb.jpg',
     })
 
     vi.mocked(mockStorage.storeImage).mockResolvedValue(imageResult)
@@ -60,12 +60,12 @@ describe('UpdateMedia', () => {
     const result = await usecase.execute(input)
 
     expect(mockStorage.storeImage).toHaveBeenCalledWith({
-      imagePath: input.thumbnail,
+      imagePath: previousMedia.thumbnail,
     })
 
     expect(mockRepo.update).toHaveBeenCalledWith({
       ...input,
-      thumbnail: '/images/thumb.jpg',
+      thumbnail: 'thumb.jpg',
     })
 
     expect(mockEventBus.publish).toHaveBeenCalledWith(

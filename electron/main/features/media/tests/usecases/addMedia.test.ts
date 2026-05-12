@@ -15,7 +15,7 @@ describe('AddMedia', () => {
   const imageResult = {
     relativePath: '/images/thumb.jpg',
     hash: '',
-    filename: '',
+    filename: 'thumb.jpg',
     fullPath: '',
     width: 480,
     height: 480,
@@ -60,7 +60,7 @@ describe('AddMedia', () => {
 
     expect(mockRepo.add).toHaveBeenCalledWith({
       ...input,
-      thumbnail: '/images/thumb.jpg',
+      thumbnail: 'thumb.jpg',
     })
 
     expect(mockEventBus.publish).toHaveBeenCalledWith(
