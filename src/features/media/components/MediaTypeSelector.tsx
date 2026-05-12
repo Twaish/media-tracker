@@ -4,9 +4,7 @@ import {
   SelectItem,
   SelectTrigger,
 } from '@/components/ui/select'
-import { useMediaInfo } from '../contexts/useMediaInfo'
-import { selectMedia, useMediaStore } from '../stores/mediaStore'
-import { ComponentProps } from 'react'
+import { ComponentProps, useState } from 'react'
 import { PersistedMedia } from '@shared/types'
 import { cn } from '@/utils/tailwind'
 import { MEDIA_TYPES } from '@shared/constants/features/media'
@@ -14,24 +12,30 @@ import { MEDIA_TYPES } from '@shared/constants/features/media'
 const TYPE_LABELS: Record<PersistedMedia['type'], string> = {
   anime: 'Anime',
   manga: 'Manga',
-  manhua: 'manhua',
-  manhwa: 'manhwa',
+  manhua: 'Manhua',
+  manhwa: 'Manhwa',
 } as const
 
 export function MediaTypeSelector({
+  onChange,
+  defaultValue,
+  value,
   className,
   ...props
-}: ComponentProps<typeof SelectTrigger>) {
-  const { id } = useMediaInfo()
-  const type = useMediaStore((s) => selectMedia(id)(s).type)
-  const updateMedia = useMediaStore((s) => s.updateMedia)
-
-  const handleTypeChange = (type: PersistedMedia['type']) => {
-    updateMedia(id, { type })
-  }
+}: {
+  value?: PersistedMedia['type']
+  onChange?: (type: PersistedMedia['type']) => void
+} & Omit<ComponentProps<typeof SelectTrigger>, 'onChange' | 'value'>) {
+  const [hasOpened, setHasOpened] = useState(false)
 
   return (
-    <Select value={type} onValueChange={handleTypeChange}>
+    <Select
+      value={value}
+      onValueChange={onChange}
+      onOpenChange={(open) => {
+        if (open) setHasOpened(true)
+      }}
+    >
       <SelectTrigger
         className={cn(
           'max-h-6 w-auto border-white/20 bg-transparent p-0 px-2 text-xs text-white backdrop-blur-xs select-none',
@@ -39,15 +43,17 @@ export function MediaTypeSelector({
         )}
         {...props}
       >
-        {TYPE_LABELS[type]}
+        {value ? TYPE_LABELS[value] : 'Select type'}
       </SelectTrigger>
-      <SelectContent>
-        {MEDIA_TYPES.map((type) => (
-          <SelectItem key={type} value={type}>
-            {TYPE_LABELS[type]}
-          </SelectItem>
-        ))}
-      </SelectContent>
+      {hasOpened && (
+        <SelectContent>
+          {MEDIA_TYPES.map((type) => (
+            <SelectItem key={type} value={type}>
+              {TYPE_LABELS[type]}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      )}
     </Select>
   )
 }
