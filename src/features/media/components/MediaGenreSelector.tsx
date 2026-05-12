@@ -66,7 +66,10 @@ export function MediaGenreSelector() {
             </button>
           )}
         </div>
-        <div className="hide-scroll h-full overflow-y-auto">
+        <div
+          onWheel={(e) => e.stopPropagation()}
+          className="hide-scroll h-full overflow-y-auto"
+        >
           {filtered.length === 0 && (
             <div className="text-muted-foreground px-3 py-4 text-center text-[11px]">
               No genres found
