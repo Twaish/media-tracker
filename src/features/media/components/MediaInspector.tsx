@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/button'
 import { useQuery } from '@tanstack/react-query'
 import { MediaGenreSelector } from './MediaGenreSelector'
 import { MediaGenres } from './MediaGenres'
-import { PersistedMedia } from '@shared/types'
+import { PersistedGenre, PersistedMedia } from '@shared/types'
 import { MediaPreview } from './MediaPreview'
 
 export const MediaInspector = () => {
@@ -254,13 +254,24 @@ MediaInspector.WatchAfter = function WatchAfter() {
 MediaInspector.Genres = function Genres() {
   const { id } = useMediaInfo()
   const genres = useMediaStore(selectProp(id, 'genres'))
+  const updateMedia = useMediaStore((s) => s.updateMedia)
+
+  const selectedIds = new Set(genres.map((g) => g.id))
+
+  const toggleGenre = (genre: PersistedGenre) => {
+    if (selectedIds.has(genre.id)) {
+      updateMedia(id, { genres: genres.filter((g) => g.id !== genre.id) })
+    } else {
+      updateMedia(id, { genres: [...genres, genre] })
+    }
+  }
 
   return (
     <div className="flex flex-col gap-0.5">
       <FieldTitle>Genres</FieldTitle>
       <MediaGenres genres={genres}>
         <MediaGenres.Badges />
-        <MediaGenreSelector />
+        <MediaGenreSelector selected={selectedIds} onSelect={toggleGenre} />
       </MediaGenres>
     </div>
   )
