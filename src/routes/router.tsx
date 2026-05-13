@@ -21,7 +21,11 @@ function getInitialRoute() {
 const history = createMemoryHistory({
   initialEntries: [getInitialRoute()],
 })
-export const router = createRouter({ routeTree: rootTree, history: history })
+export const router = createRouter({
+  routeTree: rootTree,
+  history,
+  defaultPreload: 'render',
+})
 
 router.subscribe('onResolved', (state) => {
   try {
