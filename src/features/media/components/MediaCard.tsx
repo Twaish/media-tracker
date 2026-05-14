@@ -1,4 +1,4 @@
-import { ComponentProps } from 'react'
+import { ComponentProps, useState } from 'react'
 import {
   ChevronUp,
   ChevronDown,
@@ -9,12 +9,6 @@ import {
   Link,
 } from 'lucide-react'
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-} from '@/components/ui/select'
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -24,23 +18,15 @@ import { cn } from '@/utils/tailwind'
 import { Progress, ProgressIndicator } from '@/components/ui/progress'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { PersistedMedia } from '@shared/types'
 import { openMediaLink } from '../actions'
-import { MEDIA_STATUS } from '@shared/constants/features/media'
-import { useMediaStore, selectMedia } from '../stores/mediaStore'
+import { useMediaStore, selectMedia, selectProp } from '../stores/mediaStore'
 import { MediaInfoContext, useMediaInfo } from '../contexts/useMediaInfo'
 import { MediaFavoriteButton } from './MediaFavoriteButton'
 import { MediaStatusSelector } from './MediaStatusSelector'
 import { MediaThumbnail } from './MediaThumbnail'
-
-const STATUS_LABELS: Record<PersistedMedia['status'], string> = {
-  completed: 'Completed',
-  dropped: 'Dropped',
-  'on-hold': 'On-Hold',
-  'plan-to-watch': 'Plan to Watch',
-  watching: 'Watching',
-} as const
+import { useMediaDialog } from '../hooks/useMediaDialog'
+import { MediaGenres } from './MediaGenres'
 
 export const MediaCard = ({
   mediaId,
@@ -64,7 +50,7 @@ export const MediaCard = ({
         <MediaCard.Thumbnail />
         <div className="relative flex h-80 flex-col p-2">
           <div className="mb-auto flex items-start justify-between pb-3">
-            <MediaStatusSelector />
+            <MediaCard.StatusSelector />
             <div className="flex h-6 items-center justify-center rounded-md border border-white/20 backdrop-blur-xs">
               <MediaFavoriteButton />
               <MediaCard.OptionsButton />
@@ -109,42 +95,9 @@ function EpisodeButton({
   )
 }
 
-MediaCard.StatusSelector = function StatusSelector({
-  className,
-  ...props
-}: ComponentProps<typeof SelectTrigger>) {
-  const { id } = useMediaInfo()
-  const status = useMediaStore((s) => selectMedia(id)(s).status)
-  const updateMedia = useMediaStore((s) => s.updateMedia)
-
-  const handleStatusChange = (status: PersistedMedia['status']) => {
-    updateMedia(id, { status })
-  }
-
-  return (
-    <Select value={status} onValueChange={handleStatusChange}>
-      <SelectTrigger
-        className={cn(
-          'max-h-6 w-auto border-white/20 bg-transparent p-0 px-2 text-xs text-white backdrop-blur-xs select-none',
-          className,
-        )}
-        {...props}
-      >
-        {STATUS_LABELS[status]}
-      </SelectTrigger>
-      <SelectContent>
-        {MEDIA_STATUS.map((status) => (
-          <SelectItem key={status} value={status}>
-            {STATUS_LABELS[status]}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
-  )
-}
 MediaCard.Genres = function Genres() {
   const { id } = useMediaInfo()
-  const genres = useMediaStore((s) => selectMedia(id)(s).genres)
+  const genres = useMediaStore(selectProp(id, 'genres'))
 
   if (genres.length === 0) return null
 
@@ -153,25 +106,28 @@ MediaCard.Genres = function Genres() {
 
   return (
     <div className="mb-3 flex flex-wrap gap-1">
-      {visibleGenres.map((genre) => (
-        <Badge
-          variant={'outline'}
-          className="border-white/20 text-white backdrop-blur-xs"
-          key={genre.id}
-        >
-          {genre.name}
-        </Badge>
-      ))}
-      {remainingGenres > 0 && (
-        <Badge
-          variant={'outline'}
-          className="border-white/20 text-white backdrop-blur-xs"
-        >
-          +{remainingGenres} more
-        </Badge>
-      )}
+      <MediaGenres genres={visibleGenres}>
+        <MediaGenres.Badges className="border-white/20 text-white backdrop-blur-xs" />
+        {remainingGenres > 0 && (
+          <MediaGenres.Badge className="border-white/20 text-white backdrop-blur-xs">
+            +{remainingGenres} more
+          </MediaGenres.Badge>
+        )}
+      </MediaGenres>
     </div>
   )
+}
+
+MediaCard.StatusSelector = function StatusSelector() {
+  const { id } = useMediaInfo()
+  const status = useMediaStore(selectProp(id, 'status'))
+  const updateMedia = useMediaStore((s) => s.updateMedia)
+
+  const handleChange = (status: PersistedMedia['status']) => {
+    updateMedia(id, { status })
+  }
+
+  return <MediaStatusSelector value={status} onChange={handleChange} />
 }
 
 MediaCard.ProgressBar = function ProgressBar() {
@@ -193,8 +149,8 @@ MediaCard.ProgressBar = function ProgressBar() {
 }
 MediaCard.EpisodeControls = function EpisodeControls() {
   const { id } = useMediaInfo()
-  const currentEpisode = useMediaStore((s) => selectMedia(id)(s).currentEpisode)
-  const maxEpisodes = useMediaStore((s) => selectMedia(id)(s).maxEpisodes)
+  const currentEpisode = useMediaStore(selectProp(id, 'currentEpisode'))
+  const maxEpisodes = useMediaStore(selectProp(id, 'maxEpisodes'))
   const updateMedia = useMediaStore((s) => s.updateMedia)
 
   const handleEpisodeChange = (newEpisode: number) => {
@@ -238,8 +194,8 @@ MediaCard.EpisodeControls = function EpisodeControls() {
 }
 MediaCard.EpisodeDisplay = function EpisodeDisplay() {
   const { id } = useMediaInfo()
-  const currentEpisode = useMediaStore((s) => selectMedia(id)(s).currentEpisode)
-  const maxEpisodes = useMediaStore((s) => selectMedia(id)(s).maxEpisodes)
+  const currentEpisode = useMediaStore(selectProp(id, 'currentEpisode'))
+  const maxEpisodes = useMediaStore(selectProp(id, 'maxEpisodes'))
 
   return (
     <div className="rounded-md border border-white/20 px-1 py-0.5 text-xs whitespace-pre text-white backdrop-blur-xs">
@@ -251,7 +207,7 @@ MediaCard.EpisodeDisplay = function EpisodeDisplay() {
 }
 MediaCard.OpenButton = function OpenButton() {
   const { id } = useMediaInfo()
-  const externalLink = useMediaStore((s) => selectMedia(id)(s).externalLink)
+  const externalLink = useMediaStore(selectProp(id, 'externalLink'))
   if (!externalLink) return null
 
   return (
@@ -286,43 +242,61 @@ MediaCard.NextButton = function NextButton() {
   )
 }
 MediaCard.OptionsButton = function OptionsButton() {
+  const { id } = useMediaInfo()
+  const [hasOpened, setHasOpened] = useState(false)
+  const updateMedia = useMediaStore((s) => s.updateMedia)
+  const { edit } = useMediaDialog({
+    onEdit: (media) => {
+      if (!media.id) {
+        throw new Error('Missing required Id on edit draft')
+      }
+      updateMedia(media.id, media)
+    },
+  })
+
+  const media = useMediaStore(selectMedia(id))
+
   return (
-    <DropdownMenu>
+    <DropdownMenu
+      onOpenChange={(open) => {
+        setHasOpened(open)
+      }}
+    >
       <DropdownMenuTrigger asChild>
         <button className="h-6 w-6 p-0 text-white/50 outline-none hover:text-white focus-visible:text-white">
           <MoreVertical className="h-4 w-4" />
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuItem>
-          {/* TODO: Add functionality */}
-          <Edit className="mr-2 h-4 w-4" />
-          Edit
-        </DropdownMenuItem>
-        <DropdownMenuItem>
-          {/* TODO: Add functionality */}
-          <Trash2 className="mr-2 h-4 w-4" />
-          Delete
-        </DropdownMenuItem>
-      </DropdownMenuContent>
+      {hasOpened && (
+        <DropdownMenuContent>
+          <DropdownMenuItem onClick={() => edit(media)}>
+            <Edit className="mr-2 h-4 w-4" />
+            Edit
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Trash2 className="mr-2 h-4 w-4" />
+            Delete
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      )}
     </DropdownMenu>
   )
 }
 MediaCard.Thumbnail = function Thumbnail() {
   const { id } = useMediaInfo()
-  const thumbnail = useMediaStore((s) => selectMedia(id)(s).thumbnail)
+  const thumbnail = useMediaStore(selectProp(id, 'thumbnail'))
 
   return (
     <MediaThumbnail
       src={thumbnail}
-      className="absolute inset-0 h-full w-full opacity-90 brightness-70 select-none"
+      className="absolute inset-0 h-full w-full brightness-60 select-none"
     />
   )
 }
 MediaCard.LastUpdateLabel = function LastUpdateLabel() {
   const { id } = useMediaInfo()
   const lastUpdatedLabel = useMediaStore((s) => {
-    const lastUpdated = selectMedia(id)(s).lastUpdated
+    const lastUpdated = selectProp(id, 'lastUpdated')(s)
 
     return lastUpdated ? formatLastUpdated(lastUpdated.toString()) : null
   })
@@ -333,7 +307,7 @@ MediaCard.LastUpdateLabel = function LastUpdateLabel() {
 }
 MediaCard.Title = function Title() {
   const { id } = useMediaInfo()
-  const title = useMediaStore((s) => selectMedia(id)(s).title)
+  const title = useMediaStore(selectProp(id, 'title'))
   return (
     <div className="mt-auto mb-2 line-clamp-2 text-lg leading-tight font-semibold text-white">
       {title}
