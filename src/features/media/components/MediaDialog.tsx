@@ -77,8 +77,6 @@ export function MediaDialog({
       >
         <VisuallyHidden.Root>
           <DialogTitle>Media dialog</DialogTitle>
-        </VisuallyHidden.Root>
-        <VisuallyHidden.Root>
           <DialogDescription>Add or edit media</DialogDescription>
         </VisuallyHidden.Root>
         <div className="flex h-full w-full flex-col gap-3 overflow-auto p-4">

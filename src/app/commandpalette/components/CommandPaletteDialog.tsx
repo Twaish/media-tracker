@@ -16,10 +16,8 @@ export function PaletteDialog() {
       showCloseButton={false}
       className="z-99 flex max-h-[70vh] flex-col gap-0 overflow-hidden rounded-none p-0"
     >
-      <VisuallyHidden.Root asChild>
+      <VisuallyHidden.Root>
         <DialogTitle>Command Palette</DialogTitle>
-      </VisuallyHidden.Root>
-      <VisuallyHidden.Root asChild>
         <DialogDescription>Search or run a command</DialogDescription>
       </VisuallyHidden.Root>
       <CommandPaletteBreadcrumbs />

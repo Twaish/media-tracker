@@ -90,10 +90,8 @@ export function SelectThemeDialog({
       showCloseButton={false}
       className="z-99 flex max-h-[70vh] flex-col gap-0 overflow-hidden rounded-none p-0"
     >
-      <VisuallyHidden.Root asChild>
+      <VisuallyHidden.Root>
         <DialogTitle>Select Theme</DialogTitle>
-      </VisuallyHidden.Root>
-      <VisuallyHidden.Root asChild>
         <DialogDescription>
           Choose a colour scheme for your workspace
         </DialogDescription>

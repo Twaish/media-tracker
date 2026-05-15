@@ -170,8 +170,6 @@ PluginDialog.Content = function Content({
       <Dialog onOpenChange={handleOpenChange} open={open}>
         <VisuallyHidden.Root>
           <DialogTitle>{manifest.name} settings</DialogTitle>
-        </VisuallyHidden.Root>
-        <VisuallyHidden.Root>
           <DialogDescription>
             Modify settings for {manifest.name}
           </DialogDescription>
