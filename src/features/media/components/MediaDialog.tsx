@@ -228,7 +228,7 @@ MediaDialog.EpisodeInput = function EpisodeInput() {
       <div className="flex flex-col gap-1">
         <FieldTitle>Max Episodes</FieldTitle>
         <Input
-          value={maxEpisodes}
+          value={maxEpisodes ?? ''}
           type="number"
           min={0}
           step={1}
