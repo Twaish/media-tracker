@@ -1,6 +1,7 @@
 import { Command } from '@/app/commandpalette/types'
 import { toggleSelectTheme } from '@/app/theme/actions'
 import { toggleSelectLanguage } from '@/app/language/actions'
+import { togglePluginMenu } from '@/app/plugins/actions'
 
 const scoped = (scope: string, items: Omit<Command, 'scope'>[]) => {
   return items.map((item) => Object.assign(item, { scope }))
@@ -86,6 +87,13 @@ const settingsCommands = scoped('Settings', [
     steps: [],
     hotkey: 'ctrl+o',
     action: toggleSelectTheme,
+  },
+  {
+    icon: '🧩',
+    title: 'Manage plugins',
+    desc: 'Manage plugins for the application',
+    steps: [],
+    action: togglePluginMenu,
   },
 ])
 
