@@ -1,4 +1,6 @@
 import { ipc } from '@/core/ipc'
+import { useModalStore } from '@/stores/modal/modalStore'
+import { closePluginMenu, openPluginMenu } from './hooks/usePluginMenu'
 
 export async function getPluginPermissionKeys() {
   return ipc.client.plugins.getPermissionKeys()
@@ -22,4 +24,12 @@ export async function disablePlugin(id: string) {
 
 export async function enablePlugin(id: string) {
   return ipc.client.plugins.enable(id)
+}
+
+export function togglePluginMenu() {
+  if (useModalStore.getState().isOpen) {
+    closePluginMenu()
+  } else {
+    openPluginMenu()
+  }
 }
