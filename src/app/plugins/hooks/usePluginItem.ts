@@ -4,6 +4,7 @@ import { PluginManifest } from '@shared/types/features'
 import { Plugin } from '../stores/usePluginStore'
 
 type PluginItemContextType = {
+  query: string
   plugin: Plugin
   manifest: PluginManifest
   namespace: string
