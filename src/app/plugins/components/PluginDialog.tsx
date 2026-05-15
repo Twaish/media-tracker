@@ -36,6 +36,7 @@ export function PluginDialog() {
           <PluginItem.Author />
         </PluginItem.Details>
       </PluginItem.Header>
+      <PluginDialog.Permissions />
       <PluginDependencies />
       <PluginSettings />
       <PluginDialog.Footer />
@@ -223,6 +224,25 @@ PluginDialog.Content = function Content({
         </DialogContent>
       </Dialog>
     </>
+  )
+}
+
+PluginDialog.Permissions = function Permissions() {
+  const { manifest } = usePluginItem()
+
+  if (!manifest.permissions?.length) return null
+
+  return (
+    <div className="bg-card px-1 pb-1">
+      <div className="text-muted-foreground mb-1 ml-1 font-mono text-[10px] tracking-widest uppercase">
+        Permissions
+      </div>
+      <div className="flex flex-wrap gap-1">
+        {manifest.permissions.sort().map((perm) => (
+          <Permission key={perm}>{perm}</Permission>
+        ))}
+      </div>
+    </div>
   )
 }
 
