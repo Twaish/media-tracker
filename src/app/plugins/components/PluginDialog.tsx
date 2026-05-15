@@ -23,86 +23,108 @@ import { PluginDependencies } from './PluginDependencies'
 import { usePluginSettings } from '../hooks/usePluginSettings'
 
 export function PluginDialog() {
-  const { plugin, manifest } = usePluginItem()
-
-  const handleOpenLocation = () => {
-    openFolder(plugin.path)
-  }
-
-  const handleOpenSource = () => {
-    if (manifest.repository) openLink(manifest.repository)
-  }
-
   return (
     <PluginDialog.Content className="flex max-h-[70vh] flex-col overflow-hidden">
       <PluginItem.Header className="mb-0 max-h-12 p-2">
         <PluginItem.Icon />
         <PluginItem.Details>
           <PluginItem.Title>
-            <button
-              onClick={handleOpenLocation}
-              title={'Open folder'}
-              className="opacity-50 transition-opacity duration-100 hover:opacity-100"
-            >
-              <FolderOpen className="h-3.5 w-3.5" />
-            </button>
-            {manifest.repository && (
-              <Dialog>
-                <DialogTrigger asChild>
-                  <button
-                    title={manifest.repository}
-                    className="opacity-50 transition-opacity duration-100 hover:opacity-100"
-                  >
-                    <Link className="h-3.5 w-3.5" />
-                  </button>
-                </DialogTrigger>
-                <DialogContent className="gap-0 p-0">
-                  <DialogHeader className="px-4 py-3">
-                    <div className="flex items-center gap-2">
-                      <AlertTriangle className="h-3.5 w-3.5" />
-                      <DialogTitle className="text-sm font-semibold">
-                        Open this link?
-                      </DialogTitle>
-                    </div>
-                    <DialogDescription className="text-muted-foreground mt-1">
-                      Are you sure you want to open
-                    </DialogDescription>
-                    <div className="flex max-h-12 flex-col gap-0.5 rounded-sm border px-2 py-1">
-                      <div className="text-muted-foreground/70 font-mono text-[10px] font-semibold tracking-widest uppercase">
-                        Link
-                      </div>
-                      <div className="text-accent-foreground/90 flex items-center gap-1 font-mono text-xs">
-                        <Link className="h-3.5 w-3.5" />
-                        <span className="w-full">{manifest.repository}</span>
-                      </div>
-                    </div>
-                  </DialogHeader>
-                  <DialogFooter className="gap-2">
-                    <DialogFooterHint text="close">Esc</DialogFooterHint>
-                    <div className="flex-1"></div>
-                    <DialogClose asChild>
-                      <Button variant={'secondary'}>cancel</Button>
-                    </DialogClose>
-                    <DialogClose asChild>
-                      <Button onClick={handleOpenSource}>open</Button>
-                    </DialogClose>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            )}
-            <div className="text-muted-foreground mr-12 ml-auto font-mono text-[10px]">
-              ID: {manifest.id}
-            </div>
+            <PluginDialog.Location />
+            <PluginDialog.Manifest />
+            <PluginDialog.Id />
           </PluginItem.Title>
           <PluginItem.Author />
         </PluginItem.Details>
       </PluginItem.Header>
       <PluginDependencies />
-
       <PluginSettings />
-
       <PluginDialog.Footer />
     </PluginDialog.Content>
+  )
+}
+
+PluginDialog.Location = function Location() {
+  const { plugin } = usePluginItem()
+  const handleOpenLocation = () => {
+    openFolder(plugin.path)
+  }
+
+  return (
+    <button
+      onClick={handleOpenLocation}
+      title={'Open folder'}
+      className="opacity-50 transition-opacity duration-100 hover:opacity-100"
+    >
+      <FolderOpen className="h-3.5 w-3.5" />
+    </button>
+  )
+}
+PluginDialog.Manifest = function Manifest() {
+  const { manifest } = usePluginItem()
+  const [hasOpened, setHasOpened] = useState(false)
+
+  if (!manifest.repository) return null
+
+  const handleOpenSource = () => {
+    if (manifest.repository) openLink(manifest.repository)
+  }
+
+  return (
+    <Dialog onOpenChange={(open) => open && setHasOpened(open)}>
+      <DialogTrigger asChild>
+        <button
+          title={manifest.repository}
+          className="opacity-50 transition-opacity duration-100 hover:opacity-100"
+        >
+          <Link className="h-3.5 w-3.5" />
+        </button>
+      </DialogTrigger>
+      {hasOpened && (
+        <DialogContent className="gap-0 p-0">
+          <DialogHeader className="px-4 py-3">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="h-3.5 w-3.5" />
+              <DialogTitle className="text-sm font-semibold">
+                Open this link?
+              </DialogTitle>
+              {(() => {
+                console.log('YUP')
+              })()}
+            </div>
+            <DialogDescription className="text-muted-foreground mt-1">
+              Are you sure you want to open
+            </DialogDescription>
+            <div className="flex max-h-12 flex-col gap-0.5 rounded-sm border px-2 py-1">
+              <div className="text-muted-foreground/70 font-mono text-[10px] font-semibold tracking-widest uppercase">
+                Link
+              </div>
+              <div className="text-accent-foreground/90 flex items-center gap-1 font-mono text-xs">
+                <Link className="h-3.5 w-3.5" />
+                <span className="w-full">{manifest.repository}</span>
+              </div>
+            </div>
+          </DialogHeader>
+          <DialogFooter className="gap-2">
+            <DialogFooterHint text="close">Esc</DialogFooterHint>
+            <div className="flex-1"></div>
+            <DialogClose asChild>
+              <Button variant={'secondary'}>cancel</Button>
+            </DialogClose>
+            <DialogClose asChild>
+              <Button onClick={handleOpenSource}>open</Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      )}
+    </Dialog>
+  )
+}
+PluginDialog.Id = function Id() {
+  const { manifest } = usePluginItem()
+  return (
+    <div className="text-muted-foreground mr-12 ml-auto font-mono text-[10px]">
+      ID: {manifest.id}
+    </div>
   )
 }
 
@@ -161,9 +183,11 @@ PluginDialog.Content = function Content({
             <Settings className="h-4 w-4" />
           </button>
         </DialogTrigger>
-        <DialogContent className={cn('gap-0 p-0', className)} {...rest}>
-          {children}
-        </DialogContent>
+        {open && (
+          <DialogContent className={cn('gap-0 p-0', className)} {...rest}>
+            {children}
+          </DialogContent>
+        )}
       </Dialog>
 
       <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
@@ -199,6 +223,20 @@ PluginDialog.Content = function Content({
         </DialogContent>
       </Dialog>
     </>
+  )
+}
+
+function Permission({ className, children, ...rest }: ComponentProps<'div'>) {
+  return (
+    <div
+      className={cn(
+        'hover:bg-muted/50 bg-muted/40 flex max-w-full min-w-max cursor-default items-center gap-1 overflow-hidden rounded-sm p-1 whitespace-pre',
+        className,
+      )}
+      {...rest}
+    >
+      <span className="font-mono text-xs">{children}</span>
+    </div>
   )
 }
 
