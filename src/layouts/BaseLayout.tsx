@@ -8,6 +8,7 @@ import { Download, Upload } from 'lucide-react'
 import { LanguageSelector } from '@/app/language/components/LanguageSelector'
 import { ThemeSelector } from '@/app/theme/components/ThemeSelector'
 import { CommandPalette } from '@/app/commandpalette/components/CommandPalette'
+import { PluginMenuButton } from '@/app/plugins/components/PluginMenuButton'
 
 export default function BaseLayout({ children }: { children: ReactNode }) {
   const { data: appName } = useQuery({
@@ -33,6 +34,7 @@ export default function BaseLayout({ children }: { children: ReactNode }) {
 
             <div className="bg-border mx-1 h-4 w-px" />
             <CommandPalette />
+            <PluginMenuButton />
             <LanguageSelector />
             <ThemeSelector />
           </div>
