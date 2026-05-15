@@ -19,8 +19,8 @@ import { openFolder, openLink } from '@/app/instance/actions'
 import { PluginItem } from './PluginItem'
 import { PluginSettings } from './PluginSettings'
 import { usePluginItem } from '../hooks/usePluginItem'
-import { PluginDependencies } from './PluginDependencies'
 import { usePluginSettings } from '../hooks/usePluginSettings'
+import { usePluginStore } from '../stores/usePluginStore'
 
 export function PluginDialog() {
   return (
@@ -36,8 +36,8 @@ export function PluginDialog() {
           <PluginItem.Author />
         </PluginItem.Details>
       </PluginItem.Header>
+      <PluginDialog.Dependencies />
       <PluginDialog.Permissions />
-      <PluginDependencies />
       <PluginSettings />
       <PluginDialog.Footer />
     </PluginDialog.Content>
@@ -88,9 +88,6 @@ PluginDialog.Manifest = function Manifest() {
               <DialogTitle className="text-sm font-semibold">
                 Open this link?
               </DialogTitle>
-              {(() => {
-                console.log('YUP')
-              })()}
             </div>
             <DialogDescription className="text-muted-foreground mt-1">
               Are you sure you want to open
@@ -136,10 +133,12 @@ PluginDialog.Content = function Content({
 }: ComponentProps<typeof DialogContent> & { children?: ReactNode }) {
   const { manifest, namespace } = usePluginItem()
   const [open, setOpen] = useState(false)
+  const [hasOpened, setHasOpened] = useState(false)
   const [confirmOpen, setConfirmOpen] = useState(false)
   const { isDirty, save, discard } = usePluginSettings(manifest.id, namespace)
 
   const handleOpenChange = (nextOpen: boolean) => {
+    if (nextOpen) setHasOpened(nextOpen)
     if (!nextOpen && isDirty) {
       setConfirmOpen(true)
       return
@@ -182,7 +181,7 @@ PluginDialog.Content = function Content({
             <Settings className="h-4 w-4" />
           </button>
         </DialogTrigger>
-        {open && (
+        {hasOpened && (
           <DialogContent className={cn('gap-0 p-0', className)} {...rest}>
             {children}
           </DialogContent>
@@ -232,9 +231,7 @@ PluginDialog.Permissions = function Permissions() {
 
   return (
     <div className="bg-card px-1 pb-1">
-      <div className="text-muted-foreground mb-1 ml-1 font-mono text-[10px] tracking-widest uppercase">
-        Permissions
-      </div>
+      <FieldTitle>Permissions</FieldTitle>
       <div className="flex flex-wrap gap-1">
         {manifest.permissions.sort().map((perm) => (
           <Permission key={perm}>{perm}</Permission>
@@ -246,15 +243,48 @@ PluginDialog.Permissions = function Permissions() {
 
 function Permission({ className, children, ...rest }: ComponentProps<'div'>) {
   return (
-    <div
-      className={cn(
-        'hover:bg-muted/50 bg-muted/40 flex max-w-full min-w-max cursor-default items-center gap-1 overflow-hidden rounded-sm p-1 whitespace-pre',
-        className,
-      )}
-      {...rest}
-    >
-      <span className="font-mono text-xs">{children}</span>
+    <Badge>
+      <Badge.Title>{children}</Badge.Title>
+    </Badge>
+  )
+}
+
+PluginDialog.Dependencies = function Dependencies() {
+  const { manifest } = usePluginItem()
+
+  if (!manifest.dependencies?.length) return null
+
+  return (
+    <div className="bg-card px-1 pb-1">
+      <FieldTitle>Dependencies</FieldTitle>
+      <div className="flex flex-wrap gap-1">
+        {manifest.dependencies.map((dep) => (
+          <Dependency key={dep} pluginName={dep} />
+        ))}
+      </div>
     </div>
+  )
+}
+
+function Dependency({ pluginName }: { pluginName: string }) {
+  const plugin = usePluginStore((s) =>
+    s.plugins.find((p) => p.manifest.id === pluginName),
+  )
+  if (!plugin) return null
+
+  const manifest = plugin.manifest
+
+  return (
+    <Badge>
+      {manifest.icon ? (
+        <img className="h-4 w-4" src={`pluginicon://${manifest.id}`} />
+      ) : (
+        <div className="flex h-4 w-4 items-center justify-center text-xs">
+          {':)'}
+        </div>
+      )}
+      <Badge.Title>{manifest.name}</Badge.Title>
+    </Badge>
   )
 }
 
@@ -289,5 +319,44 @@ PluginDialog.Footer = function Footer() {
         </div>
       </DialogFooter>
     </>
+  )
+}
+
+function FieldTitle({ className, children, ...props }: ComponentProps<'div'>) {
+  return (
+    <div
+      className={cn(
+        'text-muted-foreground mb-1 ml-1 font-mono text-[10px] tracking-widest uppercase',
+        className,
+      )}
+      {...props}
+    >
+      {children}
+    </div>
+  )
+}
+
+function Badge({ className, children, ...props }: ComponentProps<'div'>) {
+  return (
+    <div
+      className={cn(
+        'hover:bg-muted/50 bg-muted/40 flex max-w-full min-w-max cursor-default items-center gap-1 overflow-hidden rounded-sm p-1 whitespace-pre',
+        className,
+      )}
+      {...props}
+    >
+      {children}
+    </div>
+  )
+}
+Badge.Title = function Title({
+  className,
+  children,
+  ...props
+}: ComponentProps<'span'>) {
+  return (
+    <span className={cn('font-mono text-xs', className)} {...props}>
+      {children}
+    </span>
   )
 }
