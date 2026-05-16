@@ -8,14 +8,18 @@ import { useMediaInspectorStore } from '@/features/media/stores/mediaInspectorSt
 import { MediaInspector } from '@/features/media/components/MediaInspector'
 import { motion } from 'framer-motion'
 import { useHotkey } from '@/app/hotkeys/hooks/useHotkey'
+import { MediaToolbar } from '@/features/media/components/MediaToolbar'
 
 export default function LibraryPage() {
   return (
-    <div className="flex h-full w-full">
-      <div className="hide-scroll h-full w-full overflow-auto">
-        <MediaGrid />
+    <div className="flex h-full w-full flex-col">
+      <MediaToolbar />
+      <div className="flex flex-1 overflow-hidden">
+        <div className="hide-scroll h-full w-full overflow-auto">
+          <MediaGrid />
+        </div>
+        <MediaInspector />
       </div>
-      <MediaInspector />
     </div>
   )
 }
