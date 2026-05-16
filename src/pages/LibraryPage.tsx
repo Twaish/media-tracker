@@ -9,6 +9,7 @@ import { MediaInspector } from '@/features/media/components/MediaInspector'
 import { motion } from 'framer-motion'
 import { useHotkey } from '@/app/hotkeys/hooks/useHotkey'
 import { MediaToolbar } from '@/features/media/components/MediaToolbar'
+import { getMediaQueryOptions } from '@/features/media/queries'
 
 export default function LibraryPage() {
   return (
@@ -29,10 +30,7 @@ function MediaGrid() {
   const selectMedia = useMediaInspectorStore((s) => s.selectMedia)
   const hasSelectedMedia = useMediaInspectorStore((s) => !!s.selectedMedia)
 
-  const { data: mediaResults, isLoading } = useQuery({
-    queryKey: ['media'],
-    queryFn: () => getMedia({ page: 1, limit: 20 }),
-  })
+  const { data: mediaResults, isLoading } = useQuery(getMediaQueryOptions(1, 5))
 
   useEffect(() => {
     if (mediaResults?.data) {
