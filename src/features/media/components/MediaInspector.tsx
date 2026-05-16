@@ -40,7 +40,7 @@ export const MediaInspector = () => {
               <MediaInspector.StatusSelector />
             </div>
             <div className="flex items-center gap-1">
-              <MediaFavoriteButton className={overlayStyles} />
+              <MediaInspector.FavoriteButton className={overlayStyles} />
               <MediaInspector.CloseButton className={overlayStyles} />
             </div>
           </div>
@@ -93,6 +93,27 @@ MediaInspector.NextPreview = function NextPreview() {
   )
 }
 
+MediaInspector.FavoriteButton = function FavoriteButton({
+  onClick,
+  ...props
+}: ComponentProps<typeof MediaFavoriteButton>) {
+  const { id } = useMediaInfo()
+  const isFavorite = useMediaStore(selectProp(id, 'isFavorite'))
+  const updateMedia = useMediaStore((s) => s.updateMedia)
+
+  const handleClick = () => {
+    updateMedia(id, { isFavorite: !isFavorite })
+  }
+
+  return (
+    <MediaFavoriteButton
+      checked={isFavorite}
+      onClick={handleClick}
+      {...props}
+    />
+  )
+}
+
 MediaInspector.Thumbnail = function Thumbnail() {
   const { id } = useMediaInfo()
   const thumbnail = useMediaStore(selectProp(id, 'thumbnail'))
@@ -138,7 +159,6 @@ MediaInspector.EpisodeDisplay = function EpisodeDisplay({
   const currentEpisode = useMediaStore(selectProp(id, 'currentEpisode'))
   const maxEpisodes = useMediaStore(selectProp(id, 'maxEpisodes'))
 
-  // TODO: Implement episode input and inc, dec button
   return (
     <div
       className={cn(
