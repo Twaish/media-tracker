@@ -13,9 +13,7 @@ export default class UpdateMedia {
 
   async execute(media: UpdateMediaDTO) {
     if (media.thumbnail) {
-      const stored = await this.storage.storeImage({
-        imagePath: media.thumbnail,
-      })
+      const stored = await this.storage.storeImage({ image: media.thumbnail })
       media.thumbnail = stored.filename
     }
 

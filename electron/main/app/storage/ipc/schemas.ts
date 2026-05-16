@@ -1,7 +1,7 @@
 import z from 'zod'
 
 export const storeImageInputSchema = z.object({
-  imagePath: z.string(),
+  image: z.union([z.string(), z.instanceof(Buffer)]),
   options: z
     .object({
       maxWidth: z.number().optional(),

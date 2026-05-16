@@ -16,7 +16,7 @@ describe('StoreImage', () => {
 
   it('stores image with provided path and options', async () => {
     const storeImageArgs = {
-      imagePath: '/tmp/image.jpg',
+      image: '/tmp/image.jpg',
       options: {
         maxWidth: 480,
         maxHeight: 480,
@@ -43,7 +43,7 @@ describe('StoreImage', () => {
 
   it('throws if storage fails', async () => {
     const storeImageArgs = {
-      imagePath: '/tmp/image.jpg',
+      image: '/tmp/image.jpg',
     }
     const storageError = new Error('Storage failed')
 

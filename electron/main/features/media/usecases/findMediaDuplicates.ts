@@ -13,7 +13,7 @@ export default class FindMediaDuplicates {
 
     if (media?.thumbnail) {
       const stored = await this.storage.storeImage({
-        imagePath: media.thumbnail,
+        image: media.thumbnail,
       })
       thumbnail = stored.relativePath
     }

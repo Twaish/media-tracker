@@ -22,12 +22,12 @@ export class StorageService extends EventEmitter implements IStorageService {
   }
 
   async storeImage({
-    imagePath,
+    image,
     options = {},
   }: StoreImageDTO): Promise<StoredImageResultDTO> {
     const { maxWidth = 512, maxHeight = 512, format = 'png' } = options
 
-    const { data, info } = await sharp(imagePath)
+    const { data, info } = await sharp(image)
       .rotate()
       .resize({
         width: maxWidth,

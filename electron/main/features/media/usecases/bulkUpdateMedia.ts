@@ -16,7 +16,7 @@ export default class BulkUpdateMedia {
     // Currently doesn't validate each medias currentEpisode
     if (mediaUpdates.update?.thumbnail) {
       const stored = await this.storage.storeImage({
-        imagePath: mediaUpdates.update.thumbnail,
+        image: mediaUpdates.update.thumbnail,
       })
       mediaUpdates.update.thumbnail = stored.filename
     }
