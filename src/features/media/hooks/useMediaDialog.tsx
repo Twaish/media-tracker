@@ -57,7 +57,11 @@ export const closeMediaDialog = () => {
 
 export const mediaDialogActions = {
   add: (options: UseMediaDialogOptions = {}) => {
-    useMediaEditStore.getState().load({})
+    useMediaEditStore.getState().load({
+      type: 'anime',
+      status: 'plan-to-watch',
+      currentEpisode: 0,
+    })
     openMediaDialog(options)
   },
   edit: (

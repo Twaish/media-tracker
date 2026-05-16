@@ -131,7 +131,7 @@ MediaDialog.TitleInput = function TitleInput() {
 
 MediaDialog.TypeInput = function TypeInput() {
   const { store } = useMediaDialog()
-  const type = store((s) => s.draft.type) ?? 'anime'
+  const type = store((s) => s.draft.type)
   const updateMedia = store((s) => s.updateMedia)
 
   const handleChange = (type: PersistedMedia['type']) => {
@@ -152,7 +152,7 @@ MediaDialog.TypeInput = function TypeInput() {
 
 MediaDialog.StatusInput = function StatusInput() {
   const { store } = useMediaDialog()
-  const status = store((s) => s.draft.status) ?? 'plan-to-watch'
+  const status = store((s) => s.draft.status)
   const updateMedia = store((s) => s.updateMedia)
 
   const handleChange = (status: PersistedMedia['status']) => {
@@ -217,7 +217,7 @@ MediaDialog.EpisodeInput = function EpisodeInput() {
       <div className="flex flex-col gap-1">
         <FieldTitle>Episode*</FieldTitle>
         <Input
-          value={currentEpisode}
+          value={currentEpisode ?? ''}
           type="number"
           min={0}
           step={1}
@@ -384,12 +384,10 @@ function MediaSelectionPopover({
             {filtered.map((media) => (
               <button
                 key={media.id}
+                onClick={() => handleSelect(media)}
                 className="hover:bg-muted/50 flex px-2 py-2"
               >
-                <MediaPreview
-                  onClick={() => handleSelect(media)}
-                  mediaId={media.id}
-                />
+                <MediaPreview mediaId={media.id} />
               </button>
             ))}
           </div>
@@ -553,12 +551,20 @@ MediaDialog.Footer = function Footer() {
   const reset = store((s) => s.reset)
 
   const save = () => {
-    onEdit?.(store.getState().draft)
-    closeMediaDialog()
+    try {
+      onEdit?.(store.getState().draft)
+      closeMediaDialog()
+    } catch (err) {
+      console.log(`Something went wrong updating media ${String(err)}`)
+    }
   }
   const add = () => {
-    onAdd?.(store.getState().draft)
-    closeMediaDialog()
+    try {
+      onAdd?.(store.getState().draft)
+      closeMediaDialog()
+    } catch (err) {
+      console.log(`Something went wrong adding media ${String(err)}`)
+    }
   }
 
   return (
