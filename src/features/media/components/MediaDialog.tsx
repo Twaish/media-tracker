@@ -34,6 +34,7 @@ import { MediaGenreSelector } from './MediaGenreSelector'
 import { PersistedGenre, PersistedMedia } from '@shared/types'
 import { searchMedia } from '../actions'
 import { closeMediaDialog } from '../hooks/useMediaDialog'
+import { getMediaByIdQueryOptions } from '../queries'
 
 type Store = UseBoundStore<
   StoreApi<{
@@ -270,7 +271,12 @@ type _PersistedMedia = Omit<PersistedMedia, 'isFavorite'> & {
 MediaDialog.WatchAfterInput = function WatchAfterInput() {
   const { mediaId, store } = useMediaDialog()
 
-  const defaultId = store((s) => s.draft.watchAfter) ?? null
+  const watchAfter = store((s) => s.draft.watchAfter) ?? null
+  const { data } = useQuery({
+    ...getMediaByIdQueryOptions(watchAfter ?? 0),
+    enabled: watchAfter != null,
+  })
+
   const updateMedia = store((s) => s.updateMedia)
 
   const exclude = mediaId ? [mediaId] : undefined
@@ -292,8 +298,8 @@ MediaDialog.WatchAfterInput = function WatchAfterInput() {
     </MediaSelectionPopover>
   )
 
-  return defaultId ? (
-    <MediaPreview mediaId={defaultId} className="w-full">
+  return data?.id ? (
+    <MediaPreview mediaId={data.id} className="w-full">
       <div className="mt-auto flex gap-1">
         {picker}
         <Button variant="secondary" onClick={handleRemove}>
