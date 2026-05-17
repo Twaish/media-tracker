@@ -189,7 +189,7 @@ MediaInspector.EpisodeDisplay = function EpisodeDisplay({
 
 MediaInspector.TypeSelector = function TypeSelector() {
   const { id } = useMediaInfo()
-  const type = useMediaStore((s) => selectMedia(id)(s).type)
+  const type = useMediaStore(selectProp(id, 'type'))
   const updateMedia = useMediaStore((s) => s.updateMedia)
 
   const handleChange = (type: PersistedMedia['type']) => {
@@ -207,7 +207,7 @@ MediaInspector.TypeSelector = function TypeSelector() {
 
 MediaInspector.StatusSelector = function StatusSelector() {
   const { id } = useMediaInfo()
-  const status = useMediaStore((s) => selectMedia(id)(s).status)
+  const status = useMediaStore(selectProp(id, 'status'))
   const updateMedia = useMediaStore((s) => s.updateMedia)
 
   const handleChange = (status: PersistedMedia['status']) => {
@@ -275,7 +275,7 @@ MediaInspector.ExternalLink = function ExternalLink() {
 }
 MediaInspector.Genres = function Genres() {
   const { id } = useMediaInfo()
-  const genres = useMediaStore(selectProp(id, 'genres'))
+  const genres = useMediaStore(selectProp(id, 'genres')) ?? []
   const updateMedia = useMediaStore((s) => s.updateMedia)
 
   const selectedIds = new Set(genres.map((g) => g.id))
