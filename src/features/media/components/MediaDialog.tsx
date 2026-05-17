@@ -42,6 +42,7 @@ type Store = UseBoundStore<
     draft: Partial<PersistedMedia>
     updateMedia(patch: Partial<PersistedMedia>): void
     reset: () => void
+    getChanges: () => Partial<PersistedMedia>
   }>
 >
 
@@ -555,10 +556,11 @@ MediaDialog.Footer = function Footer() {
 
   const isDirty = store((s) => s.isDirty) ?? false
   const reset = store((s) => s.reset)
+  const getChanges = store((s) => s.getChanges)
 
   const save = () => {
     try {
-      onEdit?.(store.getState().draft)
+      onEdit?.(getChanges())
       closeMediaDialog()
     } catch (err) {
       console.log(`Something went wrong updating media ${String(err)}`)
