@@ -33,7 +33,7 @@ import { MediaThumbnail } from './MediaThumbnail'
 import { closeMediaDialog, useMediaDialog } from '../hooks/useMediaDialog'
 import { MediaGenres } from './MediaGenres'
 import { useRemoveMedia, useUpdateMedia } from '../mutations'
-import { useConfirmationDialog } from '@/components/ConfirmationDialog'
+import { useConfirmationDialog } from '@/components/confirmation-dialog/useConfirmationDialog'
 
 // Fetch info directly from store as MediaCard are already created using it
 const MediaCardContext = createContext<{
