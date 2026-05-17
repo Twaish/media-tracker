@@ -11,9 +11,25 @@ type MediaEditState = {
   updateMedia: (patch: Partial<PersistedMedia>) => void
   load: (media: Partial<PersistedMedia>) => void
   reset: () => void
+  getChanges: () => Partial<PersistedMedia>
 }
 
-export const useMediaEditStore = create<MediaEditState>((set) => ({
+function getDirtyFields<T extends object>(
+  original: Partial<T>,
+  draft: Partial<T>,
+): Partial<T> {
+  const result: Partial<T> = {}
+
+  for (const key of Object.keys(draft) as (keyof T)[]) {
+    if (draft[key] !== original[key]) {
+      result[key] = draft[key]
+    }
+  }
+
+  return result
+}
+
+export const useMediaEditStore = create<MediaEditState>((set, get) => ({
   isDirty: false,
   draft: {},
   original: {},
@@ -28,6 +44,11 @@ export const useMediaEditStore = create<MediaEditState>((set) => ({
   load: (media) =>
     set({ isDirty: false, draft: { ...media }, original: { ...media } }),
   reset: () => set((s) => ({ isDirty: false, draft: { ...s.original } })),
+  getChanges: () => {
+    const { draft, original } = get()
+
+    return getDirtyFields(original, draft)
+  },
 }))
 
 interface UseMediaDialogOptions {
