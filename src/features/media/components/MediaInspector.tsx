@@ -1,10 +1,9 @@
-import { ComponentProps } from 'react'
+import { ComponentProps, createContext, ReactNode, useContext } from 'react'
 import { ArrowRight, SquareArrowOutUpRight, X } from 'lucide-react'
 import { cn } from '@/utils/tailwind'
-import { MediaInfoContext, useMediaInfo } from '../contexts/useMediaInfo'
-import { selectMedia, selectProp, useMediaStore } from '../stores/mediaStore'
+import { useMediaStore } from '../stores/mediaStore'
 import { useMediaInspectorStore } from '../stores/mediaInspectorStore'
-import { openMediaLink, resolveExternalMediaLink } from '../actions'
+import { openMediaLink } from '../actions'
 import { MediaFavoriteButton } from './MediaFavoriteButton'
 import { MediaStatusSelector } from './MediaStatusSelector'
 import { MediaTypeSelector } from './MediaTypeSelector'
@@ -16,7 +15,60 @@ import { MediaGenreSelector } from './MediaGenreSelector'
 import { MediaGenres } from './MediaGenres'
 import { PersistedGenre, PersistedMedia } from '@shared/types'
 import { MediaPreview } from './MediaPreview'
-import { getMediaByIdQueryOptions } from '../queries'
+import {
+  getMediaByIdQueryOptions,
+  resolveExternalMediaLinkQueryOptions,
+} from '../queries'
+import { useRemoveMedia, useUpdateMedia } from '../mutations'
+
+const MediaInspectorContext = createContext<{
+  id: number
+} | null>(null)
+
+function useMediaInspector<T>(selector: (state: PersistedMedia) => T): T {
+  const ctx = useContext(MediaInspectorContext)
+  if (!ctx)
+    throw new Error(
+      'useMediaInspector must be used inside MediaInspectorProvider',
+    )
+  return useMediaStore((s) => {
+    const media = s.media[ctx.id]
+    if (!media) return undefined as T
+    return selector(media)
+  })
+}
+
+function useMediaInspectorActions() {
+  const ctx = useContext(MediaInspectorContext)
+  if (!ctx)
+    throw new Error(
+      'useMediaInspectorActions must be used inside MediaInspectorProvider',
+    )
+  const { mutate: remove } = useRemoveMedia()
+  const { mutate: update } = useUpdateMedia()
+  return {
+    update(partial: Partial<PersistedMedia>) {
+      update({ id: ctx.id, patch: partial })
+    },
+    remove() {
+      remove(ctx.id)
+    },
+  }
+}
+
+function MediaInspectorProvider({
+  children,
+  id,
+}: {
+  children: ReactNode
+  id: number
+}) {
+  return (
+    <MediaInspectorContext.Provider value={{ id }}>
+      {children}
+    </MediaInspectorContext.Provider>
+  )
+}
 
 export const MediaInspector = () => {
   const selectedMedia = useMediaInspectorStore((s) => s.selectedMedia)
@@ -27,7 +79,7 @@ export const MediaInspector = () => {
 
   // TODO: Add action buttons for editing, deleting, exporting
   return (
-    <MediaInfoContext.Provider value={{ id: selectedMedia }}>
+    <MediaInspectorProvider id={selectedMedia}>
       <div
         className={cn(
           'hide-scroll relative w-full max-w-70 overflow-auto border-l',
@@ -61,7 +113,7 @@ export const MediaInspector = () => {
           <MediaInspector.DateDisplay />
         </div>
       </div>
-    </MediaInfoContext.Provider>
+    </MediaInspectorProvider>
   )
 }
 
@@ -80,9 +132,7 @@ function FieldTitle({ children, className, ...props }: ComponentProps<'span'>) {
 }
 
 MediaInspector.WatchAfter = function WatchAfter() {
-  const { id } = useMediaInfo()
-  const watchAfter = useMediaStore(selectProp(id, 'watchAfter'))
-
+  const watchAfter = useMediaInspector((s) => s.watchAfter)
   const { data } = useQuery({
     ...getMediaByIdQueryOptions(watchAfter ?? 0),
     enabled: watchAfter != null,
@@ -111,12 +161,11 @@ MediaInspector.FavoriteButton = function FavoriteButton({
   onClick,
   ...props
 }: ComponentProps<typeof MediaFavoriteButton>) {
-  const { id } = useMediaInfo()
-  const isFavorite = useMediaStore(selectProp(id, 'isFavorite'))
-  const updateMedia = useMediaStore((s) => s.updateMedia)
+  const isFavorite = useMediaInspector((s) => s.isFavorite)
+  const { update } = useMediaInspectorActions()
 
   const handleClick = () => {
-    updateMedia(id, { isFavorite: !isFavorite })
+    update({ isFavorite: !isFavorite })
   }
 
   return (
@@ -129,8 +178,7 @@ MediaInspector.FavoriteButton = function FavoriteButton({
 }
 
 MediaInspector.Thumbnail = function Thumbnail() {
-  const { id } = useMediaInfo()
-  const thumbnail = useMediaStore(selectProp(id, 'thumbnail'))
+  const thumbnail = useMediaInspector((s) => s.thumbnail)
 
   return <MediaThumbnail src={thumbnail} className="w-full select-none" />
 }
@@ -139,7 +187,7 @@ MediaInspector.IdDisplay = function IdDisplay({
   className,
   ...props
 }: ComponentProps<'div'>) {
-  const { id } = useMediaInfo()
+  const id = useMediaInspector((s) => s.id)
   return (
     <div
       className={cn(
@@ -169,9 +217,8 @@ MediaInspector.EpisodeDisplay = function EpisodeDisplay({
   className,
   ...props
 }: ComponentProps<'div'>) {
-  const { id } = useMediaInfo()
-  const currentEpisode = useMediaStore(selectProp(id, 'currentEpisode'))
-  const maxEpisodes = useMediaStore(selectProp(id, 'maxEpisodes'))
+  const currentEpisode = useMediaInspector((s) => s.currentEpisode)
+  const maxEpisodes = useMediaInspector((s) => s.maxEpisodes)
 
   return (
     <div
@@ -188,12 +235,11 @@ MediaInspector.EpisodeDisplay = function EpisodeDisplay({
 }
 
 MediaInspector.TypeSelector = function TypeSelector() {
-  const { id } = useMediaInfo()
-  const type = useMediaStore(selectProp(id, 'type'))
-  const updateMedia = useMediaStore((s) => s.updateMedia)
+  const type = useMediaInspector((s) => s.type)
+  const { update } = useMediaInspectorActions()
 
   const handleChange = (type: PersistedMedia['type']) => {
-    updateMedia(id, { type })
+    update({ type })
   }
 
   return (
@@ -206,12 +252,11 @@ MediaInspector.TypeSelector = function TypeSelector() {
 }
 
 MediaInspector.StatusSelector = function StatusSelector() {
-  const { id } = useMediaInfo()
-  const status = useMediaStore(selectProp(id, 'status'))
-  const updateMedia = useMediaStore((s) => s.updateMedia)
+  const status = useMediaInspector((s) => s.status)
+  const { update } = useMediaInspectorActions()
 
   const handleChange = (status: PersistedMedia['status']) => {
-    updateMedia(id, { status })
+    update({ status })
   }
 
   return (
@@ -224,8 +269,7 @@ MediaInspector.StatusSelector = function StatusSelector() {
 }
 
 MediaInspector.Title = function Title() {
-  const { id } = useMediaInfo()
-  const title = useMediaStore(selectProp(id, 'title'))
+  const title = useMediaInspector((s) => s.title)
   return (
     <div className="flex flex-col">
       <FieldTitle>Title</FieldTitle>
@@ -235,8 +279,7 @@ MediaInspector.Title = function Title() {
 }
 
 MediaInspector.AlternateTitles = function AlternateTitles() {
-  const { id } = useMediaInfo()
-  const alternateTitles = useMediaStore(selectProp(id, 'alternateTitles'))
+  const alternateTitles = useMediaInspector((s) => s.alternateTitles)
   if (!alternateTitles) return null
 
   return (
@@ -250,13 +293,12 @@ MediaInspector.AlternateTitles = function AlternateTitles() {
 }
 
 MediaInspector.ExternalLink = function ExternalLink() {
-  const { id } = useMediaInfo()
-  const externalLink = useMediaStore(selectProp(id, 'externalLink'))
-  const { data: resolvedLink, isLoading } = useQuery({
-    queryKey: [id, 'resolvedLink'],
-    queryFn: () => resolveExternalMediaLink(id),
-  })
-  if (!externalLink || isLoading) return null
+  const id = useMediaInspector((s) => s.id)
+  const externalLink = useMediaInspector((s) => s.externalLink)
+  const { data: resolvedLink } = useQuery(
+    resolveExternalMediaLinkQueryOptions(id),
+  )
+  if (!externalLink || !resolvedLink) return null
 
   return (
     <div className="flex flex-col">
@@ -274,17 +316,16 @@ MediaInspector.ExternalLink = function ExternalLink() {
   )
 }
 MediaInspector.Genres = function Genres() {
-  const { id } = useMediaInfo()
-  const genres = useMediaStore(selectProp(id, 'genres')) ?? []
-  const updateMedia = useMediaStore((s) => s.updateMedia)
+  const genres = useMediaInspector((s) => s.genres) ?? []
+  const { update } = useMediaInspectorActions()
 
   const selectedIds = new Set(genres.map((g) => g.id))
 
   const toggleGenre = (genre: PersistedGenre) => {
     if (selectedIds.has(genre.id)) {
-      updateMedia(id, { genres: genres.filter((g) => g.id !== genre.id) })
+      update({ genres: genres.filter((g) => g.id !== genre.id) })
     } else {
-      updateMedia(id, { genres: [...genres, genre] })
+      update({ genres: [...genres, genre] })
     }
   }
 
@@ -303,9 +344,8 @@ MediaInspector.DateDisplay = function DateDisplay({
   className,
   ...props
 }: ComponentProps<'div'>) {
-  const { id } = useMediaInfo()
-  const createdAt = useMediaStore(selectProp(id, 'createdAt'))
-  const lastUpdated = useMediaStore(selectProp(id, 'lastUpdated'))
+  const createdAt = useMediaInspector((s) => s.createdAt)
+  const lastUpdated = useMediaInspector((s) => s.lastUpdated)
 
   return (
     <div className={cn('grid grid-cols-2 gap-3', className)} {...props}>
