@@ -30,7 +30,7 @@ export function MediaTypeSelector({
 
   return (
     <Select
-      value={value}
+      value={value ?? ''}
       onValueChange={onChange}
       onOpenChange={(open) => {
         if (open) setHasOpened(true)
