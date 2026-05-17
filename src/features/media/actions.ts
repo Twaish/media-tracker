@@ -35,8 +35,8 @@ export async function openMediaLink(id: number) {
   if (link) window.open(link, '_blank')
 }
 
-export function searchMedia(query: string) {
-  return ipc.client.media.search(query)
+export function searchMedia(query: string, options?: Pagination) {
+  return ipc.client.media.search({ query, options })
 }
 
 export function getMediaById(id: number) {

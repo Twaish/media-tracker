@@ -4,6 +4,7 @@ import { persistedGenreSchema } from '@main/features/genres/ipc/schemas'
 import { PersistedMediaProgress } from '../domain/entities/mediaProgress'
 import { PersistedMediaEmbedding } from '../domain/entities/mediaEmbedding'
 import { MEDIA_STATUS, MEDIA_TYPES } from '@shared/constants/features/media'
+import { paginationSchema } from '@main/helpers/ipc/schemas'
 
 export const mediaSchema = z.object({
   id: z.number(),
@@ -67,7 +68,10 @@ export const setNextMediaInputSchema = z.object({
 export const resolveExternalLinkInputSchema = z.number()
 export const resolveExternalLinkOutputSchema = z.string().nullable()
 
-export const searchInputSchema = z.string()
+export const searchInputSchema = z.object({
+  query: z.string(),
+  options: paginationSchema.optional(),
+})
 
 export const getByIdInputSchema = z.number()
 
