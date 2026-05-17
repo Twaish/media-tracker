@@ -16,6 +16,7 @@ import { MediaGenreSelector } from './MediaGenreSelector'
 import { MediaGenres } from './MediaGenres'
 import { PersistedGenre, PersistedMedia } from '@shared/types'
 import { MediaPreview } from './MediaPreview'
+import { getMediaByIdQueryOptions } from '../queries'
 
 export const MediaInspector = () => {
   const selectedMedia = useMediaInspectorStore((s) => s.selectedMedia)
@@ -78,18 +79,31 @@ function FieldTitle({ children, className, ...props }: ComponentProps<'span'>) {
   )
 }
 
-MediaInspector.NextPreview = function NextPreview() {
-  const selectedMedia = useMediaInspectorStore((s) => s.selectedMedia)!
-  const nextMediaId = useMediaStore(selectProp(selectedMedia, 'watchAfter'))
-  if (!nextMediaId) return null
+MediaInspector.WatchAfter = function WatchAfter() {
+  const { id } = useMediaInfo()
+  const watchAfter = useMediaStore(selectProp(id, 'watchAfter'))
+
+  const { data } = useQuery({
+    ...getMediaByIdQueryOptions(watchAfter ?? 0),
+    enabled: watchAfter != null,
+  })
+
+  if (!data) return null
 
   return (
-    <MediaPreview mediaId={nextMediaId}>
-      <Button size="sm" variant={'outline'} className="mt-auto h-7 w-min px-3">
-        <ArrowRight className="mr-1 h-3 w-3" />
-        Next
-      </Button>
-    </MediaPreview>
+    <div className="flex flex-col gap-1">
+      <FieldTitle>Next</FieldTitle>
+      <MediaPreview mediaId={data.id}>
+        <Button
+          size="sm"
+          variant={'outline'}
+          className="mt-auto h-7 w-min px-3"
+        >
+          <ArrowRight className="mr-1 h-3 w-3" />
+          Next
+        </Button>
+      </MediaPreview>
+    </div>
   )
 }
 
@@ -228,7 +242,9 @@ MediaInspector.AlternateTitles = function AlternateTitles() {
   return (
     <div className="flex flex-col">
       <FieldTitle>Alternate Titles</FieldTitle>
-      <div className="line-clamp-1 text-xs opacity-80">{alternateTitles}</div>
+      <pre className="hide-scroll overflow-auto text-xs opacity-80">
+        {alternateTitles}
+      </pre>
     </div>
   )
 }
@@ -257,20 +273,6 @@ MediaInspector.ExternalLink = function ExternalLink() {
     </div>
   )
 }
-
-MediaInspector.WatchAfter = function WatchAfter() {
-  const { id } = useMediaInfo()
-  const watchAfter = useMediaStore(selectProp(id, 'watchAfter'))
-  if (watchAfter == null) return null
-
-  return (
-    <div className="flex flex-col gap-1">
-      <FieldTitle>Next</FieldTitle>
-      <MediaInspector.NextPreview />
-    </div>
-  )
-}
-
 MediaInspector.Genres = function Genres() {
   const { id } = useMediaInfo()
   const genres = useMediaStore(selectProp(id, 'genres'))
