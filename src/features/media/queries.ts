@@ -1,5 +1,10 @@
 import { queryOptions, useMutation, useQuery } from '@tanstack/react-query'
-import { getMedia, getMediaById, removeMedia } from './actions'
+import {
+  getMedia,
+  getMediaById,
+  removeMedia,
+  resolveExternalMediaLink,
+} from './actions'
 import { queryClient } from '@/core/queryClient'
 
 export const queryKeys = {
@@ -11,6 +16,11 @@ export const queryKeys = {
     { limit },
   ],
   getMediaById: (id: number) => [...queryKeys.all(), 'one', { id }],
+  resolveExternalMediaLink: (id: number) => [
+    ...queryKeys.all(),
+    'resolveLink',
+    { id },
+  ],
 }
 
 export const getMediaQueryOptions = (page: number = 1, limit: number = 12) =>
@@ -23,4 +33,10 @@ export const getMediaByIdQueryOptions = (id: number) =>
   queryOptions({
     queryKey: queryKeys.getMediaById(id),
     queryFn: () => getMediaById(id),
+  })
+
+export const resolveExternalMediaLinkQueryOptions = (id: number) =>
+  queryOptions({
+    queryKey: queryKeys.resolveExternalMediaLink(id),
+    queryFn: () => resolveExternalMediaLink(id),
   })
