@@ -32,6 +32,9 @@ export const useUpdateMedia = () => {
       if (!updatedMedia) return
 
       setMedia(updatedMedia)
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.getMediaById(updatedMedia.id),
+      })
     },
   })
 }
