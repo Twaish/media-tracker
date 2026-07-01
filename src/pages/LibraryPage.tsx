@@ -1,23 +1,23 @@
 import { useQuery } from '@tanstack/react-query'
 import { PersistedMedia } from '@shared/types'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useMediaStore } from '@/features/media/stores/mediaStore'
 import { MediaCard } from '@/features/media/components/MediaCard'
-import { getMedia } from '@/features/media/actions'
 import { useMediaInspectorStore } from '@/features/media/stores/mediaInspectorStore'
 import { MediaInspector } from '@/features/media/components/MediaInspector'
 import { motion } from 'framer-motion'
 import { useHotkey } from '@/app/hotkeys/hooks/useHotkey'
 import { MediaToolbar } from '@/features/media/components/MediaToolbar'
 import { getMediaQueryOptions } from '@/features/media/queries'
+import { MediaPagination } from '@/features/media/components/MediaPagination'
 
 export default function LibraryPage() {
   return (
     <div className="flex h-full w-full flex-col">
       <MediaToolbar />
       <div className="flex flex-1 overflow-hidden">
-        <div className="hide-scroll h-full w-full overflow-auto">
-          <MediaGrid />
+        <div className="hide-scroll flex h-full w-full flex-col overflow-auto">
+          <MediaView />
         </div>
         <MediaInspector />
       </div>
@@ -25,12 +25,31 @@ export default function LibraryPage() {
   )
 }
 
-function MediaGrid() {
+function MediaView() {
+  const [page, setPage] = useState(1)
+  const [limit, setLimit] = useState(10)
+
+  return (
+    <>
+      <MediaGrid page={page} limit={limit} />
+      <MediaPagination
+        page={page}
+        limit={limit}
+        onPageChange={setPage}
+        onLimitChange={setLimit}
+      />
+    </>
+  )
+}
+
+function MediaGrid({ page, limit }: { page: number; limit: number }) {
   const setMedias = useMediaStore((s) => s.setMedias)
   const selectMedia = useMediaInspectorStore((s) => s.selectMedia)
   const hasSelectedMedia = useMediaInspectorStore((s) => !!s.selectedMedia)
 
-  const { data: mediaResults, isLoading } = useQuery(getMediaQueryOptions(1, 5))
+  const { data: mediaResults, isLoading } = useQuery(
+    getMediaQueryOptions(page, limit),
+  )
 
   useEffect(() => {
     if (mediaResults?.data) {
@@ -51,8 +70,8 @@ function MediaGrid() {
   })
 
   return (
-    <div className="grid h-min flex-1 grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-px">
-      {!isLoading &&
+    <div className="mb-auto grid h-min grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-px">
+      {(!isLoading || mediaResults) &&
         mediaResults?.data.map((media) => (
           <motion.div
             key={media.id}
