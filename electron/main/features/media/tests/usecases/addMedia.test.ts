@@ -55,7 +55,7 @@ describe('AddMedia', () => {
     const result = await usecase.execute(input)
 
     expect(mockStorage.storeImage).toHaveBeenCalledWith({
-      imagePath: input.thumbnail,
+      image: input.thumbnail,
     })
 
     expect(mockRepo.add).toHaveBeenCalledWith({

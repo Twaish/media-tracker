@@ -60,7 +60,7 @@ describe('UpdateMedia', () => {
     const result = await usecase.execute(input)
 
     expect(mockStorage.storeImage).toHaveBeenCalledWith({
-      imagePath: previousMedia.thumbnail,
+      image: previousMedia.thumbnail,
     })
 
     expect(mockRepo.update).toHaveBeenCalledWith({
