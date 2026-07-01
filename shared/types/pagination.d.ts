@@ -3,12 +3,14 @@ export type Pagination = {
   limit?: number
 }
 
+export type PaginationInfo = {
+  page: number
+  limit: number
+  totalPages: number
+  totalItems: number
+}
+
 export type PaginationResult<T> = {
   data: T[]
-  pagination: {
-    page: number
-    limit: number
-    totalPages: number
-    totalItems: number
-  }
+  pagination: PaginationInfo
 }
