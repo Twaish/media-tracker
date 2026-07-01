@@ -113,7 +113,9 @@ export function MediaPagination({
             '[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none',
           )}
         />
-        <span className="text-muted-foreground">of {totalPages}</span>
+        <span className="text-muted-foreground hidden lg:flex">
+          of {totalPages}
+        </span>
       </label>
 
       <Divider />
@@ -143,7 +145,7 @@ export function MediaPagination({
             </option>
           ))}
         </select>
-        per page
+        <span className="hidden lg:flex">per page</span>
       </label>
 
       <Divider />
