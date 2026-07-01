@@ -15,6 +15,7 @@ import {
   sql,
   isNull,
   or,
+  notInArray,
 } from 'drizzle-orm'
 import { SQLiteColumn } from 'drizzle-orm/sqlite-core'
 
@@ -374,9 +375,9 @@ export class MediaRepositoryDrizzle implements IMediaRepository {
 
     switch (filter.op) {
       case '=':
-        return exists(subquery)
+        return inArray(mediaTable.id, subquery)
       case '!=':
-        return not(exists(subquery))
+        return notInArray(mediaTable.id, subquery)
       default:
         throw new Error(`Unsupported operator for genre: ${filter.op}`)
     }
