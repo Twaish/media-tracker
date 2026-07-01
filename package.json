@@ -1,11 +1,11 @@
 {
-  "name": "electron-shadcn",
-  "productName": "ElectronShadCNTemplate",
-  "appId": "electron.shadcn.template",
+  "name": "media-tracker",
+  "productName": "Media Tracker",
+  "appId": "twaish.app.mediatracker",
   "version": "1.0.0",
-  "description": "Electron Builder with shadcn-ui (Vite + Typescript)",
+  "description": "",
   "main": "./out/main/index.js",
-  "author": "Axiom",
+  "author": "Twaish",
   "license": "MIT",
   "private": true,
   "scripts": {
