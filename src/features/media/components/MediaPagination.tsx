@@ -3,6 +3,8 @@ import { ComponentProps, useEffect, useRef, useState } from 'react'
 import { getMediaQueryOptions } from '../queries'
 import { useQuery } from '@tanstack/react-query'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { useMediaQueryStore } from '../stores/mediaQueryStore'
+import { useMediaStore } from '../stores/mediaStore'
 
 function getPages(current: number, total: number): (number | '...')[] {
   if (total <= 1) return total === 1 ? [1] : []
@@ -38,18 +40,14 @@ const LIMIT_OPTIONS = [2, 5, 10, 25, 50, 100] as const
 
 export function MediaPagination({
   className,
-  page,
-  limit,
-  onPageChange,
-  onLimitChange,
   ...props
-}: ComponentProps<'div'> & {
-  page: number
-  limit: number
-  onPageChange: (page: number) => void
-  onLimitChange: (limit: number) => void
-}) {
-  const { data } = useQuery(getMediaQueryOptions(page, limit)) ?? {}
+}: ComponentProps<'div'>) {
+  const page = useMediaQueryStore((s) => s.page)
+  const limit = useMediaQueryStore((s) => s.limit)
+  const setPage = useMediaQueryStore((s) => s.setPage)
+  const setLimit = useMediaQueryStore((s) => s.setLimit)
+  const totalPages = useMediaStore((s) => s.pagination?.totalPages)
+  const totalItems = useMediaStore((s) => s.pagination?.totalItems)
 
   const [draft, setDraft] = useState(String(page))
   const inputRef = useRef<HTMLInputElement>(null)
@@ -58,22 +56,21 @@ export function MediaPagination({
     setDraft(String(page))
   }, [page])
 
-  if (!data) return null
+  if (totalPages == null || totalItems == null) return null
 
-  const { totalPages } = data.pagination
-
-  const safePage = Math.min(page, totalPages || 1)
-  if (safePage !== page) {
-    onPageChange(safePage)
-    return null
-  }
+  useEffect(() => {
+    if (totalPages && page > totalPages) {
+      setPage(totalPages)
+    }
+  }, [page, totalPages, setPage])
 
   const pages = getPages(page, totalPages)
 
   function commitDraft() {
+    if (totalPages == null) return
     const n = parseInt(draft, 10)
     if (!isNaN(n) && n >= 1 && n <= totalPages) {
-      onPageChange(n)
+      setPage(n)
     } else {
       setDraft(String(page))
     }
@@ -126,12 +123,10 @@ export function MediaPagination({
           value={limit}
           onChange={(e) => {
             const newLimit = Number(e.target.value)
-            onLimitChange(newLimit)
-            const approxNewTotal = Math.ceil(
-              data.pagination.totalItems / newLimit,
-            )
+            setLimit(newLimit)
+            const approxNewTotal = Math.ceil(totalItems / newLimit)
             if (page > approxNewTotal) {
-              onPageChange(Math.max(1, approxNewTotal))
+              setPage(Math.max(1, approxNewTotal))
             }
           }}
           className={cn(
@@ -152,7 +147,7 @@ export function MediaPagination({
 
       <PageButton
         disabled={page === 1}
-        onClick={() => onPageChange(page - 1)}
+        onClick={() => setPage(page - 1)}
         title="Previous page"
         className="ml-auto"
       >
@@ -170,7 +165,7 @@ export function MediaPagination({
         ) : (
           <button
             key={item}
-            onClick={() => onPageChange(item)}
+            onClick={() => setPage(item)}
             aria-label={`Page ${item}`}
             aria-current={item === page ? 'page' : undefined}
             className={cn(
@@ -186,7 +181,7 @@ export function MediaPagination({
       )}
       <PageButton
         disabled={page === totalPages}
-        onClick={() => onPageChange(page + 1)}
+        onClick={() => setPage(page + 1)}
         title="Next page"
       >
         <ChevronRight className="h-4 w-4" />

@@ -1,8 +1,9 @@
 import { Plus, Search } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useMediaDialog } from '../hooks/useMediaDialog'
 import { addMedia } from '../actions'
 import { queryClient } from '@/core/queryClient'
+import { useMediaQueryStore } from '../stores/mediaQueryStore'
 
 export function MediaToolbar() {
   return (
@@ -57,15 +58,27 @@ MediaToolbar.AddButton = function AddButton() {
 }
 
 MediaToolbar.SearchField = function SearchField() {
-  const [value, setValue] = useState('')
+  const search = useMediaQueryStore((s) => s.search)
+  const setSearch = useMediaQueryStore((s) => s.setSearch)
+
+  const [draft, setDraft] = useState(search)
+
+  useEffect(() => {
+    setDraft(search)
+  }, [search])
 
   return (
     <div className="flex h-full w-full items-center gap-1.5 px-2">
       <Search size={15} className="text-muted-foreground/50 shrink-0" />
       <div className="flex min-w-0 flex-1 items-center gap-1 overflow-x-auto">
         <input
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              setSearch(draft)
+            }
+          }}
           className="flex-1 bg-transparent font-mono text-xs outline-none"
           placeholder="Search... Use [genre=Comedy,Fighting] [year>=2015] for specific searches"
         />

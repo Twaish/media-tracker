@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { PersistedMedia } from '@shared/types'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useMediaStore } from '@/features/media/stores/mediaStore'
 import { MediaCard } from '@/features/media/components/MediaCard'
 import { useMediaInspectorStore } from '@/features/media/stores/mediaInspectorStore'
@@ -10,6 +10,7 @@ import { useHotkey } from '@/app/hotkeys/hooks/useHotkey'
 import { MediaToolbar } from '@/features/media/components/MediaToolbar'
 import { getMediaQueryOptions } from '@/features/media/queries'
 import { MediaPagination } from '@/features/media/components/MediaPagination'
+import { useMediaQueryStore } from '@/features/media/stores/mediaQueryStore'
 
 export default function LibraryPage() {
   return (
@@ -26,36 +27,36 @@ export default function LibraryPage() {
 }
 
 function MediaView() {
-  const [page, setPage] = useState(1)
-  const [limit, setLimit] = useState(10)
-
-  return (
-    <>
-      <MediaGrid page={page} limit={limit} />
-      <MediaPagination
-        page={page}
-        limit={limit}
-        onPageChange={setPage}
-        onLimitChange={setLimit}
-      />
-    </>
-  )
-}
-
-function MediaGrid({ page, limit }: { page: number; limit: number }) {
+  const page = useMediaQueryStore((s) => s.page)
+  const limit = useMediaQueryStore((s) => s.limit)
+  const search = useMediaQueryStore((s) => s.search)
   const setMedias = useMediaStore((s) => s.setMedias)
-  const selectMedia = useMediaInspectorStore((s) => s.selectMedia)
-  const hasSelectedMedia = useMediaInspectorStore((s) => !!s.selectedMedia)
+  const setPagination = useMediaStore((s) => s.setPagination)
 
-  const { data: mediaResults, isLoading } = useQuery(
-    getMediaQueryOptions(page, limit),
+  const { data: mediaResults } = useQuery(
+    getMediaQueryOptions(search, page, limit),
   )
 
   useEffect(() => {
     if (mediaResults?.data) {
       setMedias(mediaResults.data as PersistedMedia[])
     }
-  }, [mediaResults, setMedias])
+    if (mediaResults?.pagination) {
+      setPagination(mediaResults.pagination)
+    }
+  }, [mediaResults, setMedias, setPagination])
+
+  return (
+    <>
+      <MediaGrid media={mediaResults?.data as PersistedMedia[] | undefined} />
+      <MediaPagination />
+    </>
+  )
+}
+
+function MediaGrid({ media = [] }: { media?: PersistedMedia[] }) {
+  const selectMedia = useMediaInspectorStore((s) => s.selectMedia)
+  const hasSelectedMedia = useMediaInspectorStore((s) => !!s.selectedMedia)
 
   useHotkey({
     keys: ' ',
@@ -71,8 +72,8 @@ function MediaGrid({ page, limit }: { page: number; limit: number }) {
 
   return (
     <div className="mb-auto grid h-min grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-px">
-      {(!isLoading || mediaResults) &&
-        mediaResults?.data.map((media) => (
+      {media &&
+        media.map((media) => (
           <motion.div
             key={media.id}
             layout
