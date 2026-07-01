@@ -298,7 +298,7 @@ MediaInspector.ExternalLink = function ExternalLink() {
   const { data: resolvedLink } = useQuery(
     resolveExternalMediaLinkQueryOptions(id),
   )
-  if (!externalLink || !resolvedLink) return null
+  if (!externalLink?.trim() || !resolvedLink) return null
 
   return (
     <div className="flex flex-col">
