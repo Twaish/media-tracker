@@ -20,6 +20,7 @@ import {
   resolveExternalMediaLinkQueryOptions,
 } from '../queries'
 import { useRemoveMedia, useUpdateMedia } from '../mutations'
+import { useMediaQueryStore } from '../stores/mediaQueryStore'
 
 const MediaInspectorContext = createContext<{
   id: number
@@ -137,7 +138,7 @@ MediaInspector.WatchAfter = function WatchAfter() {
     ...getMediaByIdQueryOptions(watchAfter ?? 0),
     enabled: watchAfter != null,
   })
-
+  const setSearch = useMediaQueryStore((s) => s.setSearch)
   if (!data) return null
 
   return (
@@ -148,6 +149,7 @@ MediaInspector.WatchAfter = function WatchAfter() {
           size="sm"
           variant={'outline'}
           className="mt-auto h-7 w-min px-3"
+          onClick={() => setSearch(`[id=${watchAfter}]`)}
         >
           <ArrowRight className="mr-1 h-3 w-3" />
           Next

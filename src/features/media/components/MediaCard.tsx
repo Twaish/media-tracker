@@ -34,6 +34,7 @@ import { closeMediaDialog, useMediaDialog } from '../hooks/useMediaDialog'
 import { MediaGenres } from './MediaGenres'
 import { useRemoveMedia, useUpdateMedia } from '../mutations'
 import { useConfirmationDialog } from '@/components/confirmation-dialog/useConfirmationDialog'
+import { useMediaQueryStore } from '../stores/mediaQueryStore'
 
 // Fetch info directly from store as MediaCard are already created using it
 const MediaCardContext = createContext<{
@@ -275,16 +276,21 @@ MediaCard.OpenButton = function OpenButton() {
   )
 }
 MediaCard.NextButton = function NextButton() {
+  const watchAfter = useMediaCard((s) => s.watchAfter)
   const hasNext = useMediaCard((s) => {
     const isCompleted =
       s.maxEpisodes != null && s.currentEpisode >= s.maxEpisodes
-    const hasNextEntry = s.watchAfter
-    return isCompleted && hasNextEntry
+    return isCompleted && watchAfter
   })
+  const setSearch = useMediaQueryStore((s) => s.setSearch)
   if (!hasNext) return null
 
   return (
-    <Button size="sm" className="h-7 px-3">
+    <Button
+      size="sm"
+      className="h-7 px-3"
+      onClick={() => setSearch(`[id=${watchAfter}]`)}
+    >
       <ArrowRight className="mr-1 h-3 w-3" />
       Next
     </Button>
