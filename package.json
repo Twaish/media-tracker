@@ -67,6 +67,7 @@
   "dependencies": {
     "@electron-toolkit/utils": "^4.0.0",
     "@libsql/client": "^0.15.15",
+    "@monaco-editor/react": "^4.7.0",
     "@orpc/client": "^1.13.13",
     "@orpc/experimental-publisher": "^1.13.13",
     "@orpc/server": "^1.13.13",
