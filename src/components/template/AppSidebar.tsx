@@ -27,7 +27,7 @@ const sections = [
     icon: Calendar,
     path: '',
   },
-  { id: 'automation', label: 'Automation', icon: Zap, path: '' },
+  { id: 'automation', label: 'Automation', icon: Zap, path: '/automation' },
   { id: 'statistics', label: 'Statistics', icon: BarChart3, path: '' },
   { id: 'history', label: 'History', icon: History, path: '' },
 ]
