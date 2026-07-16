@@ -79,10 +79,6 @@ export const useAutomationEditorStore = create<AutomationEditorStore>(
 
       if (!selected) return
 
-      if (!confirm(`Delete ${selected.type} "${selected.item.name}"?`)) {
-        return
-      }
-
       if (selected.type === 'rule') {
         await removeRules([selected.item.id])
       } else {
