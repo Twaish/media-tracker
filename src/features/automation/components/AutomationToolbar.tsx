@@ -1,9 +1,14 @@
 import { useAutomationStore } from '../stores/automationStore'
-import { Save, Trash2, Undo2 } from 'lucide-react'
+import { Info, Save, Trash2, Undo2 } from 'lucide-react'
 import { useAutomationEditorStore } from '../stores/automationEditorStore'
 import { useConfirmationDialog } from '@/components/confirmation-dialog/useConfirmationDialog'
 import { useHotkey } from '@/app/hotkeys/hooks/useHotkey'
 import { AutomationActionButton } from './AutomationActionButton'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 
 export function AutomationToolbar() {
   const name = useAutomationStore((s) => s.selected?.item.name)
@@ -15,9 +20,10 @@ export function AutomationToolbar() {
 
   return (
     <div className="flex h-8 items-center justify-between border-b">
-      <div className="flex h-full items-center gap-2">
+      <div className="flex h-full items-center">
+        {hasSelected && <AutomationToolbar.InfoTooltip />}
         {hasSelected && <AutomationToolbar.TypeIndicator />}
-        <div className="font-mono text-xs">{name}</div>
+        <div className="px-2 font-mono text-xs">{name}</div>
         {dirty && <div className="text-xs opacity-50">Unsaved changes</div>}
       </div>
 
@@ -30,6 +36,21 @@ export function AutomationToolbar() {
         </div>
       )}
     </div>
+  )
+}
+AutomationToolbar.InfoTooltip = function InfoTooltip() {
+  const {
+    item: { ast, source, ...rest },
+  } = useAutomationStore((s) => s.selected!)
+  return (
+    <Tooltip>
+      <TooltipTrigger className="bg-secondary/30 flex aspect-square h-full items-center justify-center border-r">
+        <Info className="h-3.5 w-3.5" />
+      </TooltipTrigger>
+      <TooltipContent className="whitespace-pre">
+        {JSON.stringify(rest, null, 2)}
+      </TooltipContent>
+    </Tooltip>
   )
 }
 AutomationToolbar.TypeIndicator = function TypeIndicator() {
