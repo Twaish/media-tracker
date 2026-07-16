@@ -1,9 +1,17 @@
-import { Editor, loader } from '@monaco-editor/react'
 import * as monaco from 'monaco-editor'
+import { Editor, loader } from '@monaco-editor/react'
 
+import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker'
 import { useAutomationEditorStore } from '../stores/automationEditorStore'
 
+self.MonacoEnvironment = {
+  getWorker() {
+    return new editorWorker()
+  },
+}
+
 loader.config({ monaco })
+
 monaco.editor.defineTheme('editor-theme', {
   base: 'vs-dark',
   inherit: true,
