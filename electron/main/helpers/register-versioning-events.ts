@@ -20,8 +20,8 @@ export function registerVersioningEvents(modules: Modules) {
           type: 'update',
           entity: 'media',
           entityId: event.current.id,
-          before: JSON.stringify(deepDiff(event.current, event.previous)),
-          after: JSON.stringify(deepDiff(event.previous, event.current)),
+          before: JSON.stringify(deepDiff(event.previous, event.current)),
+          after: JSON.stringify(deepDiff(event.current, event.previous)),
         })
       }, 0)
     },
