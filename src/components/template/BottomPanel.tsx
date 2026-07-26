@@ -107,7 +107,12 @@ export function BottomPanel() {
         expanded ? 'h-48 min-h-48' : 'h-8',
       )}
     >
-      <div className="flex h-8 shrink-0 items-center justify-between border-t border-b">
+      <div
+        className={cn(
+          'flex h-8 shrink-0 items-center justify-between border-t',
+          expanded && 'border-b',
+        )}
+      >
         <div className="flex h-full">
           <PanelButton
             text={'Logs'}
