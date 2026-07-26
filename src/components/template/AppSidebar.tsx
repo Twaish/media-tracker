@@ -29,7 +29,7 @@ const sections = [
   },
   { id: 'automation', label: 'Automation', icon: Zap, path: '/automation' },
   { id: 'statistics', label: 'Statistics', icon: BarChart3, path: '' },
-  { id: 'history', label: 'History', icon: History, path: '' },
+  { id: 'history', label: 'History', icon: History, path: '/history' },
 ]
 
 export function AppSidebar() {

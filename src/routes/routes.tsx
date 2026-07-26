@@ -4,6 +4,7 @@ import HomePage from '@/pages/HomePage'
 import CounterPage from '@/pages/CounterPage'
 import LibraryPage from '@/pages/LibraryPage'
 import AutomationPage from '@/pages/AutomationPage'
+import HistoryPage from '@/pages/HistoryPage'
 
 const routes: ReturnType<typeof createReactRoute>[] = []
 function createRoute(...options: Parameters<typeof createReactRoute>) {
@@ -33,6 +34,12 @@ createRoute({
   getParentRoute: () => RootRoute,
   path: '/automation',
   component: AutomationPage,
+})
+
+createRoute({
+  getParentRoute: () => RootRoute,
+  path: '/history',
+  component: HistoryPage,
 })
 
 export const rootTree = RootRoute.addChildren(routes)
